@@ -31,6 +31,7 @@
 		<GeneralSettings Text="全般設定">
 			<Font Text="フォント"/>
 			<Language Text="言語"/>
+			<IsStartup Text="ログイン時に起動する"/>
 		</GeneralSettings>
 		<MainWindowSettings Text="メインウィンドウ設定">
 			<BackgroundImageFilePath Text="背景画像のパス"/>
