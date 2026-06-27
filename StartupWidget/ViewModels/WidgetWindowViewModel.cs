@@ -41,7 +41,10 @@ namespace StartupWidget.ViewModels
             get => SettingsService.WidgetSettings.ShortcutKeys;
         }
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ValidBackgroundImagePath))]
         private string _backgroundImagePath;
+
+        public Uri? ValidBackgroundImagePath => string.IsNullOrWhiteSpace(BackgroundImagePath) ? null : new Uri(BackgroundImagePath);
 
         [ObservableProperty]
         private SolidColorBrush _foregroundColor;
@@ -54,18 +57,20 @@ namespace StartupWidget.ViewModels
         private System.Windows.Media.FontFamily _fontFamily;
         [ObservableProperty]
         private float _windowSize = 300;
+        [ObservableProperty]
+        private float _opacity;
 
 
         private void LoadSettings()
         {
+            Opacity = (100 - SettingsService.WidgetSettings.Transparency) / 100;
             BackgroundImagePath = SettingsService.WidgetSettings.BackgroundImageFilePath;
             ForegroundColor = new SolidColorBrush(Color.FromArgb(SettingsService.WidgetSettings.ForegroundColor.A,
                                                                  SettingsService.WidgetSettings.ForegroundColor.R,
                                                                  SettingsService.WidgetSettings.ForegroundColor.G,
                                                                  SettingsService.WidgetSettings.ForegroundColor.B));
 
-            byte Alpha = (byte)(0xFF - (SettingsService.WidgetSettings.Transparency / 100) * 0xFF);
-
+            byte Alpha = (byte)(string.IsNullOrEmpty(BackgroundImagePath) ? (0xFF - (SettingsService.WidgetSettings.Transparency / 100) * 0xFF) : 0);
 
             BackgroundColor = new SolidColorBrush(Color.FromArgb(Alpha,
                                                                  SettingsService.WidgetSettings.BackgroundColor.R,
