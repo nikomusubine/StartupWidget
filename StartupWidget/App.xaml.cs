@@ -95,9 +95,9 @@ namespace StartupWidget
             {
                 settingsWindow = new SettingsWindow { DataContext = new SettingsWindowViewModel(SettingsService,LanguageService) };
                 settingsWindow.ShowDialog();
-            });
-            
 
+                StartupService.SetStartup(SettingsService.GeneralSettings.IsStartup);
+            });
         }
     }
 
