@@ -18,6 +18,7 @@ namespace StartupWidget.ViewModels.Items
             set
             {
                 Value = ColorTranslator.FromHtml(value);
+                OnPropertyChanged();
             }
         }
         public ColorSettingItemViewModel(string id, string name, Type datatype, object value) : base(id, name, datatype, value)
