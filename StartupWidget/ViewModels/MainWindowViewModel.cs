@@ -48,10 +48,16 @@ namespace StartupWidget.ViewModels
         private bool _isWidgetShow = false;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasBackgroundImage))]
+        [NotifyPropertyChangedFor(nameof(ValidBackgroundImagePath))]
         private string _backgroundImagePath;
 
-        public bool HasBackgroundImage => !string.IsNullOrWhiteSpace(BackgroundImagePath) || File.Exists(BackgroundImagePath);
+        public Uri? ValidBackgroundImagePath
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(BackgroundImagePath) ? null : new Uri(BackgroundImagePath);
+            }
+        }
 
         [ObservableProperty]
         private SolidColorBrush _foregroundColor;
