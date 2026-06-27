@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
@@ -50,7 +51,7 @@ namespace StartupWidget.ViewModels
         [NotifyPropertyChangedFor(nameof(HasBackgroundImage))]
         private string _backgroundImagePath;
 
-        public bool HasBackgroundImage => !string.IsNullOrEmpty(BackgroundImagePath);
+        public bool HasBackgroundImage => !string.IsNullOrWhiteSpace(BackgroundImagePath) || File.Exists(BackgroundImagePath);
 
         [ObservableProperty]
         private SolidColorBrush _foregroundColor;

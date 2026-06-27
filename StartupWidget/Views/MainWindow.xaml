@@ -30,40 +30,42 @@
                 <MenuItem Header="{loc:Lang MainWindow/MainMenu/Options/Quit}" Command="{Binding QuitAppCommand}"/>
             </MenuItem>
         </Menu>
+        <Grid Margin="10,20,10,45" >
+            <Image Stretch="UniformToFill">
+                <Image.Style>
 
-        <ListView Margin="10,20,10,45" ItemsSource="{Binding ProcessItems}" SelectedItem="{Binding SelectedItem}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
+                    <Style TargetType="Image">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasBackgroundImage}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="Source" Value="{Binding BackgroundImagePath}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            <ListView ItemsSource="{Binding ProcessItems}" SelectedItem="{Binding SelectedItem}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  Background="Transparent" >
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
 
-            <ListView.Style>
-                <Style TargetType="ListView">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding HasBackgroundImage}" Value="True">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <ImageBrush ImageSource="{Binding BackgroundImagePath}" Stretch="UniformToFill"/>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.Style>
 
-            <ListView.InputBindings>
-                <KeyBinding Gesture="Enter" Command="{Binding StartProcessCommand}"/>
-                <KeyBinding Gesture="Shift+Enter"  Command="{Binding StartProcessCommand}"/>
-            </ListView.InputBindings>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="PreviewMouseDoubleClick">
-                    <i:InvokeCommandAction Command="{Binding StartProcessCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </ListView>
-        
+                <ListView.InputBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding StartProcessCommand}"/>
+                    <KeyBinding Gesture="Shift+Enter"  Command="{Binding StartProcessCommand}"/>
+                </ListView.InputBindings>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding StartProcessCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ListView>
+        </Grid>
+
         <StackPanel Margin="10,0,10,10"  Height="25" Orientation="Horizontal" VerticalAlignment="Bottom">
             <Button Content="{loc:Lang MainWindow/FooterButtons/Start}" Command="{Binding StartProcessCommand}" Margin="0,0,5,0" Width="76"/>
             <Button Content="{loc:Lang MainWindow/FooterButtons/Edit}" Command="{Binding OpenAddWindowCommand}" Margin="5,0" Width="76"/>
