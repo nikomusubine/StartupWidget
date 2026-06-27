@@ -51,13 +51,7 @@ namespace StartupWidget.ViewModels
         [NotifyPropertyChangedFor(nameof(ValidBackgroundImagePath))]
         private string _backgroundImagePath;
 
-        public Uri? ValidBackgroundImagePath
-        {
-            get
-            {
-                return string.IsNullOrWhiteSpace(BackgroundImagePath) ? null : new Uri(BackgroundImagePath);
-            }
-        }
+        public Uri? ValidBackgroundImagePath => string.IsNullOrWhiteSpace(BackgroundImagePath) ? null : new Uri(BackgroundImagePath);
 
         [ObservableProperty]
         private SolidColorBrush _foregroundColor;
