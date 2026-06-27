@@ -92,6 +92,11 @@ namespace StartupWidget.ViewModels
             LoadSettings();
         }
 
+        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, ProcessItemViewModel EditingItem) : this(settings, processViewModel)
+        {
+            SelectedItem = EditingItem;
+        }
+
 
         [ObservableProperty]
         private float _fontSize;

@@ -3,6 +3,7 @@ using StartupWidget.Messages;
 using StartupWidget.Services;
 using StartupWidget.Services.Interfaces;
 using StartupWidget.ViewModels;
+using StartupWidget.ViewModels.Items;
 using StartupWidget.Views;
 using System.Configuration;
 using System.Data;
@@ -80,7 +81,17 @@ namespace StartupWidget
 
             WeakReferenceMessenger.Default.Register<OpenEditWindow>(this, (r, m) =>
             {
-                editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel) };
+                switch (m.option)
+                {
+                    case OpenEditWindowOption.WithItem:
+                        if (m.EditingItem == null) goto default;
+                        editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel, (ProcessItemViewModel)m.EditingItem) };
+                        break;
+
+                    default:
+                        editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel) };
+                        break;
+                }
                 editWindow.ShowDialog();
             });
 

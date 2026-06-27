@@ -18,5 +18,10 @@ namespace StartupWidget.Messages
     public record CloseSettingsWindow();
     public record ApplySettings();
 
-    public record OpenEditWindow(string? AddingItemPath = null);
+    public record OpenEditWindow(OpenEditWindowOption option = OpenEditWindowOption.None, object? EditingItem = null);
+
+    public enum OpenEditWindowOption
+    {
+        None, WithPath, WithItem
+    }
 }

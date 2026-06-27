@@ -147,7 +147,8 @@ namespace StartupWidget.ViewModels
         [RelayCommand]
         private void OpenEditWindow()
         {
-            WeakReferenceMessenger.Default.Send(new OpenEditWindow());
+            if (SelectedItem != null)  WeakReferenceMessenger.Default.Send(new OpenEditWindow(OpenEditWindowOption.WithItem,SelectedItem));
+            else WeakReferenceMessenger.Default.Send(new OpenEditWindow());
         }
 
         [RelayCommand]
