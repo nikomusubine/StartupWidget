@@ -39,7 +39,7 @@
             </ListView.ItemsPanel>
 
             <ListView.Background>
-                <ImageBrush ImageSource="{Binding ValidBackgroundImagePath, TargetNullValue={x:Null}}"/>
+                <ImageBrush ImageSource="{Binding ValidBackgroundImagePath, TargetNullValue={x:Null}}" Stretch="UniformToFill"/>
             </ListView.Background>
 
             <ListView.InputBindings>
