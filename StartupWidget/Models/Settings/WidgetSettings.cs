@@ -73,5 +73,6 @@ namespace StartupWidget.Models.Settings
 
         }
         [SettingElementIgnore] public bool IsWidgetShow { get; set; }
+        [SettingElementIgnore] public Position WidgetPosition { get; set; }
     }
 }
