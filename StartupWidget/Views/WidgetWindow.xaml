@@ -10,7 +10,10 @@
         mc:Ignorable="d"
         Title="WidgetWindow" SizeToContent="WidthAndHeight"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Left="{Binding PositionX, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=500}"
+        Top="{Binding PositionY, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=500}"
+        >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding ClosingCommand}" PassEventArgsToCommand="True"/>
