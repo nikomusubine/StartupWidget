@@ -105,7 +105,7 @@ namespace StartupWidget.ViewModels
                                                                  SettingsService.WidgetSettings.BackgroundColor.B));
             WindowSize= SettingsService.WidgetSettings.WindowSize;
             FontSize = SettingsService.GeneralSettings.Font.Size;
-            FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);            
+            FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);
         }
 
 
