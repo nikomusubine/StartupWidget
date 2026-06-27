@@ -23,6 +23,8 @@
 			<Run Text="起動(_O)"/>
 			<RunAsAdmin Text="管理者として実行(_A)"/>
 			<Edit Text="編集(_E)"/>
+			<ShowMainWindow Text="メインウィンドウを表示(_M)"/>
+			<ShowSettings Text="設定(_S)"/>
 		</RightClickMenu>
 	</Widget>
 	<SettingsWindow Text="設定">

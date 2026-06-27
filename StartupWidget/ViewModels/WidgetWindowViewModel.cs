@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
@@ -23,12 +24,18 @@ namespace StartupWidget.ViewModels
             SettingsService = settings;
             LanguageService = languageService;
             ProcessViewModel = processViewModel;
+
+            IntPtr hBitmap = ExecutableIconImage.GetShieldIcon().ToBitmap().GetHbitmap();
+            ShieldIcon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty,
+                    System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
             LoadSettings();
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) =>
             {
                 LoadSettings();
             });
         }
+        public ImageSource ShieldIcon { get; set; }
         private LanguageService LanguageService { get; set; }
         [ObservableProperty]
         private ProcessItemViewModel? _selectedItem;
@@ -82,21 +89,20 @@ namespace StartupWidget.ViewModels
         }
 
 
-        [RelayCommand]
-        private void StartProcess()
+        private void _StartProcess(bool isAdmin)
         {
-            if (SelectedItem != null)
+            if (_selectedItem != null)
             {
                 try
                 {
-                    ProcessViewModel.StartProcess(SelectedItem.ExecutableProcess,
-                        Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift));
+                    ProcessViewModel.StartProcess(_selectedItem.ExecutableProcess, isAdmin);
                 }
                 catch (Win32Exception ex)
                 {
-                    if(ex.NativeErrorCode == 1223)
+                    if (ex.NativeErrorCode == 1223)
                     {
-                        // ユーザーがキャンセルした場合は何もしない Canceled by user. Do nothing
+                        // User canceled the operation, do nothing
+
                     }
                     else
                     {
@@ -106,6 +112,24 @@ namespace StartupWidget.ViewModels
             }
         }
 
+        [RelayCommand]
+        private void StartProcessAsAdmin()
+        {
+            _StartProcess(true);
+        }
+
+        [RelayCommand]
+        private void StartProcess()
+        {
+            _StartProcess(false);
+        }
+
+        [RelayCommand]
+        private void OpenEditWindow()
+        {
+            if (SelectedItem != null) WeakReferenceMessenger.Default.Send(new OpenEditWindow(OpenEditWindowOption.WithItem, SelectedItem));
+            else WeakReferenceMessenger.Default.Send(new OpenEditWindow());
+        }
 
         [RelayCommand]
         private void Closing(CancelEventArgs e)
