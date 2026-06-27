@@ -60,7 +60,7 @@
 
             <ListView.InputBindings>
                 <KeyBinding Gesture="Enter" Command="{Binding StartProcessCommand}"/>
-                <KeyBinding Gesture="Shift+Enter"  Command="{Binding StartProcessCommand}"/>
+                <KeyBinding Gesture="Shift+Enter"  Command="{Binding StartProcessAsAdminCommand}"/>
             </ListView.InputBindings>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseDoubleClick">
