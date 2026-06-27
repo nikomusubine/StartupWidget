@@ -18,5 +18,7 @@ namespace StartupWidget.Models.Settings
         public SerializableFont Font { get; set; }
 
         public string Language { get; set; }
+
+        public bool IsStartup { get; set; }
     }
 }
