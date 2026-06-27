@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Language>
+	<MainWindow Text="StartupWidget">
+		<MainMenu>
+			<Options Text="オプション(_F)">
+				<ShowWidget Text="ウィジェットを表示(_W)"/>
+				<Settings Text="設定(_S)"/>
+				<Quit Text="終了(_Q)"/>
+			</Options>
+		</MainMenu>
+		<RightClickMenu>
+			<RunAsAdmin Text="管理者として実行(_A)"/>
+			<Edit Text="編集(_E)"/>
+		</RightClickMenu>
+		<FooterButtons>
+			<Start Text="起動(_S)"/>
+			<Edit Text="編集(_E)"/>
+		</FooterButtons>
+	</MainWindow>
+	<Widget>
+		<RightClickMenu>
+			<RunAsAdmin Text="管理者として実行(_A)"/>
+			<Edit Text="編集(_E)"/>
+		</RightClickMenu>
+	</Widget>
+	<SettingsWindow Text="設定">
+		<GeneralSettings Text="全般設定">
+			<Font Text="フォント"/>
+			<Language Text="言語"/>
+		</GeneralSettings>
+		<MainWindowSettings Text="メインウィンドウ設定">
+			<BackgroundImageFilePath Text="背景画像のパス"/>
+			<BackgroundImageFileOption Text="画像ファイル"/>
+			<ForegroundColor Text="文字色"/>
+			<BackgroundColor Text="背景色"/>
+		</MainWindowSettings>
+		<WidgetSettings Text="ウィジェット設定">
+			<BackgroundImageFilePath Text="背景画像のパス"/>
+			<BackgroundImageFileOption Text="画像ファイル"/>
+			<ForegroundColor Text="文字色"/>
+			<BackgroundColor Text="背景色"/>
+			<WindowSize Text="ウィンドウサイズ"/>
+			<Transparency Text="透明度"/>
+			<ShortcutKeys Text="ショートカットキー"/>
+			<ShortcutKeysInputRequest Text="キーを入力..."/>
+		</WidgetSettings>
+		<FooterButtons>
+			<OK Text="OK(_O)"/>
+			<Apply Text="適用(_A)"/>
+			<Cancel Text="キャンセル(_C)"/>
+		</FooterButtons>
+	</SettingsWindow>
+	<EditWindow Text="アプリの編集">
+		<Elements>
+			<Name Text="名前"/>
+			<FilePath Text="実行ファイルパス"/>
+			<FilePathDialogFilter Text="実行ファイル"/>
+			<Arguments Text="コマンドライン引数"/>
+			<WorkingDirectory Text="作業ディレクトリ"/>
+			<WorkingDirectoryDialogFilter Text="フォルダ"/>
+			<IconFilePath Text="カスタムアイコンのパス"/>
+			<IconFilePathDialogFilter Text="画像ファイル"/>
+			<RunAsAdmin Text="常に管理者として実行"/>
+			<DeleteButton Text="このアプリを削除"/>
+		</Elements>
+		<MessageBox>
+			<ConfirmDelete Text="本当に {0} を削除しますか？"/>
+		</MessageBox>
+		<FooterButtons>
+			<OK Text="OK(_O)"/>
+			<Apply Text="適用(_A)"/>
+			<Cancel Text="キャンセル(_C)"/>
+		</FooterButtons>
+	</EditWindow>
+	<Reusable>
+		<OpenFileDialogTitle Text="ファイルを選択"/>
+		<OpenFolderDialogTitle Text="フォルダを選択"/>
+		
+	</Reusable>
+</Language> 
