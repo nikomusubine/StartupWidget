@@ -24,6 +24,12 @@ namespace StartupWidget.Views
         {
             InitializeComponent();
             WeakReferenceMessenger.Default.Register<Messages.HideMainWindow>(this, (r, m) => this.Hide());
+            WeakReferenceMessenger.Default.Register<Messages.ShowMainWindow>(this, (r, m) =>
+            {
+                this.Show();
+                this.WindowState = WindowState.Normal;
+                this.Activate();
+            });
         }
 
 

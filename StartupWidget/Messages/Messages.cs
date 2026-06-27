@@ -6,6 +6,7 @@ namespace StartupWidget.Messages
 {
     public record QuitAppMessage();
     public record HideMainWindow();
+    public record ShowMainWindow();
 
     public record HideWidgetWindow();
     public record ShowWidgetWindow();

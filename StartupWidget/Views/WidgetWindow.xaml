@@ -30,8 +30,8 @@
             </MenuItem>
             <MenuItem Header="{loc:Lang Widget/RightClickMenu/Edit}" Command="{Binding OpenEditWindowCommand}"/>
             <Separator/>
-            <MenuItem Header="{loc:Lang Widget/RightClickMenu/ShowMainWindow}"/>
-            <MenuItem Header="{loc:Lang Widget/RightClickMenu/ShowSettings}"/>
+            <MenuItem Header="{loc:Lang Widget/RightClickMenu/ShowMainWindow}" Command="{Binding ShowMainWindowCommand}"/>
+            <MenuItem Header="{loc:Lang Widget/RightClickMenu/ShowSettings}" Command="{Binding ShowSettingsCommand}"/>
         </ContextMenu>
     </Window.ContextMenu>
 
