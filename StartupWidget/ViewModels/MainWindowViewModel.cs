@@ -28,14 +28,9 @@ namespace StartupWidget.ViewModels
             LanguageService = languageService;
             ProcessViewModel = processViewModel;
 
-
-
             IntPtr hBitmap = ExecutableIconImage.GetShieldIcon().ToBitmap().GetHbitmap();
-
-
             ShieldIcon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty,
                     System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-
 
             WeakReferenceMessenger.Default.Register<HideWidgetWindow>(this, (r, m) =>
             {
