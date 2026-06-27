@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace StartupWidget.Services
 {
-    class ExecutableIconImage: IExecutableIconImage
+    class ExecutableIconImage : IExecutableIconImage
     {
         #region Win32API
         private const int MAX_PATH = 260;
@@ -43,7 +43,7 @@ namespace StartupWidget.Services
         /// 大きいいアイコン(32x32)を取得する時はfalse。</param>
         /// <returns>UAC盾アイコンのIconオブジェクト。
         /// Windows Vista未満のOSの時はnullを返す。</returns>
-        private static Icon? GetShieldIcon()
+        public static Icon? GetShieldIcon()
         {
             //Windows Vista以上か確認する
             if (Environment.OSVersion.Platform != PlatformID.Win32NT ||
