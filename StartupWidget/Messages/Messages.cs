@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StartupWidget.ViewModels.Items;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,10 +20,6 @@ namespace StartupWidget.Messages
     public record CloseSettingsWindow();
     public record ApplySettings();
 
-    public record OpenEditWindow(OpenEditWindowOption option = OpenEditWindowOption.None, object? EditingItem = null);
+    public record OpenEditWindow(ProcessItemViewModel? EditingItem = null, string? AddingItemPath = null);
 
-    public enum OpenEditWindowOption
-    {
-        None, WithPath, WithItem
-    }
 }

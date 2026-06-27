@@ -81,17 +81,13 @@ namespace StartupWidget
 
             WeakReferenceMessenger.Default.Register<OpenEditWindow>(this, (r, m) =>
             {
-                switch (m.option)
-                {
-                    case OpenEditWindowOption.WithItem:
-                        if (m.EditingItem == null) goto default;
-                        editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel, (ProcessItemViewModel)m.EditingItem) };
-                        break;
 
-                    default:
-                        editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel) };
-                        break;
-                }
+                if (m.EditingItem != null)
+                    editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel, m.EditingItem) };
+                else
+                   editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel) };
+
+
                 editWindow.ShowDialog();
             });
 
