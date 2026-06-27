@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 
@@ -88,15 +89,13 @@ namespace StartupWidget.ViewModels
             FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);
         }
 
-
-        [RelayCommand]
-        private void StartProcess()
+        private void _StartProcess(bool isAdmin)
         {
             if (_selectedItem != null)
             {
                 try
                 {
-                    ProcessViewModel.StartProcess(_selectedItem.ExecutableProcess);
+                    ProcessViewModel.StartProcess(_selectedItem.ExecutableProcess, isAdmin);
                 }
                 catch (Win32Exception ex)
                 {
@@ -111,6 +110,18 @@ namespace StartupWidget.ViewModels
                     }
                 }
             }
+        }
+
+        [RelayCommand]
+        private void StartProcessAsAdmin()
+        {
+            _StartProcess(true);
+        }
+
+        [RelayCommand]
+        private void StartProcess()
+        {
+            _StartProcess(false);
         }
 
         [RelayCommand]
@@ -137,7 +148,6 @@ namespace StartupWidget.ViewModels
         private void OpenAddWindow()
         {
             WeakReferenceMessenger.Default.Send(new OpenEditWindow());
-
         }
 
         [RelayCommand]

@@ -20,13 +20,13 @@
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/Run}"/>
-            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/RunAsAdmin}">
+            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/Run}" Command="{Binding StartProcessCommand}"/>
+            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/RunAsAdmin}" Command="{Binding StartProcessAsAdminCommand}">
                 <MenuItem.Icon>
                     <Image Source="{Binding ShieldIcon}" Width="16" Height="16"/>
                 </MenuItem.Icon>
             </MenuItem> 
-            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/Edit}"/>
+            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/Edit}" Command="{Binding OpenAddWindowCommand}"/>
         </ContextMenu>
     </Window.ContextMenu>
     
