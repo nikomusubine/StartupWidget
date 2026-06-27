@@ -47,7 +47,10 @@ namespace StartupWidget.ViewModels
         private bool _isWidgetShow = false;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasBackgroundImage))]
         private string _backgroundImagePath;
+
+        public bool HasBackgroundImage => !string.IsNullOrEmpty(BackgroundImagePath);
 
         [ObservableProperty]
         private SolidColorBrush _foregroundColor;

@@ -40,14 +40,14 @@
 
             <ListView.Style>
                 <Style TargetType="ListView">
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <ImageBrush ImageSource="{Binding BackgroundImagePath}" Stretch="UniformToFill"/>
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="Background" Value="Transparent"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding BackgroundImagePath}" Value="">
-                            <Setter Property="Background" Value="Transparent"/>
+                        <DataTrigger Binding="{Binding HasBackgroundImage}" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <ImageBrush ImageSource="{Binding BackgroundImagePath}" Stretch="UniformToFill"/>
+                                </Setter.Value>
+                            </Setter>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
