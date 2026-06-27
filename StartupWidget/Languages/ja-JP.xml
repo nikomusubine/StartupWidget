@@ -40,7 +40,7 @@
 			<ForegroundColor Text="文字色"/>
 			<BackgroundColor Text="背景色"/>
 			<WindowSize Text="ウィンドウサイズ"/>
-			<Transparency Text="透明度"/>
+			<Transparency Text="透明度(%)"/>
 			<ShortcutKeys Text="ショートカットキー"/>
 			<ShortcutKeysInputRequest Text="キーを入力..."/>
 		</WidgetSettings>
