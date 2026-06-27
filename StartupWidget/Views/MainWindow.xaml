@@ -9,11 +9,16 @@
         xmlns:loc="clr-namespace:StartupWidget.Views.Extensions"
         mc:Ignorable="d"
         Title="{loc:Lang MainWindow}" Height="450" Width="800"
-        Foreground="{Binding ForegroundColor}"
         Background="{Binding BackgroundColor}"
         FontFamily="{Binding FontFamily}"
         FontSize="{Binding FontSize}"
         >
+    <Window.Resources>
+        <Style TargetType="ListView">
+            <Setter Property="Foreground" Value="{Binding ForegroundColor}"/>
+        </Style>
+    </Window.Resources>
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding ClosingCommand}" PassEventArgsToCommand="True"/>
