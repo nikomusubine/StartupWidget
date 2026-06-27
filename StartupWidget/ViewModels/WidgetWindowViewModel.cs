@@ -67,6 +67,26 @@ namespace StartupWidget.ViewModels
         [ObservableProperty]
         private float _opacity;
 
+        public float PositionX
+        {
+            get => SettingsService.WidgetSettings.WidgetPosition.x;
+            set {
+                Position p = SettingsService.WidgetSettings.WidgetPosition;
+                p.x= value;
+                SettingsService.WidgetSettings.WidgetPosition = p;
+            }
+        }
+        public float PositionY
+        {
+            get => SettingsService.WidgetSettings.WidgetPosition.y;
+            set
+            {
+                Position p = SettingsService.WidgetSettings.WidgetPosition;
+                p.y = value;
+                SettingsService.WidgetSettings.WidgetPosition = p;
+            }
+        }
+
 
         private void LoadSettings()
         {
@@ -85,7 +105,7 @@ namespace StartupWidget.ViewModels
                                                                  SettingsService.WidgetSettings.BackgroundColor.B));
             WindowSize= SettingsService.WidgetSettings.WindowSize;
             FontSize = SettingsService.GeneralSettings.Font.Size;
-            FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);
+            FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);            
         }
 
 
