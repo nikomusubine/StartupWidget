@@ -13,6 +13,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 
@@ -25,6 +27,10 @@ namespace StartupWidget.ViewModels
             SettingsService = settings;
             LanguageService = languageService;
             ProcessViewModel = processViewModel;
+
+            IntPtr hBitmap = ExecutableIconImage.GetShieldIcon().ToBitmap().GetHbitmap();
+            ShieldIcon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty,
+                    System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
 
             WeakReferenceMessenger.Default.Register<HideWidgetWindow>(this, (r, m) =>
             {
@@ -62,8 +68,7 @@ namespace StartupWidget.ViewModels
         private float _fontSize;
         [ObservableProperty]
         private System.Windows.Media.FontFamily _fontFamily;
-
-
+        public ImageSource ShieldIcon { get; set; }
         private void LoadSettings()
         {
             BackgroundImagePath = SettingsService.MainWindowSettings.BackgroundImageFilePath;
@@ -79,15 +84,13 @@ namespace StartupWidget.ViewModels
             FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);
         }
 
-
-        [RelayCommand]
-        private void StartProcess()
+        private void _StartProcess(bool isAdmin)
         {
             if (_selectedItem != null)
             {
                 try
                 {
-                    ProcessViewModel.StartProcess(_selectedItem.ExecutableProcess);
+                    ProcessViewModel.StartProcess(_selectedItem.ExecutableProcess, isAdmin);
                 }
                 catch (Win32Exception ex)
                 {
@@ -102,6 +105,18 @@ namespace StartupWidget.ViewModels
                     }
                 }
             }
+        }
+
+        [RelayCommand]
+        private void StartProcessAsAdmin()
+        {
+            _StartProcess(true);
+        }
+
+        [RelayCommand]
+        private void StartProcess()
+        {
+            _StartProcess(false);
         }
 
         [RelayCommand]
@@ -125,10 +140,10 @@ namespace StartupWidget.ViewModels
         }
 
         [RelayCommand]
-        private void OpenAddWindow()
+        private void OpenEditWindow()
         {
-            WeakReferenceMessenger.Default.Send(new OpenEditWindow());
-
+            if (SelectedItem != null)  WeakReferenceMessenger.Default.Send(new OpenEditWindow(SelectedItem));
+            else WeakReferenceMessenger.Default.Send(new OpenEditWindow());
         }
 
         [RelayCommand]

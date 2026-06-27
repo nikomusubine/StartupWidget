@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StartupWidget.ViewModels.Items;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +7,7 @@ namespace StartupWidget.Messages
 {
     public record QuitAppMessage();
     public record HideMainWindow();
+    public record ShowMainWindow();
 
     public record HideWidgetWindow();
     public record ShowWidgetWindow();
@@ -18,5 +20,6 @@ namespace StartupWidget.Messages
     public record CloseSettingsWindow();
     public record ApplySettings();
 
-    public record OpenEditWindow(string? AddingItemPath = null);
+    public record OpenEditWindow(ProcessItemViewModel? EditingItem = null, string? AddingItemPath = null);
+
 }
