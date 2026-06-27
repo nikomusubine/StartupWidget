@@ -9,6 +9,7 @@
 			</Options>
 		</MainMenu>
 		<RightClickMenu>
+			<Run Text="起動(_O)"/>
 			<RunAsAdmin Text="管理者として実行(_A)"/>
 			<Edit Text="編集(_E)"/>
 		</RightClickMenu>
@@ -19,6 +20,7 @@
 	</MainWindow>
 	<Widget>
 		<RightClickMenu>
+			<Run Text="起動(_O)"/>
 			<RunAsAdmin Text="管理者として実行(_A)"/>
 			<Edit Text="編集(_E)"/>
 		</RightClickMenu>
