@@ -64,7 +64,8 @@ namespace StartupWidget.ViewModels
                                                                  SettingsService.WidgetSettings.ForegroundColor.G,
                                                                  SettingsService.WidgetSettings.ForegroundColor.B));
 
-            byte Alpha = (byte)(0xFF - (byte)SettingsService.WidgetSettings.Transparency);
+            byte Alpha = (byte)(0xFF - (SettingsService.WidgetSettings.Transparency / 100) * 0xFF);
+
 
             BackgroundColor = new SolidColorBrush(Color.FromArgb(Alpha,
                                                                  SettingsService.WidgetSettings.BackgroundColor.R,
