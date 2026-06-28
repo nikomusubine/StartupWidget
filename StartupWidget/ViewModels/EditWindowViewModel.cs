@@ -82,19 +82,22 @@ namespace StartupWidget.ViewModels
         #endregion
 
 
-        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel)
+        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel) : this(settings, processViewModel, null)
         {
+
+        }
+
+#pragma warning disable CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。'required' 修飾子を追加するか、Null 許容として宣言することを検討してください。
+        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, ProcessItemViewModel? EditingItem)
+#pragma warning restore CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。'required' 修飾子を追加するか、Null 許容として宣言することを検討してください。
+        {
+            SelectedItem = EditingItem;
             SettingsService = settings;
             ProcessViewModel = processViewModel;
-            ProcessItems = new ObservableCollection<ProcessItemViewModel>(ProcessViewModel.ProcessItems);
 
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { LoadSettings(); });
             LoadSettings();
-        }
-
-        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, ProcessItemViewModel EditingItem) : this(settings, processViewModel)
-        {
-            SelectedItem = EditingItem;
+            LoadItems(EditingItem);
         }
 
 
@@ -110,6 +113,19 @@ namespace StartupWidget.ViewModels
             FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);
         }
 
+        private void LoadItems(ProcessItemViewModel? selectedItem)
+        {
+            ProcessItems = new ObservableCollection<ProcessItemViewModel>();
+            foreach (var item in ProcessViewModel.ProcessItems)
+            {
+                ProcessItemViewModel tmp = new ProcessItemViewModel(item);
+                if (item == selectedItem)
+                {
+                    _selectedItem = tmp;
+                }
+                ProcessItems.Add(tmp);
+            }
+        }
 
         [RelayCommand]
         private void BrowseExeFile()
