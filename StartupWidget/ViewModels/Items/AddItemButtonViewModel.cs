@@ -9,7 +9,7 @@ namespace StartupWidget.ViewModels.Items
 {
     public class AddItemButtonViewModel : ProcessItemViewModel
     {
-        public AddItemButtonViewModel(string Name) : base (new ExecutableProcess(Name, "", "", ""))
+        public AddItemButtonViewModel(string Name) : base (new ExecutableProcess(Name, ""))
         {
 
         }

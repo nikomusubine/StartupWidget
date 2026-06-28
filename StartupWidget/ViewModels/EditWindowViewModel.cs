@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using StartupWidget.Messages;
+using StartupWidget.Models.Types;
 using StartupWidget.Services;
+using StartupWidget.Services.Interfaces;
 using StartupWidget.ViewModels.Items;
 using System;
 using System.Collections.Generic;
@@ -139,8 +141,13 @@ namespace StartupWidget.ViewModels
         #endregion
 
 
-        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel) : this(settings, processViewModel, null)
+        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel) : this(settings, processViewModel, (ProcessItemViewModel?)null)
         {
+
+        }
+        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, string ItemPath) : this(settings, processViewModel, CreateItemFromPath(ItemPath,processViewModel.GetIconImage))
+        {
+
 
         }
 
@@ -164,7 +171,17 @@ namespace StartupWidget.ViewModels
         [ObservableProperty]
         private System.Windows.Media.FontFamily _fontFamily;
 
-
+        private static ProcessItemViewModel? CreateItemFromPath(string path, IExecutableIconImage executableIconImage)
+        {
+            switch (Path.GetExtension(path))
+            {
+                case ".exe":
+                    ExecutableProcess prcs = new ExecutableProcess("", path);
+                    return new ProcessItemViewModel(prcs, executableIconImage);
+                default:
+                    return null;
+            }
+        }
         private void LoadSettings()
         {
             FontSize = SettingsService.GeneralSettings.Font.Size;
