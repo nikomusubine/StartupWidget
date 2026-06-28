@@ -196,8 +196,15 @@ namespace StartupWidget.ViewModels
         [RelayCommand]
         private void ApplyButton()
         {
-            ProcessViewModel.ProcessItems= ProcessItems;
-            ProcessItems = new ObservableCollection<ProcessItemViewModel>(ProcessViewModel.ProcessItems);
+
+            ObservableCollection<ProcessItemViewModel>tempItems = new ObservableCollection<ProcessItemViewModel>();
+            foreach (var item in ProcessItems)
+            {
+                ProcessItemViewModel tmp = new ProcessItemViewModel(item);
+                tempItems.Add(tmp);
+            }
+
+            ProcessViewModel.ProcessItems= tempItems;
             ProcessViewModel.SaveApplications();
         }
         [RelayCommand]
