@@ -9,6 +9,7 @@ namespace StartupWidget.ViewModels.Items
 {
     public class ProcessItemViewModel
     {
+        public ProcessItemViewModel(IExecutableIconImage getExecutableIcon): this(new ExecutableProcess(), getExecutableIcon) { }
         public ProcessItemViewModel(ProcessItemViewModel old)
         {
             ExecutableProcess = new ExecutableProcess(old.ExecutableProcess);

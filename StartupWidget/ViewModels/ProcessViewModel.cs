@@ -49,6 +49,7 @@ namespace StartupWidget.ViewModels
             executableProcessService.ProcessStart(process,RunAsAdmin);
         }
         private ExecutableIconImage getIconImage;
+        public ExecutableIconImage GetIconImage { get => getIconImage; }
         private ExecutableProcessService executableProcessService;
         private ObservableCollection<ProcessItemViewModel> _processItems;
         public ObservableCollection<ProcessItemViewModel> ProcessItems

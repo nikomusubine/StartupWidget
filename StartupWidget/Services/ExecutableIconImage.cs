@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace StartupWidget.Services
 {
-    class ExecutableIconImage : IExecutableIconImage
+    public class ExecutableIconImage : IExecutableIconImage
     {
         #region Win32API
         private const int MAX_PATH = 260;
@@ -91,6 +91,12 @@ namespace StartupWidget.Services
 
         public ImageSource GetIconImage(ExecutableProcess process)
         {
+            if (string.IsNullOrWhiteSpace(process.FilePath) || !File.Exists(process.FilePath))
+            {
+                Bitmap bmp = new Bitmap(16, 16);
+                return ConvertFromBitmap(bmp);
+            }
+
             if (!string.IsNullOrEmpty(process.IconFilePath)) //カスタムアイコンの場合
             {
                 if (Iconcache.ContainsKey(process.IconFilePath))
