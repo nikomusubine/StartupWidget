@@ -1,12 +1,11 @@
 ﻿using StartupWidget.Models.Types;
-using StartupWidget.ViewModels.Items;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 
-namespace StartupWidget.ViewModels
+namespace StartupWidget.ViewModels.Items
 {
     public class AddItemButtonViewModel : ProcessItemViewModel
     {
@@ -14,6 +13,7 @@ namespace StartupWidget.ViewModels
         {
 
         }
+
 
         public override ImageSource IconImage
         {

@@ -7,10 +7,12 @@ using StartupWidget.ViewModels.Items;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Windows;
+using System.Windows.Threading;
 using static System.Windows.Forms.Design.AxImporter;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
@@ -23,6 +25,7 @@ namespace StartupWidget.ViewModels
         private ProcessViewModel ProcessViewModel;
 
         private AddItemButtonViewModel _addButton;
+        public AddItemButtonViewModel AddButton=> _addButton;
 
         public ObservableCollection<ProcessItemViewModel> ProcessItems { get; set; }
         
@@ -33,12 +36,7 @@ namespace StartupWidget.ViewModels
             set
             {
                 if (value == _selectedItem) return;
-                if(value == null)
-                {
-                    _selectedItem = null;
-                    OnPropertyChanged(string.Empty);
-                    return;
-                }
+
                 if (!IsCurrentItemValid())
                 {
                     HasSelectTried = true;
@@ -48,7 +46,7 @@ namespace StartupWidget.ViewModels
                     {
                         _selectedItem = oldItem;
                         OnPropertyChanged(string.Empty);
-                    }),System.Windows.Threading.DispatcherPriority.ContextIdle);
+                    }));
                     return;
                 }
                 if (value == _addButton)
@@ -158,8 +156,8 @@ namespace StartupWidget.ViewModels
             LoadSettings();
             LoadItems(EditingItem);
             SelectedItem = EditingItem;
+            ProcessItems!.CollectionChanged += ProcessItems_CollectionChanged;
         }
-
 
         [ObservableProperty]
         private float _fontSize;
@@ -208,6 +206,24 @@ namespace StartupWidget.ViewModels
             if (!string.IsNullOrEmpty(WorkingDirectory)) return false;
             if (!string.IsNullOrEmpty(IconFilePath)) return false;
             return !RunAsAdmin;
+        }
+
+        private bool _isAdjusting = false;
+        private void ProcessItems_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_isAdjusting) return;
+            Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+                int lastIndex = ProcessItems.Count - 1;
+                int addButtonIndex = ProcessItems.IndexOf(_addButton);
+                if (addButtonIndex >= 0 && addButtonIndex != lastIndex)
+                {
+                    _isAdjusting = true;
+                    ProcessItems.Move(addButtonIndex, lastIndex);
+                    _isAdjusting = false;
+                    OnPropertyChanged(String.Empty);
+                }
+            });
         }
 
         [RelayCommand]
@@ -270,8 +286,10 @@ namespace StartupWidget.ViewModels
                     LanguageService.GetString("EditWindow/MessageBox/ConfirmDeleteCaption")
                     , MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                ProcessItems.Remove(SelectedItem);
-                SelectedItem= null;
+                ProcessItemViewModel tmp = _selectedItem!;
+                _selectedItem= null;
+                ProcessItems.Remove(tmp);
+                OnPropertyChanged(string.Empty);
             }
         }
         [RelayCommand]
