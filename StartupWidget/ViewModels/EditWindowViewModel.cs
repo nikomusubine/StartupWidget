@@ -33,6 +33,24 @@ namespace StartupWidget.ViewModels
             set
             {
                 if (value == _selectedItem) return;
+                if(value == null)
+                {
+                    _selectedItem = null;
+                    OnPropertyChanged(string.Empty);
+                    return;
+                }
+                if (!IsCurrentItemValid())
+                {
+                    HasSelectTried = true;
+                    var oldItem = _selectedItem;
+                    _selectedItem = value;
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        _selectedItem = oldItem;
+                        OnPropertyChanged(string.Empty);
+                    }),System.Windows.Threading.DispatcherPriority.ContextIdle);
+                    return;
+                }
                 if (value == _addButton)
                 {
                     _selectedItem = value;
@@ -56,6 +74,7 @@ namespace StartupWidget.ViewModels
                 {
                     _selectedItem = value;
                 }
+
                 OnPropertyChanged(string.Empty);
             }
         }
@@ -68,12 +87,26 @@ namespace StartupWidget.ViewModels
             }
         }
 
+        private bool _hasSelectTried = false;
+        public bool HasSelectTried
+        {
+            get=>_hasSelectTried;
+            set
+            {
+                _hasSelectTried = value;
+                OnPropertyChanged(nameof(NameErrorVisible));
+                OnPropertyChanged(nameof(FilePathErrorVisible));
+            }
+        }
+
         #region SelectedItemProperties
+        public bool NameErrorVisible => _selectedItem!=null && HasSelectTried && string.IsNullOrEmpty(Name);
         public string Name
         {
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.Name; } else { return ""; }            }
             set { if(SelectedItem!=null) { SelectedItem.ExecutableProcess.Name = value; }  }
         }
+        public bool FilePathErrorVisible => _selectedItem != null && HasSelectTried && (string.IsNullOrEmpty(FilePath) || !File.Exists(FilePath));
         public string FilePath
         {
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.FilePath; } else { return ""; } }
@@ -155,6 +188,28 @@ namespace StartupWidget.ViewModels
             ProcessItems.Add(_addButton);
         }
 
+        private bool IsCurrentItemValid()
+        {
+            if (SelectedItem == _addButton) return true;
+            if (SelectedItem == null) return true;
+            if (string.IsNullOrEmpty(SelectedItem.Name)) return false;
+            if (string.IsNullOrWhiteSpace(FilePath)) return false;
+            if (!File.Exists(FilePath)) return false;
+
+            return true;
+        }
+
+        private bool IsCurrentItemEmpty()
+        {
+            if(SelectedItem == null) return true;
+            if (!string.IsNullOrEmpty(Name)) return false;
+            if (!string.IsNullOrEmpty(FilePath)) return false;
+            if (!string.IsNullOrEmpty(Arguments)) return false;
+            if (!string.IsNullOrEmpty(WorkingDirectory)) return false;
+            if (!string.IsNullOrEmpty(IconFilePath)) return false;
+            return !RunAsAdmin;
+        }
+
         [RelayCommand]
         private void BrowseExeFile()
         {
@@ -209,23 +264,36 @@ namespace StartupWidget.ViewModels
         private void RemoveApp()
         {
             if (SelectedItem == null) return;
-            if (MessageBox.Show(LanguageService.GetString("EditWindow/MessageBox/ConfirmDelete", Name),
-                "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (IsCurrentItemEmpty() || 
+                MessageBox.Show(
+                    LanguageService.GetString("EditWindow/MessageBox/ConfirmDelete", Name),
+                    LanguageService.GetString("EditWindow/MessageBox/ConfirmDeleteCaption")
+                    , MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 ProcessItems.Remove(SelectedItem);
+                SelectedItem= null;
             }
         }
         [RelayCommand]
         private void OKButton()
         {
-            ApplyButton();
+            if (!Apply()) { return; }
             CancelButton();
         }
-        [RelayCommand]
-        private void ApplyButton()
+        private bool Apply()
         {
+            if (SelectedItem != null && !IsCurrentItemValid())
+            {
+                MessageBox.Show(
+                    LanguageService.GetString("EditWindow/MessageBox/InvalidItem"),
+                    LanguageService.GetString("EditWindow/MessageBox/InvalidItemCaption"),
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                HasSelectTried = true;
+                OnPropertyChanged(string.Empty);
+                return false;
+            }
 
-            ObservableCollection<ProcessItemViewModel>tempItems = new ObservableCollection<ProcessItemViewModel>();
+            ObservableCollection<ProcessItemViewModel> tempItems = new ObservableCollection<ProcessItemViewModel>();
             foreach (var item in ProcessItems)
             {
                 if (item is AddItemButtonViewModel) continue;
@@ -233,8 +301,14 @@ namespace StartupWidget.ViewModels
                 tempItems.Add(tmp);
             }
 
-            ProcessViewModel.ProcessItems= tempItems;
+            ProcessViewModel.ProcessItems = tempItems;
             ProcessViewModel.SaveApplications();
+            return true;
+        }
+        [RelayCommand]
+        private void ApplyButton()
+        {
+            Apply();
         }
         [RelayCommand]
         private void CancelButton()
