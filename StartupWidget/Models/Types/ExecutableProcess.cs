@@ -10,7 +10,7 @@ namespace StartupWidget.Models.Types
     public class ExecutableProcess
     {
         public ExecutableProcess(string name, string path)
-            :this(name,path,"",",",false)
+            :this(name,path,"","",false)
         { }
 
 

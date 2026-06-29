@@ -84,6 +84,8 @@ namespace StartupWidget
 
                 if (m.EditingItem != null)
                     editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel, m.EditingItem) };
+                else if (!string.IsNullOrEmpty(m.AddingItemPath))
+                    editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService,ProcessViewModel, m.AddingItemPath) };
                 else
                    editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel) };
 

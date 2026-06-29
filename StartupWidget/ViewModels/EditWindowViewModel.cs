@@ -173,10 +173,11 @@ namespace StartupWidget.ViewModels
 
         private static ProcessItemViewModel? CreateItemFromPath(string path, IExecutableIconImage executableIconImage)
         {
+            string name = Path.GetFileNameWithoutExtension(path);
             switch (Path.GetExtension(path))
             {
                 case ".exe":
-                    ExecutableProcess prcs = new ExecutableProcess("", path);
+                    ExecutableProcess prcs = new ExecutableProcess(name, path);
                     return new ProcessItemViewModel(prcs, executableIconImage);
                 default:
                     return null;
@@ -191,14 +192,20 @@ namespace StartupWidget.ViewModels
         private void LoadItems(ProcessItemViewModel? selectedItem)
         {
             ProcessItems = new ObservableCollection<ProcessItemViewModel>();
+            bool isItemExists = false;
             foreach (var item in ProcessViewModel.ProcessItems)
             {
                 ProcessItemViewModel tmp = new ProcessItemViewModel(item);
                 if (item == selectedItem)
                 {
                     _selectedItem = tmp;
+                    isItemExists = true;
                 }
                 ProcessItems.Add(tmp);
+            }
+            if (!isItemExists && selectedItem!=null)
+            {
+                ProcessItems.Add(selectedItem);
             }
             ProcessItems.Add(_addButton);
         }
