@@ -143,7 +143,11 @@ namespace StartupWidget.ViewModels
         {
             _StartProcess(false);
         }
-
+        [RelayCommand]
+        private void FileDrop(string path)
+        {
+            WeakReferenceMessenger.Default.Send(new OpenEditWindow(AddingItemPath: path));
+        }
         [RelayCommand]
         private void OpenEditWindow()
         {
