@@ -26,6 +26,7 @@ namespace StartupWidget.ViewModels.Items
         private ImageSource CreatePlusSignImage()
         {
             GeometryGroup geometryGroup = new();
+            geometryGroup.FillRule = FillRule.Nonzero;
             geometryGroup.Children.Add(new RectangleGeometry(new System.Windows.Rect(10, 4, 4, 16)));
             geometryGroup.Children.Add(new RectangleGeometry(new System.Windows.Rect(4, 10, 16, 4)));
 
