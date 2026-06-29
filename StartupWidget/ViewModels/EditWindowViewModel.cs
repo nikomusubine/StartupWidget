@@ -15,6 +15,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Threading;
+using IWshRuntimeLibrary;
 using static System.Windows.Forms.Design.AxImporter;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
@@ -106,7 +107,7 @@ namespace StartupWidget.ViewModels
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.Name; } else { return ""; }            }
             set { if(SelectedItem!=null) { SelectedItem.ExecutableProcess.Name = value; }  }
         }
-        public bool FilePathErrorVisible => _selectedItem != null && HasSelectTried && (string.IsNullOrEmpty(FilePath) || !File.Exists(FilePath));
+        public bool FilePathErrorVisible => _selectedItem != null && HasSelectTried && (string.IsNullOrEmpty(FilePath) || !System.IO.File.Exists(FilePath));
         public string FilePath
         {
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.FilePath; } else { return ""; } }
@@ -174,10 +175,20 @@ namespace StartupWidget.ViewModels
         private static ProcessItemViewModel? CreateItemFromPath(string path, IExecutableIconImage executableIconImage)
         {
             string name = Path.GetFileNameWithoutExtension(path);
+            ExecutableProcess prcs;
             switch (Path.GetExtension(path))
             {
                 case ".exe":
-                    ExecutableProcess prcs = new ExecutableProcess(name, path);
+                    prcs = new ExecutableProcess(name, path);
+                    return new ProcessItemViewModel(prcs, executableIconImage);
+                case ".lnk":
+                    WshShell wshShell = new WshShell();
+                    IWshShortcut shortcut = wshShell.CreateShortcut(path);
+                    path = shortcut.TargetPath;
+                    string args = shortcut.Arguments;
+                    string workingdir = shortcut.WorkingDirectory;
+                    string iconpath = System.IO.File.Exists(shortcut.IconLocation) ? shortcut.IconLocation : string.Empty;
+                    prcs = new ExecutableProcess(name, path, args, workingdir, iconpath, false);
                     return new ProcessItemViewModel(prcs, executableIconImage);
                 default:
                     return null;
@@ -216,7 +227,7 @@ namespace StartupWidget.ViewModels
             if (SelectedItem == null) return true;
             if (string.IsNullOrEmpty(SelectedItem.Name)) return false;
             if (string.IsNullOrWhiteSpace(FilePath)) return false;
-            if (!File.Exists(FilePath)) return false;
+            if (!System.IO.File.Exists(FilePath)) return false;
 
             return true;
         }
