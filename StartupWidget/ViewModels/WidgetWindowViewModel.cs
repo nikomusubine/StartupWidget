@@ -13,6 +13,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Application = System.Windows.Application;
 using Color = System.Windows.Media.Color;
 
 namespace StartupWidget.ViewModels
@@ -146,7 +147,10 @@ namespace StartupWidget.ViewModels
         [RelayCommand]
         private void FileDrop(string path)
         {
-            WeakReferenceMessenger.Default.Send(new OpenEditWindow(AddingItemPath: path));
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                WeakReferenceMessenger.Default.Send(new OpenEditWindow(AddingItemPath: path));
+            }));
         }
         [RelayCommand]
         private void OpenEditWindow()
