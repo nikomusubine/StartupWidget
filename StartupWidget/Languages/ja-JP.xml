@@ -56,6 +56,7 @@
 		</FooterButtons>
 	</SettingsWindow>
 	<EditWindow Text="アプリの編集">
+		<AddButton Text="新規追加"/>
 		<Elements>
 			<Name Text="名前"/>
 			<FilePath Text="実行ファイルパス"/>
@@ -70,6 +71,9 @@
 		</Elements>
 		<MessageBox>
 			<ConfirmDelete Text="本当に {0} を削除しますか？"/>
+			<ConfirmDeleteCaption Text="確認"/>
+			<InvalidItem Text="正しく項目を入力してください。名前が空、またはパスが無効です。"/>
+			<InvalidItemCaption Text="無効な項目"/>
 		</MessageBox>
 		<FooterButtons>
 			<OK Text="OK(_O)"/>

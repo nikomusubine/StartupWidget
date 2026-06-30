@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Text;
 
 namespace StartupWidget.Models.Types
@@ -8,43 +9,23 @@ namespace StartupWidget.Models.Types
     [Serializable]
     public class ExecutableProcess
     {
-        public ExecutableProcess(string name, string path, string workingDirectory, string args)
+        public ExecutableProcess(string name, string path)
+            :this(name,path,"","",false)
+        { }
+
+
+        public ExecutableProcess(string name, string path, string args, string workingDirectory)
+            :this(name,path,args,workingDirectory,"",false)
         {
-            Name = name;
-            FilePath = path;
-            Arguments = args;
-            RunasAdmin = false;
-            IconFilePath = "";
-            WorkingDirectory = workingDirectory;
         }
 
-        public ExecutableProcess(string name, string path, string workingDirectory, string args, bool runasAdmin, string iconPath)
+        public ExecutableProcess(string name, string path, string args, string workingDirectory, string iconPath)
+            : this(name,path,args,workingDirectory,iconPath,false)
         {
-            Name = name;
-            FilePath = path;
-            Arguments = args;
-            RunasAdmin = runasAdmin;
-            IconFilePath = iconPath;
-            WorkingDirectory = workingDirectory;
         }
-
-        public ExecutableProcess(string name, string path, string workingDirectory, string args, string iconPath)
+        public ExecutableProcess(string name, string path, string args, string workingDirectory, bool runasAdmin)
+            :this(name,path,args,workingDirectory,"",runasAdmin)
         {
-            Name = name;
-            FilePath = path;
-            Arguments = args;
-            RunasAdmin = false;
-            IconFilePath = iconPath;
-            WorkingDirectory = workingDirectory;
-        }
-        public ExecutableProcess(string name, string path, string workingDirectory, string args, bool runasAdmin)
-        {
-            Name = name;
-            FilePath = path;
-            Arguments = args;
-            RunasAdmin = runasAdmin;
-            IconFilePath = "";
-            WorkingDirectory = workingDirectory;
         }
         public ExecutableProcess(string name, string path, string args, string workingDirectory, string iconPath, bool runasAdmin)
         {
@@ -53,7 +34,7 @@ namespace StartupWidget.Models.Types
             Arguments = args;
             RunasAdmin = runasAdmin;
             IconFilePath = iconPath;
-            WorkingDirectory = workingDirectory;
+            _workingDirectory = workingDirectory;
         }
 
         public ExecutableProcess(ExecutableProcess executable)
@@ -63,7 +44,7 @@ namespace StartupWidget.Models.Types
             Arguments = executable.Arguments;
             RunasAdmin = executable.RunasAdmin;
             IconFilePath = executable.IconFilePath;
-            WorkingDirectory = executable.WorkingDirectory;
+            _workingDirectory = executable.WorkingDirectory;
         }
 
         public ExecutableProcess()
@@ -71,14 +52,26 @@ namespace StartupWidget.Models.Types
             Name = "";
             FilePath = "";
             Arguments = "";
-            WorkingDirectory = "";
+            _workingDirectory = "";
             IconFilePath = "";
             RunasAdmin = false;
         }
         public string Name { get; set; }
         public string FilePath { get; set; }
         public string Arguments { get; set; }
-        public string WorkingDirectory { get; set; }
+        private string _workingDirectory;
+        public string WorkingDirectory
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_workingDirectory))
+                {
+                    _workingDirectory=Path.GetDirectoryName(_workingDirectory);
+                }
+                return _workingDirectory;
+            }
+            set { _workingDirectory = value; }
+        }
         public string IconFilePath { get; set; }
         public bool RunasAdmin { get; set; }
 

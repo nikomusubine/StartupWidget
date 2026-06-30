@@ -16,6 +16,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Application = System.Windows.Application;
 using Color = System.Windows.Media.Color;
 
 namespace StartupWidget.ViewModels
@@ -125,6 +126,8 @@ namespace StartupWidget.ViewModels
 
         }
 
+
+
         [RelayCommand]
         private void ShowWidget()
         {
@@ -144,6 +147,15 @@ namespace StartupWidget.ViewModels
         {
             if (SelectedItem != null)  WeakReferenceMessenger.Default.Send(new OpenEditWindow(SelectedItem));
             else WeakReferenceMessenger.Default.Send(new OpenEditWindow());
+        }
+
+        [RelayCommand]
+        private void FileDrop(string path)
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                WeakReferenceMessenger.Default.Send(new OpenEditWindow(AddingItemPath: path));
+            }));
         }
 
         [RelayCommand]

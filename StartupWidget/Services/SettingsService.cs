@@ -33,6 +33,7 @@ namespace StartupWidget.Services
         }
         public void SaveSettings()
         {
+            persistenceService.CreateDirectryOfPath();
             persistenceService.Save(this);
         }
         public void LoadSettings()

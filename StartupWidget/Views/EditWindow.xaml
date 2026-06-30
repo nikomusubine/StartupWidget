@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StartupWidget.Views"
         xmlns:loc="clr-namespace:StartupWidget.Views.Extensions"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
         Title="{loc:Lang EditWindow}" Height="450" Width="800"
         FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}">
@@ -61,13 +63,19 @@
             </Setter>
         </Style>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding CancelButtonCommand}"/>
+    </Window.InputBindings>
     <Grid>
         <Grid Margin="0,20,0,45" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ListView Grid.Column="0" Margin="10,0,5,0" ItemsSource="{Binding ProcessItems}" SelectedItem="{Binding SelectedItem}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView Grid.Column="0" Margin="10,0,5,0"
+                      ItemsSource="{Binding ProcessItems}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" 
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -77,7 +85,18 @@
 
             <StackPanel Grid.Column="1" Margin="5,0"  Grid.IsSharedSizeScope="True" IsEnabled="{Binding IsSelected}">
                 <ContentControl  Style="{StaticResource ProcessOptionElement}" Tag="{loc:Lang EditWindow/Elements/Name}">
-                    <TextBox Text="{Binding Name}"/>
+                    <TextBox Text="{Binding Name}">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="BorderBrush" Value="#FFABADB3"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding NameErrorVisible}" Value="True">
+                                        <Setter Property="BorderBrush" Value="Red"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
                 </ContentControl>
                 <ContentControl Style="{StaticResource ProcessOptionElement}" Tag="{loc:Lang EditWindow/Elements/FilePath}">
                     <Grid>
@@ -85,7 +104,18 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Grid.Column="0" Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="BorderBrush" Value="#FFABADB3"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding FilePathErrorVisible}" Value="True">
+                                            <Setter Property="BorderBrush" Value="Red"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
                         <Button Grid.Column="1" Content="..." Margin="5,0,0,0" Padding="5,0" Command="{Binding BrowseExeFileCommand}"/>
                     </Grid>
                 </ContentControl>
