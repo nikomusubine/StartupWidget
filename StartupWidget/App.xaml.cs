@@ -16,22 +16,36 @@ namespace StartupWidget
     /// </summary>
     public partial class App : System.Windows.Application
     {
-        public SettingsService SettingsService;
+        public SettingsService? SettingsService;
 
-        public MainWindowViewModel MainWindowViewModel;
+        public MainWindowViewModel? MainWindowViewModel;
         
-        public WidgetWindowViewModel WidgetWindowViewModel;
-        public ProcessViewModel ProcessViewModel;
+        public WidgetWindowViewModel? WidgetWindowViewModel;
+        public ProcessViewModel? ProcessViewModel;
 
-        public WidgetWindow WidgetWindow;
-        public LanguageService LanguageService;
-        private SingleInstanceService SingleInstanceService;
+        public WidgetWindow? WidgetWindow;
+        public LanguageService? LanguageService;
+        private SingleInstanceService? SingleInstanceService;
+        public NamedPipeIPCServer? NamedPipeServer;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             SingleInstanceService = new SingleInstanceService();
             if (!SingleInstanceService.IsNewInstance)
             {
+                NamedPipeIPCClient ipcclient = new NamedPipeIPCClient();
+                try
+                {
+                    ipcclient.SendMessage(e.Args);
+                }
+                catch (Exception)
+                {
+
+                }
+                finally
+                {
+                    ipcclient.Dispose();
+                }
                 Current.Shutdown();
                 return;
             }
@@ -44,6 +58,9 @@ namespace StartupWidget
             SettingsService.LoadSettings();
             LanguageService= new LanguageService();
             LanguageService.ChangeLanguage(SettingsService.GeneralSettings.Language);
+            NamedPipeServer = new NamedPipeIPCServer();
+            NamedPipeServer.OnMessageRecieved += OnNamedPipeMessageRecieved;
+            NamedPipeServer.StartListen();
 
             ProcessViewModel = new ProcessViewModel();
             MainWindowViewModel = new MainWindowViewModel(SettingsService,ProcessViewModel,LanguageService);
@@ -62,14 +79,31 @@ namespace StartupWidget
 
         protected override void OnExit(ExitEventArgs e)
         {
-            if (SingleInstanceService.IsNewInstance)
+            if (SingleInstanceService!.IsNewInstance)
             {
-                SettingsService.SaveSettings();
-                ProcessViewModel.SaveApplications();
+                SettingsService!.SaveSettings();
+                ProcessViewModel!.SaveApplications();
+                NamedPipeServer!.Dispose();
             }
             SingleInstanceService.Dispose();
             base.OnExit(e);
         }
+
+        private void OnNamedPipeMessageRecieved(string[]? message)
+        {
+            Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (message == null || message.Length < 1)
+                {
+                    WeakReferenceMessenger.Default.Send(new ShowMainWindow());
+                }
+                else
+                {
+                    WeakReferenceMessenger.Default.Send(new OpenEditWindow(AddingItemPath: message[0]));
+                }
+            });
+        }
+
 
         AddWindow? addWindow;
         EditWindow? editWindow;

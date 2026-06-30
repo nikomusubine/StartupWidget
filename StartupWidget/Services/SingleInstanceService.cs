@@ -8,7 +8,6 @@ namespace StartupWidget.Services
 {
     public class SingleInstanceService : IDisposable
     {
-        private const string appname = "nikomusubine.startupwidget";
         private Mutex _mutex;
         private bool _isNewInstance;
         public bool IsNewInstance { get { return _isNewInstance; } }
@@ -16,7 +15,7 @@ namespace StartupWidget.Services
 
         public SingleInstanceService()
         {
-            _mutex = new Mutex(true, "Local\\" + appname, out _isNewInstance);
+            _mutex = new Mutex(true, "Local\\" + Constants.appname, out _isNewInstance);
         }
 
         public void Dispose()
