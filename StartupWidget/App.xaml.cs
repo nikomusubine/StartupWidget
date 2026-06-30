@@ -25,11 +25,21 @@ namespace StartupWidget
 
         public WidgetWindow WidgetWindow;
         public LanguageService LanguageService;
-
+        private SingleInstanceService SingleInstanceService;
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            SingleInstanceService = new SingleInstanceService();
+            if (!SingleInstanceService.IsNewInstance)
+            {
+                Current.Shutdown();
+                return;
+            }
+
+
             base.OnStartup(e);
+            
+            
             SettingsService = new SettingsService();
             SettingsService.LoadSettings();
             LanguageService= new LanguageService();
@@ -48,7 +58,17 @@ namespace StartupWidget
             RegisterMessages();
 
             mainWindow.Show();
+        }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            if (SingleInstanceService.IsNewInstance)
+            {
+                SettingsService.SaveSettings();
+                ProcessViewModel.SaveApplications();
+            }
+            SingleInstanceService.Dispose();
+            base.OnExit(e);
         }
 
         AddWindow? addWindow;
@@ -59,8 +79,6 @@ namespace StartupWidget
         {
             WeakReferenceMessenger.Default.Register<QuitAppMessage>(this, (r, m) =>
             {
-                SettingsService.SaveSettings();
-                ProcessViewModel.SaveApplications();
                 Current.Shutdown();
             });
             WeakReferenceMessenger.Default.Register<OpenAddWindow>(this, (r, m) =>
