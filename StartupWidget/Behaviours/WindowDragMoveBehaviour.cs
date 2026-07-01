@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xaml.Behaviors;
+using StartupWidget.Behaviours.Win32Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +12,7 @@ namespace StartupWidget.Behaviours
     {
         private System.Windows.Point _mouseClickPoint;
         private bool _moving = false;
+        WindowMove? WindowMove;
         protected override void OnAttached()
         {
             base.OnAttached();
@@ -18,6 +20,14 @@ namespace StartupWidget.Behaviours
             AssociatedObject.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
             AssociatedObject.PreviewMouseMove += OnMouseMove;
             AssociatedObject.PreviewMouseLeftButtonUp += OnMouseLeftButtonUp;
+            AssociatedObject.SourceInitialized += OnSourceInitialized;
+        }
+
+        private void OnSourceInitialized(object? sender, EventArgs e)
+        {
+            WindowMove = new WindowMove(new System.Windows.Interop.WindowInteropHelper(AssociatedObject).Handle);
+            WindowMove.IsSnapEnabled = false;
+            WindowMove.IsMoveEnabled = true;
         }
 
         protected override void OnDetaching()
