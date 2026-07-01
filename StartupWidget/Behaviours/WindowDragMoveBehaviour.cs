@@ -26,8 +26,9 @@ namespace StartupWidget.Behaviours
         private void OnSourceInitialized(object? sender, EventArgs e)
         {
             WindowMove = new WindowMove(new System.Windows.Interop.WindowInteropHelper(AssociatedObject).Handle);
-            WindowMove.IsSnapEnabled = false;
+            WindowMove.IsMagnetEnabled = true;
             WindowMove.IsMoveEnabled = true;
+            WindowMove.OnMouseUp += OnMouseButtonUp;
         }
 
         protected override void OnDetaching()
@@ -36,6 +37,7 @@ namespace StartupWidget.Behaviours
             AssociatedObject.PreviewMouseLeftButtonDown -= OnMouseLeftButtonDown;
             AssociatedObject.PreviewMouseMove -= OnMouseMove;
             AssociatedObject.PreviewMouseLeftButtonUp -= OnMouseLeftButtonUp;
+            WindowMove!.OnMouseUp -= OnMouseButtonUp;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -50,6 +52,10 @@ namespace StartupWidget.Behaviours
         {
             _moving = false;
         }
+        private void OnMouseButtonUp(object sender, EventArgs e)
+        {
+            _moving = false;
+        }
 
         private void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -61,7 +67,7 @@ namespace StartupWidget.Behaviours
                     Math.Abs(e.GetPosition((IInputElement)sender).Y - _mouseClickPoint.Y) > MinimumVerticalDragDistance)
                 {
                     _moving = true;
-                    AssociatedObject.DragMove();
+                    WindowMove.DragMove();
                 }
             }
         }

@@ -1,38 +1,55 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace StartupWidget.Behaviours.Win32Helpers
 {
     public partial class WindowMove
-    {   
-
-        /*
-            メモ: DIP、ピクセル変換が必要
-         */
-        bool _isSnapEnabled = false;
-        public bool IsSnapEnabled
+    {
+        public delegate void OnMouseUpEventHandler(object sender, EventArgs e);
+        bool _isMagnetEnabled = false;
+        public bool IsMagnetEnabled
         {
-            get => _isSnapEnabled;
-            set => _isSnapEnabled = value;
+            get => _isMagnetEnabled;
+            set => _isMagnetEnabled = value;
         }
         bool _isMoveEnabled = false;
         public bool IsMoveEnabled
         {
             get => _isMoveEnabled;
-            set=> _isMoveEnabled = value;
+            set => _isMoveEnabled = value;
         }
-        int _snapThreshold = 12;
-        public int SnapThreshold
+        double _magnetThreshold = 12;
+        public double MagnetThreshold
         {
-            get => _snapThreshold;
-            set=> _snapThreshold = value;
+            get => _magnetThreshold;
+            set => _magnetThreshold = value;
+        }
+        private int _ThresholdPixelX
+        {
+            get
+            {
+                Matrix transform =_hwndSource?.CompositionTarget.TransformToDevice ?? Matrix.Identity;
+                return (int)(_magnetThreshold * transform.M11 + 0.5);
+            }
+        }
+        private int _ThresholdPixelY
+        {
+            get
+            {
+                Matrix transform = _hwndSource?.CompositionTarget.TransformToDevice ?? Matrix.Identity;
+                return (int)(_magnetThreshold * transform.M22 + 0.5);
+            }
         }
 
+        public event OnMouseUpEventHandler? OnMouseUp;
         private IntPtr _hWnd;
         private HwndSource? _hwndSource;
+        
 
         public WindowMove(IntPtr hWnd)
         {
@@ -44,11 +61,17 @@ namespace StartupWidget.Behaviours.Win32Helpers
             }
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        struct Point
+        {
+            public int x;
+            public int y;
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         struct RECT
         {
-            public int left,top,right,bottom;
+            public int left, top, right, bottom;
         }
         [StructLayout(LayoutKind.Sequential)]
         struct MONITORINFO
@@ -58,42 +81,70 @@ namespace StartupWidget.Behaviours.Win32Helpers
             public RECT rcWork; //モニターの作業領域。上と同様
             public int dwFlags;　//ディスプレイモニターの属性を表すフラグ
         }
-        [LibraryImport("user32.dll",SetLastError =false)]
+        [LibraryImport("user32.dll", SetLastError = false)]
         private static partial IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
-        [LibraryImport("user32.dll")]
+        [LibraryImport("user32.dll", EntryPoint = "GetMonitorInfoW")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
         [LibraryImport("user32.dll")]
-        [return:MarshalAs(UnmanagedType.Bool)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool GetWindowRect(IntPtr hwnd, out RECT lpRect);//Window位置取得
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool ReleaseCapture();
+        [LibraryImport("user32.dll",EntryPoint ="SendMessageW")]
+        private static partial IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool GetCursorPos(out Point lpPoint);
 
-        private int ExaminingDifference(int baseValue, int evaluate)
+        const int WM_MOVING = 0x0216;
+        const int WM_EXITSIZEMOVE = 0x0232;
+        const uint WM_NCLBUTTONDOWN = 0x00A1;
+        const uint WM_NCLBUTTONUP = 0x00A2;
+        const int HTCAPTION = 0x02;
+        private bool IsSnap(int baseValue, int evaluate, int threashold)
         {
-            if ( Math.Abs(baseValue-evaluate) <= _snapThreshold)
+            if (Math.Abs(baseValue - evaluate) <= threashold)
             {
-                return baseValue;
+                return true;
             }
-            return evaluate;
+            return false;
         }
 
         public void DragMove()
         {
-
+            ReleaseCapture();
+            SendMessage(_hWnd, WM_NCLBUTTONDOWN, (IntPtr)HTCAPTION, IntPtr.Zero);   
         }
+
+        Point? dragOffset = null;
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            const int WM_MOVING = 0x0216;
-            const int WM_EXITSIZEMOVE = 0x0232;
+            if (msg == WM_NCLBUTTONDOWN)
+            {
+                if (dragOffset == null)
+                {
+                    RECT p;
+                    GetWindowRect(hwnd, out p);
+
+                    Point cursorPos;
+                    GetCursorPos(out cursorPos);
+                    dragOffset = new Point()
+                    {
+                        x = cursorPos.x - p.left,
+                        y = cursorPos.y - p.top
+                    };
+
+                }
+            }
             if (msg == WM_MOVING)
             {
+                RECT current;
+                GetWindowRect(hwnd, out current);
                 if (!_isMoveEnabled)
                 {
-                    RECT current;
-                    GetWindowRect(hwnd, out current);
                     unsafe
                     {
                         RECT* p = (RECT*)lParam.ToPointer();
@@ -105,27 +156,74 @@ namespace StartupWidget.Behaviours.Win32Helpers
                 }
                 else
                 {
-                    if (_isSnapEnabled)
+                    if (_isMagnetEnabled)
                     {
                         IntPtr hMonitor = MonitorFromWindow(hwnd, 0);
                         MONITORINFO monitorinfo = new MONITORINFO();
+                        monitorinfo.cbSize = Marshal.SizeOf(monitorinfo);
                         GetMonitorInfo(hMonitor, ref monitorinfo);
 
                         unsafe
                         {
                             RECT* p = (RECT*)lParam.ToPointer();
-                            p->left = ExaminingDifference(monitorinfo.rcWork.left, p->left);
-                            p->top = ExaminingDifference(monitorinfo.rcWork.top, p->top);
-                            p->right = ExaminingDifference(monitorinfo.rcWork.right, p->right);
-                            p->bottom = ExaminingDifference(monitorinfo.rcWork.bottom, p->bottom);
+                            Point cursorPos;
+                            GetCursorPos(out cursorPos);                           
+                            int width = p->right - p->left;
+                            int height = p->bottom - p->top;
+                            int left = cursorPos.x - dragOffset!.Value.x;
+                            int right = left + width;
+                            int top = cursorPos.y- dragOffset!.Value.y;
+                            int bottom = top + height;
+
+
+                            if (IsSnap(left, monitorinfo.rcWork.left, _ThresholdPixelX))
+                            {
+                                p->left = monitorinfo.rcWork.left;
+                                p->right = p->left + width;
+                            }
+                            else if (IsSnap(right, monitorinfo.rcWork.right, _ThresholdPixelX))
+                            {
+                                p->right = monitorinfo.rcWork.right;
+                                p->left = p->right - width;
+                            }
+                            else 
+                            {
+                                p->left = left;
+                                p->right = right;
+                            }
+
+                            if (IsSnap(top, monitorinfo.rcWork.top, _ThresholdPixelY))
+                            {
+                                p->top = monitorinfo.rcWork.top;
+                                p->bottom = p->top + height;
+                            }
+                            else if (IsSnap(bottom, monitorinfo.rcWork.bottom, _ThresholdPixelY))
+                            {
+                                p->bottom = monitorinfo.rcWork.bottom;
+                                p->top = p->bottom - height;
+                            }
+                            else
+                            {
+                                p->top = top;
+                                p->bottom = bottom;
+                            }
                         }
                     }
                 }
-                return IntPtr.Zero;
+                handled = true;
+                return (IntPtr)1;
             }
-            else if (msg == WM_EXITSIZEMOVE)
+            if(msg == WM_NCLBUTTONUP)
             {
-                // Handle exit size/move if needed
+                dragOffset = null;
+            }
+            if (msg == WM_EXITSIZEMOVE)
+            {
+                dragOffset = null;
+                if (OnMouseUp != null)
+                {
+                    OnMouseUp(this, EventArgs.Empty);
+                }
             }
             return IntPtr.Zero;
         }
