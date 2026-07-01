@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -66,6 +66,9 @@ namespace StartupWidget.Behaviours.Win32Helpers
         [LibraryImport("user32.dll")]
         [return:MarshalAs(UnmanagedType.Bool)]
         private static partial bool GetWindowRect(IntPtr hwnd, out RECT lpRect);//Window位置取得
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool ReleaseCapture();
 
         private int ExaminingDifference(int baseValue, int evaluate)
         {
