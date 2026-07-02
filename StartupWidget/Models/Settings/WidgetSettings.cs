@@ -17,6 +17,10 @@ namespace StartupWidget.Models.Settings
             ForegroundColor = Color.Black;
             BackgroundColor = Color.White;
             WindowSize = 300;
+            IsMagnet = true;
+            IsFixed = false;
+            MagnetThreshold = 12;
+
 
             ShortcutKeys = new ShortcutKeys();
 
@@ -52,12 +56,18 @@ namespace StartupWidget.Models.Settings
                 BackgroundColor = ColorTranslator.FromHtml(value);
             }
         }
-        [IntBounds(0,10000)]
-        public int WindowSize { get; set; } 
+        [IntBounds(0, 10000)]
+        public int WindowSize { get; set; }
 
         [FloatBounds(0.0f, 100f)]
         public float Transparency { get; set; }
-        [XmlIgnore]public ShortcutKeys ShortcutKeys { get; set; }
+        [XmlIgnore] public ShortcutKeys ShortcutKeys { get; set; }
+
+        public bool IsFixed { get; set; }
+        public bool IsMagnet { get; set; }
+        [FloatBounds(0.0f, 100f)]
+        public float MagnetThreshold { get; set; }
+
 
         [SettingElementIgnore]
         public string ShortcutKeySetting

@@ -11,19 +11,19 @@ namespace StartupWidget.Behaviours.Win32Helpers
     public partial class WindowMove
     {
         public delegate void OnMouseUpEventHandler(object sender, EventArgs e);
-        bool _isMagnetEnabled = false;
+        bool _isMagnetEnabled;
         public bool IsMagnetEnabled
         {
             get => _isMagnetEnabled;
             set => _isMagnetEnabled = value;
         }
-        bool _isMoveEnabled = false;
+        bool _isMoveEnabled;
         public bool IsMoveEnabled
         {
             get => _isMoveEnabled;
             set => _isMoveEnabled = value;
         }
-        double _magnetThreshold = 12;
+        double _magnetThreshold;
         public double MagnetThreshold
         {
             get => _magnetThreshold;

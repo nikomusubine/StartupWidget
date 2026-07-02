@@ -48,6 +48,9 @@
 			<BackgroundColor Text="背景色"/>
 			<WindowSize Text="ウィンドウサイズ"/>
 			<Transparency Text="透明度(%)"/>
+			<IsFixed Text="ウィジェットを固定"/>
+			<IsMagnet Text ="ウィジェットを画面端に吸着"/>
+			<MagnetThreshold Text="吸着の強さ"/>
 			<ShortcutKeys Text="ショートカットキー"/>
 			<ShortcutKeysInputRequest Text="キーを入力..."/>
 		</WidgetSettings>

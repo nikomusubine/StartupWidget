@@ -78,8 +78,12 @@ namespace StartupWidget.Behaviours
 
         protected override void OnAttached()
         {
-            WindowMove = new WindowMove();
             base.OnAttached();
+            WindowMove = new WindowMove();
+            WindowMove.MagnetThreshold = MagnetThreshold;
+            WindowMove.IsMagnetEnabled = IsMagnetEnabled;
+            WindowMove.IsMoveEnabled = !IsFixed;
+    
             // Windowの左クリックイベントを監視
             AssociatedObject.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
             AssociatedObject.PreviewMouseMove += OnMouseMove;
