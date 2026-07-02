@@ -1,10 +1,6 @@
-﻿using Microsoft.Xaml.Behaviors;
+using Microsoft.Xaml.Behaviors;
 using StartupWidget.Behaviours.Win32Helpers;
-using StartupWidget.Models.Types;
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 

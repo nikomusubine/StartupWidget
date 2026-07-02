@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Interop;
 using System.Windows.Media;
 
@@ -170,7 +167,7 @@ namespace StartupWidget.Behaviours.Win32Helpers
                 {
                     if (_isMagnetEnabled)
                     {
-                        IntPtr hMonitor = MonitorFromWindow(hwnd, 0);
+                        IntPtr hMonitor = MonitorFromWindow(hwnd, 2);
                         MONITORINFO monitorinfo = new MONITORINFO();
                         monitorinfo.cbSize = Marshal.SizeOf(monitorinfo);
                         GetMonitorInfo(hMonitor, ref monitorinfo);
