@@ -50,8 +50,20 @@ namespace StartupWidget.Behaviours.Win32Helpers
         private IntPtr _hWnd;
         private HwndSource? _hwndSource;
         
-
+        public WindowMove() : this(IntPtr.Zero) { }
         public WindowMove(IntPtr hWnd)
+        {
+            _hWnd = hWnd;
+            if (_hWnd != IntPtr.Zero)
+            {
+                _hwndSource = HwndSource.FromHwnd(_hWnd);
+            }
+            if (_hwndSource != null)
+            {
+                _hwndSource.AddHook(new HwndSourceHook(WndProc));
+            }
+        }
+        public void SetHwnd(IntPtr hWnd)
         {
             _hWnd = hWnd;
             _hwndSource = HwndSource.FromHwnd(_hWnd);

@@ -44,6 +44,21 @@ namespace StartupWidget.ViewModels
         private SettingsService SettingsService { get; set; }
         private ProcessViewModel ProcessViewModel { get; set; }
 
+        private bool _isFixed = false;
+        public bool IsFixed
+        {
+            get => _isFixed;
+            set
+            {
+                _isFixed = value;
+                OnPropertyChanged(nameof(IsFixed));
+            }
+        }
+        [ObservableProperty]
+        private bool _isMagnet = true;
+        [ObservableProperty]
+        private double _magnetThreashold=12;
+
         public ShortcutKeys ShortcutKeys
         {
             get => SettingsService.WidgetSettings.ShortcutKeys;
