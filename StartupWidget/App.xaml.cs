@@ -55,7 +55,7 @@ namespace StartupWidget
             LanguageService= new LanguageService();
             LanguageService.ChangeLanguage(SettingsService.GeneralSettings.Language);
             NamedPipeServer = new NamedPipeIPCServer();
-            NamedPipeServer.OnMessageRecieved += OnNamedPipeMessageRecieved;
+            NamedPipeServer.OnMessageReceived += OnNamedPipeMessageReceived;
             NamedPipeServer.StartListen();
 
             ProcessViewModel = new ProcessViewModel();
@@ -85,7 +85,7 @@ namespace StartupWidget
             base.OnExit(e);
         }
 
-        private void OnNamedPipeMessageRecieved(string[]? message)
+        private void OnNamedPipeMessageReceived(string[]? message)
         {
             Current.Dispatcher.BeginInvoke(() =>
             {

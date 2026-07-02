@@ -12,7 +12,7 @@ namespace StartupWidget.Services
 
         public SingleInstanceService()
         {
-            _mutex = new Mutex(true, "Local\\" + Constants.appname, out _isNewInstance);
+            _mutex = new Mutex(true, "Local\\" + Constants.AppName, out _isNewInstance);
         }
 
         public void Dispose()

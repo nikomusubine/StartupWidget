@@ -7,8 +7,8 @@ namespace StartupWidget.Services
 {
     public class NamedPipeIPCServer: IDisposable
     {
-        public delegate void OnMessageRecievedEventHandler(string[]? Message);
-        private string _pipeName = "Local\\" + Constants.appname;
+        public delegate void OnMessageReceivedEventHandler(string[]? Message);
+        private string _pipeName = "Local\\" + Constants.AppName;
         private bool _disposed = false;
         public bool Disposed { get { return _disposed; } }
         private NamedPipeServerStream? pipeServer;
@@ -19,7 +19,7 @@ namespace StartupWidget.Services
         /// <remarks>
         /// このイベントは別のスレッドで呼び出されます。スレッドセーフティを担保する場合は、<c>Dispatcher.Invoke()</c>などを使用してください。
         /// </remarks>
-        public OnMessageRecievedEventHandler? OnMessageRecieved;
+        public OnMessageReceivedEventHandler? OnMessageReceived;
 
         public NamedPipeIPCServer()
         {
@@ -41,15 +41,15 @@ namespace StartupWidget.Services
                 using (StreamReader reader = new(pipeServer))
                 {
                     var message = await reader.ReadLineAsync().ConfigureAwait(false);
-                    if (OnMessageRecieved != null)
+                    if (OnMessageReceived != null)
                     {
                         if (message == null)
                         {
-                            OnMessageRecieved(null);
+                            OnMessageReceived(null);
                         }
                         else
                         {
-                            OnMessageRecieved(JsonSerializer.Deserialize<string[]?>(message));
+                            OnMessageReceived(JsonSerializer.Deserialize<string[]?>(message));
                         }
                     }
                 }

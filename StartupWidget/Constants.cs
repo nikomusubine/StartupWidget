@@ -7,6 +7,6 @@ namespace StartupWidget
     public static class Constants
     {
         public static string SettingsLocation = Environment.SpecialFolder.LocalApplicationData + "\\Nikochan\\StartupWidget\\";
-        public const string appname = "nikomusubine.startupwidget";
+        public const string AppName = "nikomusubine.startupwidget";
     }
 }

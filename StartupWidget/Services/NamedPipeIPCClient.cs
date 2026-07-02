@@ -9,7 +9,7 @@ namespace StartupWidget.Services
     {
         private NamedPipeClientStream pipeClient;
         private StreamWriter pipeWriter;
-        private string _pipeName = "Local\\" + Constants.appname;
+        private string _pipeName = "Local\\" + Constants.AppName;
         private bool _disposed;
         public bool Disposed { get { return _disposed; } }
         
