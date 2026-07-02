@@ -86,6 +86,8 @@ namespace StartupWidget.Behaviours
             AssociatedObject.PreviewMouseMove += OnMouseMove;
             AssociatedObject.PreviewMouseLeftButtonUp += OnMouseLeftButtonUp;
             AssociatedObject.SourceInitialized += OnSourceInitialized;
+            //Win32APIでWindow移動をいじっているとWPFのPreview/OnMouseLeftButtonUpが飛んでこない可能性があるため二重に呼ぶ
+            //逆にWPFのOnMouseLeftButtonUpは、Win32のほうのMouseUpも確実かはわからないので残しておく
             WindowMove.OnMouseUp += OnMouseButtonUp;
         }
 
@@ -118,6 +120,7 @@ namespace StartupWidget.Behaviours
         {
             _moving = false;
         }
+        //ちなみにここでMouseButtonEventArgsを使うとルーティング前提のイベントなので死ぬ
         private void OnMouseButtonUp(object sender, EventArgs e)
         {
             _moving = false;
