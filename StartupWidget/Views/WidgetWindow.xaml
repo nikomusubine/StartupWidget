@@ -20,7 +20,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <i:Interaction.Behaviors>
-        <beh:WindowDragMoveBehaviour IsFixed="{Binding IsFixed}" IsMagnetEnabled="{Binding IsMagnet}" MagnetThreshold="{Binding MagnetThreashold}"/>
+        <beh:WindowDragMoveBehaviour IsFixed="{Binding IsFixed}" IsMagnetEnabled="{Binding IsMagnet}" MagnetThreshold="{Binding MagnetThreshold}"/>
     </i:Interaction.Behaviors>
 
     <Window.ContextMenu>

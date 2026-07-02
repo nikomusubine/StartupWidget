@@ -1,11 +1,10 @@
-using System;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace StartupWidget.Behaviours.Win32Helpers
 {
-    public partial class WindowMove
+    public partial class WindowMove : IDisposable
     {
         public delegate void OnMouseUpEventHandler(object sender, EventArgs e);
         bool _isMagnetEnabled;
@@ -45,7 +44,8 @@ namespace StartupWidget.Behaviours.Win32Helpers
 
         public event OnMouseUpEventHandler? OnMouseUp;
         private IntPtr _hWnd;
-        private HwndSource? _hwndSource;
+        private HwndSource _hwndSource=null!;
+        private HwndSourceHook _hwndSourceHook;
         
         public WindowMove() : this(IntPtr.Zero) { }
         public WindowMove(IntPtr hWnd)
@@ -66,7 +66,8 @@ namespace StartupWidget.Behaviours.Win32Helpers
             _hwndSource = HwndSource.FromHwnd(_hWnd);
             if (_hwndSource != null)
             {
-                _hwndSource.AddHook(new HwndSourceHook(WndProc));
+                _hwndSourceHook = new HwndSourceHook(WndProc);
+                _hwndSource.AddHook(_hwndSourceHook);
             }
         }
 
@@ -125,6 +126,12 @@ namespace StartupWidget.Behaviours.Win32Helpers
         {
             ReleaseCapture();
             SendMessage(_hWnd, WM_NCLBUTTONDOWN, (IntPtr)HTCAPTION, IntPtr.Zero);   
+        }
+
+        public void Dispose()
+        {
+            _hwndSource.RemoveHook(_hwndSourceHook);
+            Dispose();
         }
 
         Point? dragOffset = null;

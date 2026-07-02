@@ -10,7 +10,8 @@ namespace StartupWidget.Behaviours
     {
         private System.Windows.Point _mouseClickPoint;
         private bool _moving = false;
-        WindowMove? WindowMove;
+        WindowMove? WindowMove = null;
+        WindowMove WindowMoveOrThrow() => WindowMove ?? throw new InvalidOperationException();
 
         public static readonly DependencyProperty IsFixedProperty = DependencyProperty.Register(
                     nameof(IsFixed),
@@ -90,7 +91,7 @@ namespace StartupWidget.Behaviours
 
         private void OnSourceInitialized(object? sender, EventArgs e)
         {
-            WindowMove!.SetHwnd(new System.Windows.Interop.WindowInteropHelper(AssociatedObject).Handle);
+            WindowMoveOrThrow().SetHwnd(new System.Windows.Interop.WindowInteropHelper(AssociatedObject).Handle);
         }
 
         protected override void OnDetaching()
@@ -99,7 +100,10 @@ namespace StartupWidget.Behaviours
             AssociatedObject.PreviewMouseLeftButtonDown -= OnMouseLeftButtonDown;
             AssociatedObject.PreviewMouseMove -= OnMouseMove;
             AssociatedObject.PreviewMouseLeftButtonUp -= OnMouseLeftButtonUp;
-            WindowMove!.OnMouseUp -= OnMouseButtonUp;
+            AssociatedObject.SourceInitialized -= OnSourceInitialized;
+            WindowMove?.OnMouseUp -= OnMouseButtonUp;
+            WindowMove?.Dispose();
+            WindowMove = null;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -129,7 +133,7 @@ namespace StartupWidget.Behaviours
                     Math.Abs(e.GetPosition((IInputElement)sender).Y - _mouseClickPoint.Y) > MinimumVerticalDragDistance)
                 {
                     _moving = true;
-                    WindowMove!.DragMove();
+                    WindowMoveOrThrow().DragMove();
                 }
             }
         }

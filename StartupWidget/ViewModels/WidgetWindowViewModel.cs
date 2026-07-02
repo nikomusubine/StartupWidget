@@ -67,7 +67,7 @@ namespace StartupWidget.ViewModels
             }
         }
         [ObservableProperty]
-        private float _magnetThreashold = 12;
+        private float _magnetThreshold = 12;
 
         public ShortcutKeys ShortcutKeys
         {
