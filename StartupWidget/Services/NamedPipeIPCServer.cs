@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.IO;
 using System.IO.Pipes;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace StartupWidget.Services
 {
@@ -28,14 +25,14 @@ namespace StartupWidget.Services
         {
         }
 
-        public async void StartListen()
+        public async System.Threading.Tasks.Task StartListen()
         {
             while (!_disposed)
             {
                 pipeServer = new NamedPipeServerStream(_pipeName);
                 try
                 {
-                    await pipeServer.WaitForConnectionAsync();
+                    await pipeServer.WaitForConnectionAsync().ConfigureAwait(false);
                 }
                 catch(ObjectDisposedException) 
                 {
@@ -43,7 +40,7 @@ namespace StartupWidget.Services
                 }
                 using (StreamReader reader = new(pipeServer))
                 {
-                    var message = await reader.ReadLineAsync();
+                    var message = await reader.ReadLineAsync().ConfigureAwait(false);
                     if (OnMessageRecieved != null)
                     {
                         if (message == null)

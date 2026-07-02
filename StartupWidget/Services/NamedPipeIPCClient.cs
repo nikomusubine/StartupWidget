@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.IO;
 using System.IO.Pipes;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace StartupWidget.Services
 {
@@ -23,10 +20,10 @@ namespace StartupWidget.Services
             pipeWriter = new StreamWriter(pipeClient);
         }
 
-        public async void SendMessage(string[]? message = null)
+        public void SendMessage(string[]? message = null)
         {
-            await pipeWriter.WriteLineAsync(JsonSerializer.Serialize(message));
-            await pipeWriter.FlushAsync();
+            pipeWriter.WriteLine(JsonSerializer.Serialize(message));
+            pipeWriter.Flush();
         }
 
         public void Dispose()

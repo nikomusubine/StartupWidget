@@ -33,18 +33,14 @@ namespace StartupWidget
             SingleInstanceService = new SingleInstanceService();
             if (!SingleInstanceService.IsNewInstance)
             {
-                NamedPipeIPCClient ipcclient = new NamedPipeIPCClient();
                 try
                 {
+                    using NamedPipeIPCClient ipcclient = new NamedPipeIPCClient();
                     ipcclient.SendMessage(e.Args);
                 }
                 catch (Exception)
                 {
 
-                }
-                finally
-                {
-                    ipcclient.Dispose();
                 }
                 Current.Shutdown();
                 return;
