@@ -59,6 +59,7 @@ namespace StartupWidget.Services
 
         public void Dispose()
         {
+            _disposed = true;
             if (pipeServer != null)
             {
                 try
@@ -69,7 +70,6 @@ namespace StartupWidget.Services
                 {
                 }
             }
-            _disposed = true;
         }
 
     }
