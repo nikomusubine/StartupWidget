@@ -23,6 +23,8 @@
 			<Run Text="起動(_O)"/>
 			<RunAsAdmin Text="管理者として実行(_A)"/>
 			<Edit Text="編集(_E)"/>
+			<IsFixed Text="ウィジェットを固定(_F)"/>
+			<IsMagnet Text="ウィジェットを画面端に吸着(_G)"/>
 			<ShowMainWindow Text="メインウィンドウを表示(_M)"/>
 			<ShowSettings Text="設定(_S)"/>
 		</RightClickMenu>
@@ -46,6 +48,9 @@
 			<BackgroundColor Text="背景色"/>
 			<WindowSize Text="ウィンドウサイズ"/>
 			<Transparency Text="透明度(%)"/>
+			<IsFixed Text="ウィジェットを固定"/>
+			<IsMagnet Text ="ウィジェットを画面端に吸着"/>
+			<MagnetThreshold Text="吸着の強さ"/>
 			<ShortcutKeys Text="ショートカットキー"/>
 			<ShortcutKeysInputRequest Text="キーを入力..."/>
 		</WidgetSettings>

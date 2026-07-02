@@ -20,7 +20,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <i:Interaction.Behaviors>
-        <beh:WindowDragMoveBehaviour/>
+        <beh:WindowDragMoveBehaviour IsFixed="{Binding IsFixed}" IsMagnetEnabled="{Binding IsMagnet}" MagnetThreshold="{Binding MagnetThreshold}"/>
     </i:Interaction.Behaviors>
 
     <Window.ContextMenu>
@@ -32,6 +32,9 @@
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="{loc:Lang Widget/RightClickMenu/Edit}" Command="{Binding OpenEditWindowCommand}"/>
+            <Separator/>
+            <MenuItem Header="{loc:Lang Widget/RightClickMenu/IsFixed}" IsCheckable="True" IsChecked="{Binding IsFixed, Mode=TwoWay}"/>
+            <MenuItem Header="{loc:Lang Widget/RightClickMenu/IsMagnet}" IsCheckable="True" IsChecked="{Binding IsMagnet, Mode=TwoWay}"/>
             <Separator/>
             <MenuItem Header="{loc:Lang Widget/RightClickMenu/ShowMainWindow}" Command="{Binding ShowMainWindowCommand}"/>
             <MenuItem Header="{loc:Lang Widget/RightClickMenu/ShowSettings}" Command="{Binding ShowSettingsCommand}"/>

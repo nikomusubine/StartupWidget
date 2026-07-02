@@ -18,7 +18,7 @@ using Color = System.Windows.Media.Color;
 
 namespace StartupWidget.ViewModels
 {
-    public partial class WidgetWindowViewModel: ObservableObject
+    public partial class WidgetWindowViewModel : ObservableObject
     {
         public WidgetWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, LanguageService languageService)
         {
@@ -43,6 +43,31 @@ namespace StartupWidget.ViewModels
         public ObservableCollection<ProcessItemViewModel> ProcessItems => ProcessViewModel.ProcessItems;
         private SettingsService SettingsService { get; set; }
         private ProcessViewModel ProcessViewModel { get; set; }
+
+        private bool _isFixed = false;
+        public bool IsFixed
+        {
+            get => _isFixed;
+            set
+            {
+                _isFixed = value;
+                SettingsService.WidgetSettings.IsFixed = value;
+                OnPropertyChanged(nameof(IsFixed));
+            }
+        }
+        private bool _isMagnet = true;
+        public bool IsMagnet
+        {
+            get => _isMagnet;
+            set
+            {
+                _isMagnet = value;
+                SettingsService.WidgetSettings.IsMagnet = value;
+                OnPropertyChanged(nameof(IsMagnet));
+            }
+        }
+        [ObservableProperty]
+        private float _magnetThreshold = 12;
 
         public ShortcutKeys ShortcutKeys
         {
@@ -71,9 +96,10 @@ namespace StartupWidget.ViewModels
         public float PositionX
         {
             get => SettingsService.WidgetSettings.WidgetPosition.x;
-            set {
+            set
+            {
                 Position p = SettingsService.WidgetSettings.WidgetPosition;
-                p.x= value;
+                p.x = value;
                 SettingsService.WidgetSettings.WidgetPosition = p;
             }
         }
@@ -104,9 +130,12 @@ namespace StartupWidget.ViewModels
                                                                  SettingsService.WidgetSettings.BackgroundColor.R,
                                                                  SettingsService.WidgetSettings.BackgroundColor.G,
                                                                  SettingsService.WidgetSettings.BackgroundColor.B));
-            WindowSize= SettingsService.WidgetSettings.WindowSize;
+            WindowSize = SettingsService.WidgetSettings.WindowSize;
             FontSize = SettingsService.GeneralSettings.Font.Size;
             FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);
+            IsFixed = SettingsService.WidgetSettings.IsFixed;
+            IsMagnet = SettingsService.WidgetSettings.IsMagnet;
+            MagnetThreshold = SettingsService.WidgetSettings.MagnetThreshold;
         }
 
 
