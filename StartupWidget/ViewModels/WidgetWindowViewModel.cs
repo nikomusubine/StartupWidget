@@ -135,7 +135,7 @@ namespace StartupWidget.ViewModels
             FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);
             IsFixed = SettingsService.WidgetSettings.IsFixed;
             IsMagnet = SettingsService.WidgetSettings.IsMagnet;
-            MagnetThreashold = SettingsService.WidgetSettings.MagnetThreshold;
+            MagnetThreshold = SettingsService.WidgetSettings.MagnetThreshold;
         }
 
 
