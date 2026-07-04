@@ -121,11 +121,13 @@ namespace StartupWidget
 
             WeakReferenceMessenger.Default.Register<ShowWidgetWindow>(this, (r, m) =>
             {
+                SettingsService.WidgetSettings.IsWidgetShow = true;
                 WidgetWindow.Show();
             });
 
             WeakReferenceMessenger.Default.Register<HideWidgetWindow>(this, (r, m) =>
             {
+                SettingsService.WidgetSettings.IsWidgetShow = false;
                 WidgetWindow.Hide();
             });
 

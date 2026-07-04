@@ -131,7 +131,6 @@ namespace StartupWidget.ViewModels
         [RelayCommand]
         private void ShowWidget()
         {
-            SettingsService.WidgetSettings.IsWidgetShow = IsWidgetShow;
             if (IsWidgetShow)
             {
                 WeakReferenceMessenger.Default.Send(new ShowWidgetWindow());
