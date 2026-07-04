@@ -49,6 +49,7 @@ namespace StartupWidget.Services
 
             InitializeMessageWindow();
             InitializeTaskTrayIcon();
+            hMenu = TaskTrayIconHelper.CreateMenu();
         }
 
         private void InitializeMessageWindow()
@@ -108,7 +109,7 @@ namespace StartupWidget.Services
             }
             else if (msg == WM_COMMAND)
             {
-                int id = msg & 0xFFFF;
+                int id = wParam.ToInt32() & 0xFFFF;
                 taskTrayItems[id].MenuClick();
                 return IntPtr.Zero;
             }
@@ -127,14 +128,15 @@ namespace StartupWidget.Services
 
         public void AppendMenu(TaskTrayMenuItemBase trayItem)
         {
-            if (trayItem is TaskTrayCheckableItem checkable)
-            {
-                checkable.CheckableValueChanged += CheckableItemValueChanged;
-            }
             if (trayItem is TaskTrayItem headerMenu)
             {
                 taskTrayItems.Add(headerMenu);
                 TaskTrayIconHelper.AddMenuItem(hMenu, (uint)taskTrayItems.Count - 1, headerMenu.Header);
+            }
+            if (trayItem is TaskTrayCheckableItem checkable)
+            {
+                checkable.CheckableValueChanged += CheckableItemValueChanged;
+                TaskTrayIconHelper.ChangeMenuCheckState(hMenu, (uint)taskTrayItems.Count - 1, checkable.IsChecked);
             }
             if(trayItem is TaskTraySeparator separator)
             {

@@ -86,6 +86,13 @@
 			<Cancel Text="キャンセル(_C)"/>
 		</FooterButtons>
 	</EditWindow>
+	<TaskTrayIcon>
+		<ShowMainWindow Text="メインウィンドウを表示(_M)"/>
+		<ShowWidget Text="ウィジェットを表示(_W)"/>
+		<OpenSettings Text="設定を開く(_S)"/>
+		<OpenEdit Text="アプリを編集(_E)"/>
+		<Quit Text="終了(_Q)"/>
+	</TaskTrayIcon>
 	<Reusable>
 		<OpenFileDialogTitle Text="ファイルを選択"/>
 		<OpenFolderDialogTitle Text="フォルダを選択"/>
