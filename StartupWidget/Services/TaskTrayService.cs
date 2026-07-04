@@ -146,6 +146,7 @@ namespace StartupWidget.Services
         public void Dispose()
         {
             TaskTrayIconHelper.TryRemoveIcon(hWnd, iconid);
+            CreateWindowHelper.DestroyWindow(hWnd);
         }
     }
 }

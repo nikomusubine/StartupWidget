@@ -21,6 +21,10 @@ namespace StartupWidget.Services.Win32Helpers
             );
         [LibraryImport("user32.dll", EntryPoint = "DefWindowProcW")]
         public static partial IntPtr DefWindowProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool DestroyWindow(IntPtr hWnd);
+        
 
         static readonly IntPtr HWND_MESSAGE = new IntPtr(-3);
 
