@@ -28,11 +28,12 @@ namespace StartupWidget.ViewModels
             LoadSettings();
             LoadItems();
         }
+        public OpenFileDialogService DialogService;
         private SettingsService SettingsService { get; set; }
         private LanguageService LanguageService { get; set; }
 
         private GeneralSettings GeneralSettingsDraft;
-
+        
         [ObservableProperty]
         private ObservableCollection<SettingItemViewModel> _generalSettingsItems;
         private MainWindowSettings MainWindowSettingsDraft;
@@ -92,7 +93,10 @@ namespace StartupWidget.ViewModels
 
                     if (property.Name.EndsWith("FilePath") && property.PropertyType == typeof(string))
                     {
-                        settingItem = new FilePathSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, property.GetValue(SettingsModel), ((Attributes.StringOptionAttribute)strAttr).Options.Cast<object>());
+                        settingItem = new FilePathSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, property.GetValue(SettingsModel), ((Attributes.StringOptionAttribute)strAttr).Options.Cast<object>()) { 
+                        DialogService=this.DialogService
+                        };
+                        
                     }
                     else
                     {

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 namespace StartupWidget.Services
 {
@@ -15,11 +16,11 @@ namespace StartupWidget.Services
                 if (rKey == null) return false;
                 if (startup)
                 {
-                    rKey.SetValue(Application.ProductName, Application.ExecutablePath);
+                    rKey.SetValue(GetProductName(), Environment.ProcessPath);
                 }
                 else
                 {
-                    rKey.DeleteValue(Application.ProductName, false);
+                    rKey.DeleteValue(GetProductName(), false);
                 }
                 rKey.Close();
             }
@@ -31,8 +32,15 @@ namespace StartupWidget.Services
             using (RegistryKey? rKey=Registry.CurrentUser.OpenSubKey(keyName))
             {
                 if (rKey == null) return false;
-                return (rKey.GetValue(Application.ProductName) != null) ? true : false;
+                return (rKey.GetValue(GetProductName()) != null) ? true : false;
             }
+        }
+
+        private static string GetProductName()
+        {
+            Assembly asm = Assembly.GetExecutingAssembly();
+            AssemblyProductAttribute? prodAttr = asm.GetCustomAttribute<AssemblyProductAttribute>();
+            return prodAttr != null ? prodAttr.Product : "";
         }
     }
 }

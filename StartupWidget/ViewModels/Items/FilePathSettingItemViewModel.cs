@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using StartupWidget.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +9,7 @@ namespace StartupWidget.ViewModels.Items
 {
     public partial class FilePathSettingItemViewModel: LimitedSettingItemViewModel, INotifyPropertyChanged
     {
+        public OpenFileDialogService DialogService;
         public FilePathSettingItemViewModel(string id, string name, Type dataType, object value, IEnumerable<object>? Limits) : base(id, name, dataType, value, Limits)
         {
 
@@ -16,10 +18,9 @@ namespace StartupWidget.ViewModels.Items
         public event PropertyChangedEventHandler? PropertyChanged;
 
         [RelayCommand]
-        private void BrowseFile()
+        private async void BrowseFile()
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = "Select File";
+            DialogService.Title = "Select File";
             StringBuilder sb = new StringBuilder();
             if (Options != null)
             {
@@ -30,16 +31,15 @@ namespace StartupWidget.ViewModels.Items
                 }
                 sb.Length -= 1;
             }
-            dialog.Filter = sb.ToString();
-            dialog.FileName = (string)Value;
-            dialog.RestoreDirectory = true;
-
-            if (dialog.ShowDialog() == DialogResult.OK)
+            DialogService.Filter = sb.ToString();
+            DialogService.FileName = (string)Value;
+            DialogService.RestoreDirectory = true;
+            bool? result = await DialogService.ShowDialogAsync();
+            if ((result != null) ? (bool)result : false)
             {
-                Value= dialog.FileName;
+                Value= DialogService.FileName;
                 OnPropertyChanged();
             }
-            dialog.Dispose();
         }
 
         protected void OnPropertyChanged(string propertyName = null)

@@ -141,13 +141,14 @@ namespace StartupWidget
                 else
                    editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel) };
 
-
+                ((EditWindowViewModel)editWindow.DataContext).DialogService = new OpenFileDialogService(editWindow);
                 editWindow.ShowDialog();
             });
 
             WeakReferenceMessenger.Default.Register<OpenSettingsWindow>(this, (r, m) =>
             {
                 settingsWindow = new SettingsWindow { DataContext = new SettingsWindowViewModel(SettingsService,LanguageService) };
+                ((SettingsWindowViewModel)settingsWindow.DataContext).DialogService = new OpenFileDialogService(settingsWindow);
                 settingsWindow.ShowDialog();
 
                 StartupService.SetStartup(SettingsService.GeneralSettings.IsStartup);

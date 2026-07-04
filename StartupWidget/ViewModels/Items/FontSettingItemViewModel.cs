@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using static System.Windows.Forms.Design.AxImporter;
-
-namespace StartupWidget.ViewModels.Items
+﻿namespace StartupWidget.ViewModels.Items
 {
     internal class FontSettingItemViewModel: SettingItemViewModel
     {
