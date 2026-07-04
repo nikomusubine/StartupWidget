@@ -4,7 +4,7 @@
     public class TaskTrayItem : TaskTrayMenuItemBase
     {
         public string Header { get; set; }
-        public MenuClickEventHandler? MenuClicked;
+        public event MenuClickEventHandler? MenuClicked;
 
         public TaskTrayItem(string header)
         {
@@ -13,10 +13,7 @@
 
         public virtual void MenuClick()
         {
-            if (MenuClicked != null)
-            {
-                MenuClicked(this, new EventArgs());
-            }
+            MenuClicked?.Invoke(this, EventArgs.Empty);
         }
     }
 }

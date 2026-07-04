@@ -24,7 +24,7 @@ namespace StartupWidget.Services
                 return Marshal.GetFunctionPointerForDelegate(wndProcDelegate);
             }
         }
-        private string className => $"{Constants.AppName}.NotiryIcon";
+        private string className => $"{Constants.AppName}.NotifyIcon";
         private int iconResourceid;
         private GetHIconService iconService;
         private const int iconid = 0;
@@ -71,19 +71,22 @@ namespace StartupWidget.Services
             else {
 
                 hWnd = CreateWindowHelper.CreateMessageOnlyWindow(className,hInstance);
-                if (hWnd == IntPtr.Zero)
-                {
-                    int errorCode = Marshal.GetLastPInvokeError();
-
-                    MessageBox.Show($"Code: {errorCode}");
-                }
+if (hWnd == IntPtr.Zero)
+{
+    int errorCode = Marshal.GetLastPInvokeError();
+    throw new Win32Exception(errorCode);
+}
 
             } 
         }
 
         private void InitializeTaskTrayIcon()
         {
-            TaskTrayIconHelper.TryAddIcon(hWnd, iconid, iconCallbackMessage, iconService.GetHIcon(), "StartupWidget");
+            if(!TaskTrayIconHelper.TryAddIcon(hWnd, iconid, iconCallbackMessage, iconService.GetHIcon(), "StartupWidget"))
+            {
+                int errorCode = Marshal.GetLastPInvokeError();
+                throw new Win32Exception(errorCode);
+            }
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam)
@@ -145,10 +148,19 @@ namespace StartupWidget.Services
         }
 
 
-        public void Dispose()
-        {
-            TaskTrayIconHelper.TryRemoveIcon(hWnd, iconid);
-            CreateWindowHelper.DestroyWindow(hWnd);
-        }
+public void Dispose()
+{
+    TaskTrayIconHelper.TryRemoveIcon(hWnd, iconid);
+
+    if (hMenu != IntPtr.Zero)
+    {
+        TaskTrayIconHelper.TryDestroyMenu(hMenu);
+        hMenu = IntPtr.Zero;
+    }
+
+    if (hWnd != IntPtr.Zero)
+    {
+        CreateWindowHelper.DestroyWindow(hWnd);
+        hWnd = IntPtr.Zero;
     }
 }

@@ -9,8 +9,7 @@
 	  <UseWindowsForms>True</UseWindowsForms>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	  <PackageIcon>ICO_4Niko.ico</PackageIcon>
-	<ApplicatoinIcon>Assets\ICO_4Niko.ico</ApplicatoinIcon>
-	<ApplicationIcon>Assets\ICO_4Niko.ico</ApplicationIcon>
+	  <ApplicationIcon>Assets\ICO_4Niko.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

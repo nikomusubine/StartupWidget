@@ -2,26 +2,16 @@
 {
     public class TaskTrayCheckableItem:TaskTrayItem
     {
-        public MenuClickEventHandler CheckableValueChanged;
+        public event MenuClickEventHandler? CheckableValueChanged;
         private bool _isChecked;
         public bool IsChecked
         {
-            get
-            {
-                return _isChecked;
-            }
+            get => _isChecked;
             set
             {
+                if (_isChecked == value) return;
                 _isChecked = value;
-                ValueChanged();
-            }
-        }
-
-        private void ValueChanged()
-        {
-            if (CheckableValueChanged != null)
-            {
-                CheckableValueChanged(this, new EventArgs());
+                CheckableValueChanged?.Invoke(this, EventArgs.Empty);
             }
         }
         public override void MenuClick()
