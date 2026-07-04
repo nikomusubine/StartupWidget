@@ -27,7 +27,7 @@ namespace StartupWidget
         public LanguageService? LanguageService;
         private SingleInstanceService? SingleInstanceService;
         public NamedPipeIPCServer? NamedPipeServer;
-
+        public TaskTrayIconViewModel? TaskTrayViewModel;
         protected override void OnStartup(StartupEventArgs e)
         {
             SingleInstanceService = new SingleInstanceService();
@@ -54,6 +54,7 @@ namespace StartupWidget
             SettingsService.LoadSettings();
             LanguageService= new LanguageService();
             LanguageService.ChangeLanguage(SettingsService.GeneralSettings.Language);
+            
             NamedPipeServer = new NamedPipeIPCServer();
             NamedPipeServer.OnMessageReceived += OnNamedPipeMessageReceived;
             NamedPipeServer.StartListen();
@@ -62,7 +63,7 @@ namespace StartupWidget
             MainWindowViewModel = new MainWindowViewModel(SettingsService,ProcessViewModel,LanguageService);
             
             WidgetWindowViewModel = new WidgetWindowViewModel(SettingsService, ProcessViewModel,LanguageService);
-
+            TaskTrayViewModel = new TaskTrayIconViewModel(SettingsService);
 
             WidgetWindow = new WidgetWindow { DataContext=WidgetWindowViewModel };
 
@@ -80,6 +81,7 @@ namespace StartupWidget
                 SettingsService!.SaveSettings();
                 ProcessViewModel!.SaveApplications();
                 NamedPipeServer!.Dispose();
+                TaskTrayViewModel!.Dispose();
             }
             SingleInstanceService.Dispose();
             base.OnExit(e);
@@ -119,11 +121,13 @@ namespace StartupWidget
 
             WeakReferenceMessenger.Default.Register<ShowWidgetWindow>(this, (r, m) =>
             {
+                SettingsService.WidgetSettings.IsWidgetShow = true;
                 WidgetWindow.Show();
             });
 
             WeakReferenceMessenger.Default.Register<HideWidgetWindow>(this, (r, m) =>
             {
+                SettingsService.WidgetSettings.IsWidgetShow = false;
                 WidgetWindow.Hide();
             });
 
