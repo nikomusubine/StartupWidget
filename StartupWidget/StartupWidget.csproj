@@ -8,6 +8,9 @@
     <UseWPF>true</UseWPF>
 	  <UseWindowsForms>True</UseWindowsForms>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	  <PackageIcon>ICO_4Niko.ico</PackageIcon>
+	<ApplicatoinIcon>Assets\ICO_4Niko.ico</ApplicatoinIcon>
+	<ApplicationIcon>Assets\ICO_4Niko.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Assets\ICO_4Niko.ico" />
     <Content Include="Languages\ja-JP.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -42,6 +46,13 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\ICO_4Niko.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -42,18 +42,18 @@ namespace StartupWidget.Services.Win32Helpers
         #endregion
 
         #region Win32API 関数
-        [LibraryImport("shell32.dll", StringMarshalling = StringMarshalling.Utf16)]
+        [LibraryImport("shell32.dll", StringMarshalling = StringMarshalling.Utf16, EntryPoint = "Shell_NotifyIconW")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool Shell_NotifyIcon(uint dwMessage, ref NOTIFYICONDATA lpData);
 
         [LibraryImport("user32.dll")]
         private static partial IntPtr CreatePopupMenu();
 
-        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16,EntryPoint ="AppendMenuA")]
+        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16,EntryPoint ="AppendMenuW")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool AppendMenu(IntPtr hMenu, uint uFlags, uint uIDNewItem, string? lpNewItem);
 
-        [LibraryImport("user32.dll", EntryPoint = "InsertMenuItemA")]
+        [LibraryImport("user32.dll", EntryPoint = "InsertMenuItemW")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool InsertMenuItem(IntPtr hMenu, uint Item,
             [MarshalAs(UnmanagedType.Bool)] bool fByPosition, IntPtr lpmi);
@@ -73,6 +73,10 @@ namespace StartupWidget.Services.Win32Helpers
         [LibraryImport("user32.dll", EntryPoint = "TrackPopupMenuEx")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool TrackPopupMenu(IntPtr hmenu, uint uFlags, int x, int y, IntPtr hWnd, IntPtr lptpm);
+
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool GetCursorPos(out Point lpPoint);
 
         #endregion
         /// <summary>
@@ -157,6 +161,11 @@ namespace StartupWidget.Services.Win32Helpers
         {
             return DestroyMenu(menuHandle);
         }
-
+    }
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Point
+    {
+        public int x;
+        public int y;
     }
 }

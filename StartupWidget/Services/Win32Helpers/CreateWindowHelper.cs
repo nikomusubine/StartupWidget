@@ -4,10 +4,10 @@ namespace StartupWidget.Services.Win32Helpers
 {
     public static partial class CreateWindowHelper
     {
-        [LibraryImport("user32.dll")]
+        [LibraryImport("user32.dll",EntryPoint ="RegisterClassExW", SetLastError =true)]
         [return: MarshalAs(UnmanagedType.U2)]
         private static partial ushort RegisterClassEx(ref WNDCLASSEX lpwcx);
-        [LibraryImport("user32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf16, EntryPoint = "CreateWindowEx")]
+        [LibraryImport("user32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf16, EntryPoint = "CreateWindowExW")]
         private static partial IntPtr CreateWindowEx(
             uint dwExStyle,
             string lpClassName,
@@ -19,16 +19,18 @@ namespace StartupWidget.Services.Win32Helpers
             IntPtr hInstance,
             IntPtr lpParam
             );
+        [LibraryImport("user32.dll", EntryPoint = "DefWindowProcW")]
+        public static partial IntPtr DefWindowProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
         static readonly IntPtr HWND_MESSAGE = new IntPtr(-3);
 
-        public static IntPtr CreateMessageOnlyWindow(string className)
+        public static IntPtr CreateMessageOnlyWindow(string className, IntPtr hInstance)
         {
             return CreateWindowEx(
                 0, className, string.Empty, 0,
                 0, 0, 0, 0,
                 HWND_MESSAGE,
-                IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+                IntPtr.Zero, hInstance, IntPtr.Zero);
         }
 
         public static ushort RegisterMessageWindowClass(string className,IntPtr lpfnWndProc,IntPtr hInstance)
