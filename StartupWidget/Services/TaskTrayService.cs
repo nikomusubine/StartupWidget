@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace StartupWidget.Services
 {
-    public class TaskTrayService: IDisposable
+    public class TaskTrayService : IDisposable
     {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate IntPtr WndProcDelegate(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam);
@@ -45,7 +45,7 @@ namespace StartupWidget.Services
             hInstance = Marshal.GetHINSTANCE(mod);
             iconResourceid = iconresourceid;
             iconService = new GetHIconService(hInstance, iconresourceid);
-            
+
 
             InitializeMessageWindow();
             InitializeTaskTrayIcon();
@@ -68,21 +68,22 @@ namespace StartupWidget.Services
                     throw new Win32Exception(errorCode);
                 }
             }
-            else {
+            else
+            {
 
-                hWnd = CreateWindowHelper.CreateMessageOnlyWindow(className,hInstance);
-if (hWnd == IntPtr.Zero)
-{
-    int errorCode = Marshal.GetLastPInvokeError();
-    throw new Win32Exception(errorCode);
-}
+                hWnd = CreateWindowHelper.CreateMessageOnlyWindow(className, hInstance);
+                if (hWnd == IntPtr.Zero)
+                {
+                    int errorCode = Marshal.GetLastPInvokeError();
+                    throw new Win32Exception(errorCode);
+                }
 
-            } 
+            }
         }
 
         private void InitializeTaskTrayIcon()
         {
-            if(!TaskTrayIconHelper.TryAddIcon(hWnd, iconid, iconCallbackMessage, iconService.GetHIcon(), "StartupWidget"))
+            if (!TaskTrayIconHelper.TryAddIcon(hWnd, iconid, iconCallbackMessage, iconService.GetHIcon(), "StartupWidget"))
             {
                 int errorCode = Marshal.GetLastPInvokeError();
                 throw new Win32Exception(errorCode);
@@ -141,26 +142,28 @@ if (hWnd == IntPtr.Zero)
                 checkable.CheckableValueChanged += CheckableItemValueChanged;
                 TaskTrayIconHelper.ChangeMenuCheckState(hMenu, (uint)taskTrayItems.Count - 1, checkable.IsChecked);
             }
-            if(trayItem is TaskTraySeparator separator)
+            if (trayItem is TaskTraySeparator separator)
             {
                 TaskTrayIconHelper.AddMenuSeparator(hMenu);
             }
         }
 
 
-public void Dispose()
-{
-    TaskTrayIconHelper.TryRemoveIcon(hWnd, iconid);
+        public void Dispose()
+        {
+            TaskTrayIconHelper.TryRemoveIcon(hWnd, iconid);
 
-    if (hMenu != IntPtr.Zero)
-    {
-        TaskTrayIconHelper.TryDestroyMenu(hMenu);
-        hMenu = IntPtr.Zero;
-    }
+            if (hMenu != IntPtr.Zero)
+            {
+                TaskTrayIconHelper.TryDestroyMenu(hMenu);
+                hMenu = IntPtr.Zero;
+            }
 
-    if (hWnd != IntPtr.Zero)
-    {
-        CreateWindowHelper.DestroyWindow(hWnd);
-        hWnd = IntPtr.Zero;
+            if (hWnd != IntPtr.Zero)
+            {
+                CreateWindowHelper.DestroyWindow(hWnd);
+                hWnd = IntPtr.Zero;
+            }
+        }
     }
 }
