@@ -24,6 +24,7 @@ namespace StartupWidget
         public ProcessViewModel? ProcessViewModel;
 
         public WidgetWindow? WidgetWindow;
+        public MainWindow AppMainWindow;
         public LanguageService? LanguageService;
         private SingleInstanceService? SingleInstanceService;
         public NamedPipeIPCServer? NamedPipeServer;
@@ -67,11 +68,11 @@ namespace StartupWidget
 
             WidgetWindow = new WidgetWindow { DataContext=WidgetWindowViewModel };
 
-            var mainWindow = new MainWindow { DataContext = MainWindowViewModel };
+            AppMainWindow = new MainWindow { DataContext = MainWindowViewModel };
 
             RegisterMessages();
 
-            mainWindow.Show();
+            AppMainWindow.Show();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -103,7 +104,6 @@ namespace StartupWidget
         }
 
 
-        AddWindow? addWindow;
         EditWindow? editWindow;
         SettingsWindow? settingsWindow;
 
@@ -112,11 +112,6 @@ namespace StartupWidget
             WeakReferenceMessenger.Default.Register<QuitAppMessage>(this, (r, m) =>
             {
                 Current.Shutdown();
-            });
-            WeakReferenceMessenger.Default.Register<OpenAddWindow>(this, (r, m) =>
-            {
-                addWindow = new AddWindow { DataContext = new AddWindowViewModel(SettingsService,ProcessViewModel) };
-                addWindow.ShowDialog();
             });
 
             WeakReferenceMessenger.Default.Register<ShowWidgetWindow>(this, (r, m) =>
@@ -135,20 +130,44 @@ namespace StartupWidget
             {
 
                 if (m.EditingItem != null)
-                    editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel, m.EditingItem) };
+                {
+                    editWindow = new EditWindow();
+                    editWindow.DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel, m.EditingItem)
+                    {
+                        FolderDialogService = new OpenFolderDialogService(editWindow),
+                        FileDialogService = new OpenFileDialogService(editWindow),
+                        MessageBoxService = new MessageBoxService(editWindow)
+                    };
+                }
                 else if (!string.IsNullOrEmpty(m.AddingItemPath))
-                    editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService,ProcessViewModel, m.AddingItemPath) };
+                {
+                    editWindow = new EditWindow();
+                    editWindow.DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel, m.AddingItemPath)
+                    {
+                        FolderDialogService = new OpenFolderDialogService(editWindow),
+                        FileDialogService = new OpenFileDialogService(editWindow),
+                        MessageBoxService = new MessageBoxService(editWindow)
+                    };
+                }
                 else
-                   editWindow = new EditWindow { DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel) };
-
-                ((EditWindowViewModel)editWindow.DataContext).DialogService = new OpenFileDialogService(editWindow);
+                {
+                    editWindow = new EditWindow();
+                    editWindow.DataContext = new EditWindowViewModel(SettingsService, ProcessViewModel)
+                    {
+                        FolderDialogService = new OpenFolderDialogService(editWindow),
+                        FileDialogService = new OpenFileDialogService(editWindow),
+                        MessageBoxService = new MessageBoxService(editWindow)
+                    };
+                }
+                editWindow.Owner = AppMainWindow;
                 editWindow.ShowDialog();
             });
 
             WeakReferenceMessenger.Default.Register<OpenSettingsWindow>(this, (r, m) =>
             {
-                settingsWindow = new SettingsWindow { DataContext = new SettingsWindowViewModel(SettingsService,LanguageService) };
-                ((SettingsWindowViewModel)settingsWindow.DataContext).DialogService = new OpenFileDialogService(settingsWindow);
+                settingsWindow = new SettingsWindow ();
+                settingsWindow.DataContext = new SettingsWindowViewModel(SettingsService, LanguageService,new OpenFileDialogService(settingsWindow),new ColorPickerDialogService(settingsWindow));
+                settingsWindow.Owner = AppMainWindow;
                 settingsWindow.ShowDialog();
 
                 StartupService.SetStartup(SettingsService.GeneralSettings.IsStartup);

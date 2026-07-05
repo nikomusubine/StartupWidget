@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
+using StartupWidget.Models.Types;
 
 namespace StartupWidget.Models.Settings
 {
@@ -22,11 +19,11 @@ namespace StartupWidget.Models.Settings
         {
             get
             {
-                return ColorTranslator.ToHtml(ForegroundColor);
+                return ForegroundColor.ToHtml();
             }
             set
             {
-                ForegroundColor = ColorTranslator.FromHtml(value);
+                ForegroundColor = Color.FromHtml(value);
             }
         }
 
@@ -37,11 +34,11 @@ namespace StartupWidget.Models.Settings
         {
             get
             {
-                return ColorTranslator.ToHtml(BackgroundColor);
+                return BackgroundColor.ToHtml();
             }
             set
             {
-                BackgroundColor=ColorTranslator.FromHtml(value);
+                BackgroundColor=Color.FromHtml(value);
             }
         }
     }

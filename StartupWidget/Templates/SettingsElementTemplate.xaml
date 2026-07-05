@@ -109,7 +109,19 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Text="{Binding ColorName, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
+                <TextBox Grid.Column="0" Text="{Binding ColorName, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="ToolTip" Value="{x:Null}"/>
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError" Value="True">
+                                    <Setter Property="ToolTip"
+                                            Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
                 <Button Grid.Column="1" Content="..." Margin="5,0" Padding="5,0" Command="{Binding ColorSelectCommand}"/>
             </Grid>
         </ContentControl>

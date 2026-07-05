@@ -96,6 +96,14 @@
 	<Reusable>
 		<OpenFileDialogTitle Text="ファイルを選択"/>
 		<OpenFolderDialogTitle Text="フォルダを選択"/>
-		
 	</Reusable>
+	<Exception>
+		<Color>
+			<FromHtml>
+				<EmptyText Text="カラーコードを入力してください。"/>
+				<NoSharp Text="カラーコードは'#'から開始する必要があります。"/>
+				<InvalidText Text="無効なカラーコードです。"/>
+			</FromHtml>
+		</Color>
+	</Exception>
 </Language> 

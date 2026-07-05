@@ -2,7 +2,6 @@
 using StartupWidget.Models.Types;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -34,11 +33,11 @@ namespace StartupWidget.Models.Settings
         {
             get
             {
-                return ColorTranslator.ToHtml(ForegroundColor);
+                return ForegroundColor.ToHtml();
             }
             set
             {
-                ForegroundColor = ColorTranslator.FromHtml(value);
+                ForegroundColor = Color.FromHtml(value);
             }
         }
 
@@ -49,11 +48,11 @@ namespace StartupWidget.Models.Settings
         {
             get
             {
-                return ColorTranslator.ToHtml(BackgroundColor);
+                return BackgroundColor.ToHtml();
             }
             set
             {
-                BackgroundColor = ColorTranslator.FromHtml(value);
+                BackgroundColor = Color.FromHtml(value);
             }
         }
         [IntBounds(0, 10000)]

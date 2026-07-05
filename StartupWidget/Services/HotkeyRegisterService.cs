@@ -147,7 +147,7 @@ namespace StartupWidget.Services
             this.Handle = handle;
             this.ID = id;
             this.Modifiers = modifiers;
-            this.Key = (Key)KeyInterop.VirtualKeyFromKey(key);
+            this.Key = key;
 
             RegisterHotKey();
 

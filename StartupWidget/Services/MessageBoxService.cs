@@ -15,7 +15,7 @@ namespace StartupWidget.Services
             OwnerWindow = ownerWindow;
         }
 
-        public MessageBoxResult Show(string messageBoxText,string caption,MessageBoxDialogButton button,MessageBoxDialogIcon icon)
+        public Task<MessageBoxDialogResult> Show(string messageBoxText, string caption, MessageBoxDialogButton button, MessageBoxDialogIcon icon)
         {
             MessageBoxButton wpfButton;
             MessageBoxImage wpfImage;
@@ -56,16 +56,49 @@ namespace StartupWidget.Services
                     wpfImage = MessageBoxImage.None;
                     break;
             }
-            
-            return MessageBox.Show(messageBoxText, caption, wpfButton, wpfImage);
+
+            return Task.FromResult<MessageBoxDialogResult>(ConvertResult(MessageBox.Show(OwnerWindow, messageBoxText, caption, wpfButton, wpfImage)));
+        }
+
+        private static MessageBoxDialogResult ConvertResult(MessageBoxResult result)
+        {
+            switch (result)
+            {
+                case MessageBoxResult.OK:
+                    return MessageBoxDialogResult.OK;
+                case MessageBoxResult.Cancel:
+                    return MessageBoxDialogResult.Cancel;
+                case MessageBoxResult.Abort:
+                    return MessageBoxDialogResult.Abort;
+                case MessageBoxResult.Retry:
+                    return MessageBoxDialogResult.Retry;
+                case MessageBoxResult.Ignore:
+                    return MessageBoxDialogResult.Ignore;
+                case MessageBoxResult.Yes:
+                    return MessageBoxDialogResult.Yes;
+                case MessageBoxResult.No:
+                    return MessageBoxDialogResult.No;
+                case MessageBoxResult.TryAgain:
+                    return MessageBoxDialogResult.TryAgain;
+                case MessageBoxResult.Continue:
+                    return MessageBoxDialogResult.Continue;
+                case MessageBoxResult.None:
+                default:
+                    return MessageBoxDialogResult.None;
+            }
         }
     }
 
     public enum MessageBoxDialogResult
     {
-        None,
-        OK, Cancel,
-        Yes, No
+        None = 0,
+        OK = 1, Cancel =2,
+        Abort=3,
+        Retry = 4,
+        Ignore = 5,
+        Yes=6, No =7,
+        TryAgain = 10,
+        Continue=11,
     }
 
     public enum MessageBoxDialogButton

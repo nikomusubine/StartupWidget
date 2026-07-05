@@ -1,19 +1,20 @@
 ﻿using Microsoft.Win32;
+using StartupWidget.Services.Interfaces;
 using System.Windows;
 
 namespace StartupWidget.Services
 {
-    public class OpenFileDialogService
+    public class OpenFileDialogService : IDialogService
     {
-        public string FileName="";
-        public string InitialDirectory="";
-        public string Filter="";
+        public string FileName = "";
+        public string InitialDirectory = "";
+        public string Filter = "";
         public int FilterIndex = 0;
         public string Title = "";
         public bool RestoreDirectory = false;
         public bool CheckFileExists = true;
         public bool CheckPathExists = true;
-        public Window OwnerWindow;
+        public Window OwnerWindow { get; set; }
 
         private OpenFileDialog? dialog;
 
