@@ -24,7 +24,7 @@ namespace StartupWidget
         public ProcessViewModel? ProcessViewModel;
 
         public WidgetWindow? WidgetWindow;
-        public MainWindow AppMainWindow;
+public MainWindow AppMainWindow = null!;
         public LanguageService? LanguageService;
         private SingleInstanceService? SingleInstanceService;
         public NamedPipeIPCServer? NamedPipeServer;

@@ -9,7 +9,7 @@ namespace StartupWidget.ViewModels.Items
 {
     public partial class FilePathSettingItemViewModel: LimitedSettingItemViewModel, INotifyPropertyChanged
     {
-        public OpenFileDialogService DialogService;
+public required OpenFileDialogService DialogService { get; init; }
         public FilePathSettingItemViewModel(string id, string name, Type dataType, object value, IEnumerable<object>? Limits) : base(id, name, dataType, value, Limits)
         {
 

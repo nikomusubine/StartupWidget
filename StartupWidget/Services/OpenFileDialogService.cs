@@ -37,7 +37,7 @@ namespace StartupWidget.Services
                 CheckPathExists = CheckPathExists
             };
 
-            bool? result = dialog.ShowDialog();
+bool? result = dialog.ShowDialog(OwnerWindow);
             FileName = dialog.FileName;
             return Task.FromResult<bool?>(result);
         }

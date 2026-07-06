@@ -5,7 +5,7 @@ namespace StartupWidget.Models.Types
     public readonly record struct Color
     {
         public static Color Black = new(0xFF, 0, 0, 0);
-        public static Color White = new(0xFF, 0, 0, 0);
+public static Color White = new(0xFF, 0xFF, 0xFF, 0xFF);
         public static Color Transparent = new(0, 0, 0, 0);
 
         readonly public byte A;

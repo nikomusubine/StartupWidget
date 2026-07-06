@@ -16,7 +16,13 @@ namespace StartupWidget.Services
                 if (rKey == null) return false;
                 if (startup)
                 {
-                    rKey.SetValue(GetProductName(), Environment.ProcessPath);
+string? processPath = Environment.ProcessPath;
+if (string.IsNullOrWhiteSpace(processPath))
+{
+    return false;
+}
+
+rKey.SetValue(GetProductName(), processPath);
                 }
                 else
                 {
@@ -36,11 +42,16 @@ namespace StartupWidget.Services
             }
         }
 
-        private static string GetProductName()
-        {
-            Assembly asm = Assembly.GetExecutingAssembly();
-            AssemblyProductAttribute? prodAttr = asm.GetCustomAttribute<AssemblyProductAttribute>();
-            return prodAttr != null ? prodAttr.Product : "";
-        }
+private static string GetProductName()
+{
+    Assembly asm = Assembly.GetExecutingAssembly();
+    AssemblyProductAttribute? prodAttr = asm.GetCustomAttribute<AssemblyProductAttribute>();
+    if (!string.IsNullOrWhiteSpace(prodAttr?.Product))
+    {
+        return prodAttr.Product;
+    }
+
+    return asm.GetName().Name ?? "StartupWidget";
+}
     }
 }
