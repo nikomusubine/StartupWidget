@@ -30,8 +30,6 @@ namespace StartupWidget.ViewModels.Items
 
         public LimitedSettingItemViewModel(string id, string name, Type dataType, object value, IEnumerable<object>? Limits) : base(id, name, dataType, value)
         {
-            Name = name;
-            Value = value;
 
             if(dataType == typeof(int))
             {

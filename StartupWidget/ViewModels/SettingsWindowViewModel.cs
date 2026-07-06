@@ -138,11 +138,6 @@ namespace StartupWidget.ViewModels
 
         private void _ApplyItems(ObservableCollection<SettingItemViewModel> settingItems, object SettingsModel)
         {
-            string LangPath = "SettingsWindow/";
-
-            if (SettingsModel.GetType() == typeof(GeneralSettings)) LangPath += "GeneralSettings/";
-            if (SettingsModel.GetType() == typeof(MainWindowSettings)) LangPath += "MainWindowSettings/";
-            if (SettingsModel.GetType() == typeof(WidgetSettings)) LangPath += "WidgetSettings/";
             foreach (var property in SettingsModel.GetType().GetProperties())
             {
                 if (property.GetCustomAttribute<Attributes.SettingElementIgnoreAttribute>() != null) continue;
@@ -168,6 +163,17 @@ namespace StartupWidget.ViewModels
             }
         }
 
+        private bool IsChanged()
+        {
+            bool changed = false;
+            changed = _generalSettingsItems.Any(x => x.isChanged);
+            if (changed) { return true; }
+            changed = _mainWindowSettingsItems.Any(x => x.isChanged);
+            if (changed) { return true; }
+            changed = _widgetSettingsItems.Any(x => x.isChanged);
+            return changed;
+        }
+
         [RelayCommand]
         private void OKSettings()
         {
@@ -188,6 +194,13 @@ namespace StartupWidget.ViewModels
         {
             WeakReferenceMessenger.Default.Send(new CloseSettingsWindow());
         }
-
+        [RelayCommand]
+        private void EscapeKey()
+        {
+            if (!IsChanged())
+            {
+                CancelSettings();
+            }
+        }
     }
 }

@@ -23,6 +23,9 @@
             ColorTemplate="{StaticResource ColorTemplate}"
             ShortcutKeyTemplate="{StaticResource ShortcutKeyTemplate}"/>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding EscapeKeyCommand}"/>
+    </Window.InputBindings>
     <Grid>
         <TabControl Grid.Column="0" Margin="10,10,10,40">
             <TabItem Header="{loc:Lang SettingsWindow/GeneralSettings}">

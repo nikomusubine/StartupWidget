@@ -49,7 +49,7 @@ namespace StartupWidget.ViewModels.Items
         }
         public ColorSettingItemViewModel(string id, string name, Type datatype, object value) : base(id, name, datatype, value)
         {
-            Value = value;
+            _colorName = ((Color)value).ToHtml();
         }
 
         [RelayCommand]
