@@ -10,7 +10,18 @@
                 <RowDefinition  Height="64" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Image Grid.Row="0" Source="{Binding IconImage}" />
+            <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Stretch="Uniform" Source="{Binding IconImage}"/>
+                <Image Grid.Row="1" Grid.Column="1" Stretch="Uniform" Source="{Binding ShieldIcon,TargetNullValue={x:Null}}"/>
+            </Grid>
             <TextBlock Grid.Row="1"  Text="{Binding Name}" TextWrapping="Wrap" Margin="5,0" HorizontalAlignment="Center"/>
         </Grid>
     </DataTemplate>

@@ -1,4 +1,5 @@
 ﻿using StartupWidget.Models.Types;
+using StartupWidget.Services;
 using StartupWidget.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,21 @@ getExecutableIconがnullです。派生クラスのprotectedコンストラク�
                 return __IconImage;
             }
         }
+        public ImageSource? ShieldIcon
+        {
+            get
+            {
+                if (ExecutableProcess.RunasAdmin)
+                {
+                    return ExecutableIconImage.GetShieldIcon();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public string Name
         {
             get

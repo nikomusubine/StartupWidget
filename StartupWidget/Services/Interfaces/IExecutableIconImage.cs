@@ -9,5 +9,6 @@ namespace StartupWidget.Services.Interfaces
     public interface IExecutableIconImage
     {
         ImageSource GetIconImage(ExecutableProcess process);
+        ImageSource GetShieldIconImage();
     }
 }

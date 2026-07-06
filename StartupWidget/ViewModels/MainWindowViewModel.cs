@@ -15,6 +15,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using Application = System.Windows.Application;
 using Color = System.Windows.Media.Color;
@@ -29,9 +30,7 @@ namespace StartupWidget.ViewModels
             LanguageService = languageService;
             ProcessViewModel = processViewModel;
 
-            IntPtr hBitmap = ExecutableIconImage.GetShieldIcon().ToBitmap().GetHbitmap();
-            ShieldIcon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty,
-                    System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+            ShieldIcon = ExecutableIconImage.GetShieldIcon();
 
             WeakReferenceMessenger.Default.Register<HideWidgetWindow>(this, (r, m) =>
             {
