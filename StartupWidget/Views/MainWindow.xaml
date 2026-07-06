@@ -30,7 +30,7 @@
             <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/Edit}" Command="{Binding OpenEditWindowCommand}"/>
         </ContextMenu>
     </Window.ContextMenu>
-    
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding ClosingCommand}" PassEventArgsToCommand="True"/>
@@ -70,6 +70,9 @@
                     <i:InvokeCommandAction Command="{Binding StartProcessCommand}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+            <i:Interaction.Behaviors>
+                <bh:ListViewUnselectBehaviour/>
+            </i:Interaction.Behaviors>
         </ListView>
 
     </Grid>

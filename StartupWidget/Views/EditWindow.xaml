@@ -2,10 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StartupWidget.Views"
         xmlns:loc="clr-namespace:StartupWidget.Views.Extensions"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+        xmlns:bh="clr-namespace:StartupWidget.Behaviours"
         xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
         Title="{loc:Lang EditWindow}" Height="450" Width="800"
@@ -81,6 +83,9 @@
                         <WrapPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
+                <i:Interaction.Behaviors>
+                    <bh:ListViewUnselectBehaviour/>
+                </i:Interaction.Behaviors>
             </ListView>
 
             <StackPanel Grid.Column="1" Margin="5,0"  Grid.IsSharedSizeScope="True" IsEnabled="{Binding IsSelected}">

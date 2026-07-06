@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StartupWidget.Views"        
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:beh="clr-namespace:StartupWidget.Behaviours"
+        xmlns:bh="clr-namespace:StartupWidget.Behaviours"
         xmlns:loc="clr-namespace:StartupWidget.Views.Extensions"
         mc:Ignorable="d"
         Title="WidgetWindow" SizeToContent="WidthAndHeight"
@@ -20,7 +20,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <i:Interaction.Behaviors>
-        <beh:WindowDragMoveBehaviour IsFixed="{Binding IsFixed}" IsMagnetEnabled="{Binding IsMagnet}" MagnetThreshold="{Binding MagnetThreshold}"/>
+        <bh:WindowDragMoveBehaviour IsFixed="{Binding IsFixed}" IsMagnetEnabled="{Binding IsMagnet}" MagnetThreshold="{Binding MagnetThreshold}"/>
     </i:Interaction.Behaviors>
 
     <Window.ContextMenu>
@@ -45,7 +45,7 @@
         <ListView ItemsSource="{Binding ProcessItems}" Margin="0,0,0,0" Padding="5" Foreground="{Binding ForegroundColor}"
                   BorderThickness="0"
                   SelectedItem="{Binding SelectedItem}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.IsSharedSizeScope="True"
-                  beh:FileDropBehaviour.FileDropCommand="{Binding FileDropCommand}">
+                  bh:FileDropBehaviour.FileDropCommand="{Binding FileDropCommand}">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" Grid.IsSharedSizeScope="True" /> 
@@ -64,6 +64,9 @@
                     <i:InvokeCommandAction Command="{Binding StartProcessCommand}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+            <i:Interaction.Behaviors>
+                <bh:ListViewUnselectBehaviour/>
+            </i:Interaction.Behaviors>
         </ListView>
 
     </Grid>
