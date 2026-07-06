@@ -21,7 +21,7 @@ namespace StartupWidget.Services
         public Task<bool?> ShowDialogAsync()
         {
             bool result=false;
-            ColorDialog dialog = new ColorDialog();
+            ColorDialog dialog = new ColorDialog(); //WinFormsのColorDialogは、WPFで使用不可。WinUI3移行時にWinUI3のColorPickerに置き換え。
             dialog.Color = System.Drawing.Color.FromArgb(Color.A, Color.R, Color.G, Color.B);
             
             DialogResult dResult = dialog.ShowDialog();

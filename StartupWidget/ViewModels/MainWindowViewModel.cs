@@ -167,7 +167,6 @@ namespace StartupWidget.ViewModels
         private void QuitApp()
         {
             WeakReferenceMessenger.Default.Send(new Messages.QuitAppMessage());
-            SettingsService.SaveSettings();
         }
 
         [RelayCommand]

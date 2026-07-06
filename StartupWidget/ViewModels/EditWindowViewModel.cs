@@ -258,7 +258,7 @@ namespace StartupWidget.ViewModels
         }
 
         [RelayCommand]
-        private async void BrowseExeFile()
+        private async Task BrowseExeFile()
         {
             
             FileDialogService.Title = LanguageService.GetString("Reusable/OpenFileDialogTitle");
@@ -273,21 +273,21 @@ namespace StartupWidget.ViewModels
             }
         }
         [RelayCommand]
-        private async void BrowseWorkingDirectory()
+        private async Task BrowseWorkingDirectory()
         {
-            FolderDialogService.FolderName = FolderDialogService.Title = LanguageService.GetString("Reusable/OpenFolderDialogTitle");
+            FolderDialogService.InitialDirectory = WorkingDirectory;
+            FolderDialogService.Title = LanguageService.GetString("Reusable/OpenFolderDialogTitle");
             
-
             bool? result = await FolderDialogService.ShowDialogAsync();
             if ((result != null) ? (bool)result : false)
             {
-                string? path = Path.GetDirectoryName(FolderDialogService.FolderName);
+                string? path = FolderDialogService.FolderName;
                 if (path == null) WorkingDirectory = "";
                 else WorkingDirectory = path;
             }
         }
         [RelayCommand]
-        private async void BrowseIconFile()
+        private async Task BrowseIconFile()
         {
             FileDialogService.Title = LanguageService.GetString("Reusable/OpenFileDialogTitle");
             FileDialogService.FileName = IconFilePath;
@@ -302,16 +302,16 @@ namespace StartupWidget.ViewModels
         }
 
         [RelayCommand]
-        private async void RemoveApp()
+        private async Task RemoveApp()
         {
             if (SelectedItem == null) return;
 
-            MessageBoxDialogResult result = await MessageBoxService.Show(
+
+            if (IsCurrentItemEmpty() ||
+                await MessageBoxService.Show(
                     LanguageService.GetString("EditWindow/MessageBox/ConfirmDelete", Name),
                     LanguageService.GetString("EditWindow/MessageBox/ConfirmDeleteCaption")
-                    , MessageBoxDialogButton.YesNo, MessageBoxDialogIcon.Question);
-
-            if (IsCurrentItemEmpty() || result == MessageBoxDialogResult.Yes)
+                    , MessageBoxDialogButton.YesNo, MessageBoxDialogIcon.Question) == MessageBoxDialogResult.Yes)
             {
                 ProcessItemViewModel tmp = _selectedItem!;
                 _selectedItem = null;
@@ -320,7 +320,7 @@ namespace StartupWidget.ViewModels
             }
         }
         [RelayCommand]
-        private async void OKButton()
+        private async Task OKButton()
         {
             if (!await Apply()) { return; }
             CancelButton();
@@ -351,9 +351,9 @@ namespace StartupWidget.ViewModels
             return true;
         }
         [RelayCommand]
-        private void ApplyButton()
+        private async Task ApplyButton()
         {
-            Apply();
+            await Apply();
         }
         [RelayCommand]
         private void CancelButton()

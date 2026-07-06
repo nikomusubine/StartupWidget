@@ -16,13 +16,13 @@ namespace StartupWidget.Services
                 if (rKey == null) return false;
                 if (startup)
                 {
-string? processPath = Environment.ProcessPath;
-if (string.IsNullOrWhiteSpace(processPath))
-{
-    return false;
-}
+                    string? processPath = Environment.ProcessPath;
+                    if (string.IsNullOrWhiteSpace(processPath))
+                    {
+                        return false;
+                    }
 
-rKey.SetValue(GetProductName(), processPath);
+                    rKey.SetValue(GetProductName(), processPath);
                 }
                 else
                 {

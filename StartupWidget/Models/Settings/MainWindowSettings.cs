@@ -23,7 +23,15 @@ namespace StartupWidget.Models.Settings
             }
             set
             {
-                ForegroundColor = Color.FromHtml(value);
+                Color color;
+                if (Color.TryFromHtml(value,out color))
+                {
+                    ForegroundColor = color;
+                }
+                else
+                {
+                    ForegroundColor = Color.Black;
+                }
             }
         }
 
@@ -38,7 +46,15 @@ namespace StartupWidget.Models.Settings
             }
             set
             {
-                BackgroundColor=Color.FromHtml(value);
+                Color color;
+                if (Color.TryFromHtml(value, out color))
+                {
+                    BackgroundColor = color;
+                }
+                else
+                {
+                    BackgroundColor = Color.White;
+                }
             }
         }
     }

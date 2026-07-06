@@ -59,6 +59,9 @@
 			<Apply Text="適用(_A)"/>
 			<Cancel Text="キャンセル(_C)"/>
 		</FooterButtons>
+		<MessageBox>
+			<FailedStartUp Text="スタートアップへの登録に失敗しました。"/>
+		</MessageBox>
 	</SettingsWindow>
 	<EditWindow Text="アプリの編集">
 		<AddButton Text="新規追加"/>
@@ -96,6 +99,7 @@
 	<Reusable>
 		<OpenFileDialogTitle Text="ファイルを選択"/>
 		<OpenFolderDialogTitle Text="フォルダを選択"/>
+		<ErrorMessageBoxTitle Text="エラー"/>
 	</Reusable>
 	<Exception>
 		<Color>

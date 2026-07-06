@@ -13,7 +13,7 @@ namespace StartupWidget.Models.Settings
         {
             Transparency = 0.0f;
             BackgroundImageFilePath = "";
-            ForegroundColor = Color.Black;
+            BackgroundColor = Color.Black;
             BackgroundColor = Color.White;
             WindowSize = 300;
             IsMagnet = true;
@@ -37,7 +37,15 @@ namespace StartupWidget.Models.Settings
             }
             set
             {
-                ForegroundColor = Color.FromHtml(value);
+                Color color;
+                if (Color.TryFromHtml(value, out color))
+                {
+                    ForegroundColor = color;
+                }
+                else
+                {
+                    ForegroundColor = Color.Black;
+                }
             }
         }
 
@@ -52,7 +60,15 @@ namespace StartupWidget.Models.Settings
             }
             set
             {
-                BackgroundColor = Color.FromHtml(value);
+                Color color;
+                if (Color.TryFromHtml(value, out color))
+                {
+                    BackgroundColor = color;
+                }
+                else
+                {
+                    BackgroundColor = Color.White;
+                }
             }
         }
         [IntBounds(0, 10000)]

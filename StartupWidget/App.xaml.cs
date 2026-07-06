@@ -77,14 +77,10 @@ public MainWindow AppMainWindow = null!;
 
         protected override void OnExit(ExitEventArgs e)
         {
-            if (SingleInstanceService!.IsNewInstance)
+            if (SingleInstanceService != null)
             {
-                SettingsService!.SaveSettings();
-                ProcessViewModel!.SaveApplications();
-                NamedPipeServer!.Dispose();
-                TaskTrayViewModel!.Dispose();
+                SingleInstanceService.Dispose();
             }
-            SingleInstanceService.Dispose();
             base.OnExit(e);
         }
 
@@ -111,6 +107,13 @@ public MainWindow AppMainWindow = null!;
         {
             WeakReferenceMessenger.Default.Register<QuitAppMessage>(this, (r, m) =>
             {
+                if (SingleInstanceService!.IsNewInstance)
+                {
+                    SettingsService!.SaveSettings();
+                    ProcessViewModel!.SaveApplications();
+                    NamedPipeServer!.Dispose();
+                    TaskTrayViewModel!.Dispose();
+                }
                 Current.Shutdown();
             });
 
@@ -170,7 +173,13 @@ public MainWindow AppMainWindow = null!;
                 settingsWindow.Owner = AppMainWindow;
                 settingsWindow.ShowDialog();
 
-                StartupService.SetStartup(SettingsService.GeneralSettings.IsStartup);
+                if (!StartupService.SetStartup(SettingsService.GeneralSettings.IsStartup))
+                {
+                    SettingsService.GeneralSettings.IsStartup = false;
+                    MessageBoxService messageBoxService = new MessageBoxService(AppMainWindow);
+                    messageBoxService.Show(LanguageService.GetString("SettingsWindow/MessageBox/FailedStartUp"),
+                        LanguageService.GetString("Reusable/ErrorMessageBoxTitle"), MessageBoxDialogButton.OK, MessageBoxDialogIcon.Stop);
+                }
             });
         }
     }
