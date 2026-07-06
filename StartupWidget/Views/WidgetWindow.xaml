@@ -43,6 +43,7 @@
 
     <Grid Background="{Binding BackgroundColor}" Height="{Binding WindowSize}" Width="{Binding WindowSize}">
         <ListView ItemsSource="{Binding ProcessItems}" Margin="0,0,0,0" Padding="5" Foreground="{Binding ForegroundColor}"
+                  BorderThickness="0"
                   SelectedItem="{Binding SelectedItem}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.IsSharedSizeScope="True"
                   beh:FileDropBehaviour.FileDropCommand="{Binding FileDropCommand}">
             <ListView.ItemsPanel>
