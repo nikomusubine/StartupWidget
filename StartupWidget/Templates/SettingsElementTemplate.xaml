@@ -14,7 +14,7 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="LabelWidth"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Margin="5,0" Text="{Binding Name}" />
+                        <TextBlock Grid.Column="0" Margin="5,0" Text="{Binding Name}" TextWrapping="Wrap" />
                         <ContentPresenter Grid.Column="1"/>
                     </Grid>
                 </ControlTemplate>
