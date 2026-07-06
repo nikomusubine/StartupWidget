@@ -12,7 +12,7 @@ using System.Windows.Interop;
 
 namespace StartupWidget.Services
 {
-    public class HotkeyRegisterService :  IDisposable
+    public partial class HotkeyRegisterService :  IDisposable
     {
         /// <summary>
         /// Define a system-wide hot key.
@@ -37,9 +37,10 @@ namespace StartupWidget.Services
         /// MOD_WIN     0x0008
         /// </param>
         /// <param name="vk">The virtual-key code of the hot key.</param>
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id,
-            KeyModifiers fsModifiers, Keys vk);
+        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool RegisterHotKey(IntPtr hWnd, int id,
+            KeyModifiers fsModifiers, int vk);
 
         /// <summary>
         /// Frees a hot key previously registered by the calling thread.
@@ -51,8 +52,9 @@ namespace StartupWidget.Services
         /// <param name="id">
         /// The identifier of the hot key to be freed.
         /// </param>
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool UnregisterHotKey(IntPtr hWnd, int id);
 
         /// <summary>
         /// Get the modifiers and key from the KeyData property of KeyEventArgs.
@@ -62,40 +64,40 @@ namespace StartupWidget.Services
         /// with modifiers.
         /// </param>
         /// <param name="key">The pressed key.</param>
-        public static KeyModifiers GetModifiers(Keys keydata, out Keys key)
+        public static KeyModifiers GetModifiers(Key keydata, out Key key)
         {
             key = keydata;
             KeyModifiers modifers = KeyModifiers.None;
 
             // Check whether the keydata contains the CTRL modifier key.
             // The value of Keys.Control is 131072.
-            if ((keydata & Keys.Control) == Keys.Control)
+            if ((keydata & System.Windows.Input.Key.LeftCtrl) == Key.LeftCtrl)
             {
                 modifers |= KeyModifiers.Control;
 
-                key = keydata ^ Keys.Control;
+                key = keydata ^ Key.LeftCtrl;
             }
 
             // Check whether the keydata contains the SHIFT modifier key.
             // The value of Keys.Control is 65536.
-            if ((keydata & Keys.Shift) == Keys.Shift)
+            if ((keydata & Key.LeftShift) == Key.LeftShift)
             {
                 modifers |= KeyModifiers.Shift;
-                key = key ^ Keys.Shift;
+                key = key ^ Key.LeftShift;
             }
 
             // Check whether the keydata contains the ALT modifier key.
             // The value of Keys.Control is 262144.
-            if ((keydata & Keys.Alt) == Keys.Alt)
+            if ((keydata & Key.LeftAlt) == Key.LeftAlt)
             {
                 modifers |= KeyModifiers.Alt;
-                key = key ^ Keys.Alt;
+                key = key ^ Key.LeftAlt;
             }
 
             // Check whether a key other than SHIFT, CTRL or ALT (Menu) is pressed.
-            if (key == Keys.ShiftKey || key == Keys.ControlKey || key == Keys.Menu)
+            if (key == Key.LeftShift || key == Key.LeftCtrl || key == Key.LeftAlt)
             {
-                key = Keys.None;
+                key = Key.None;
             }
 
             return modifers;
@@ -128,7 +130,7 @@ namespace StartupWidget.Services
 
         public KeyModifiers Modifiers { get; private set; }
 
-        public Keys Key { get; private set; }
+        public Key Key { get; private set; }
 
         /// <summary>
         /// Raise an event when the hotkey is pressed.
@@ -145,7 +147,7 @@ namespace StartupWidget.Services
             this.Handle = handle;
             this.ID = id;
             this.Modifiers = modifiers;
-            this.Key = (Keys)KeyInterop.VirtualKeyFromKey(key);
+            this.Key = key;
 
             RegisterHotKey();
 
@@ -165,7 +167,7 @@ namespace StartupWidget.Services
         /// </summary>
         private void RegisterHotKey()
         {
-            bool isKeyRegisterd = RegisterHotKey(Handle, ID, Modifiers, Key);
+            bool isKeyRegisterd = RegisterHotKey(Handle, ID, Modifiers, KeyInterop.VirtualKeyFromKey(Key));
 
             // If the operation failed, try to unregister the hotkey if the thread
             // has registered it before.
@@ -175,7 +177,7 @@ namespace StartupWidget.Services
                 UnregisterHotKey(IntPtr.Zero, ID);
 
                 // Try to register the hotkey again.
-                isKeyRegisterd = RegisterHotKey(Handle, ID, Modifiers, Key);
+                isKeyRegisterd = RegisterHotKey(Handle, ID, Modifiers, KeyInterop.VirtualKeyFromKey(Key));
 
                 // If the operation still failed, it means that the hotkey was already
                 // used in another thread or process.

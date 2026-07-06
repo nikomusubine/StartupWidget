@@ -17,7 +17,6 @@ namespace StartupWidget.ViewModels.Items
         public string Id { get; set; }
         public string Name { get; set; }
         public Type DataType { get; set; }
-        public object Value { get; 
-            set; }
+        public virtual object Value { get; set; }
     }
 }

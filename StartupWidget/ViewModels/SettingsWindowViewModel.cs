@@ -11,28 +11,31 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text;
-using System.Windows.Media;
 
 namespace StartupWidget.ViewModels
 {
     public partial class SettingsWindowViewModel : ObservableObject
     {
-        public SettingsWindowViewModel(SettingsService settings, LanguageService languageService)
+        public SettingsWindowViewModel(SettingsService settings, LanguageService languageService,OpenFileDialogService fileDialog, ColorPickerDialogService colorPicker)
         {
             SettingsService = settings;
             LanguageService = languageService;
             GeneralSettingsDraft = SettingsService.GeneralSettings;
             MainWindowSettingsDraft = SettingsService.MainWindowSettings;
             WidgetSettingsDraft = SettingsService.WidgetSettings;
+            FileDialogService = fileDialog;
+            ColorPickerService = colorPicker;
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { LoadSettings(); });
             LoadSettings();
             LoadItems();
         }
+        private OpenFileDialogService FileDialogService;
+        private ColorPickerDialogService ColorPickerService;
         private SettingsService SettingsService { get; set; }
         private LanguageService LanguageService { get; set; }
 
         private GeneralSettings GeneralSettingsDraft;
-
+        
         [ObservableProperty]
         private ObservableCollection<SettingItemViewModel> _generalSettingsItems;
         private MainWindowSettings MainWindowSettingsDraft;
@@ -92,7 +95,10 @@ namespace StartupWidget.ViewModels
 
                     if (property.Name.EndsWith("FilePath") && property.PropertyType == typeof(string))
                     {
-                        settingItem = new FilePathSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, property.GetValue(SettingsModel), ((Attributes.StringOptionAttribute)strAttr).Options.Cast<object>());
+                        settingItem = new FilePathSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, property.GetValue(SettingsModel), ((Attributes.StringOptionAttribute)strAttr).Options.Cast<object>()) { 
+                        DialogService=this.FileDialogService
+                        };
+                        
                     }
                     else
                     {
@@ -106,9 +112,12 @@ namespace StartupWidget.ViewModels
                         System.Drawing.Text.InstalledFontCollection fontCollection = new System.Drawing.Text.InstalledFontCollection();
                         settingItem = new FontSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, ((SerializableFont)property.GetValue(SettingsModel)).Name, fontCollection.Families.Select(x => x.Name).ToList(), ((SerializableFont)property.GetValue(SettingsModel)).Size);
                     }
-                    else if (property.PropertyType == typeof(System.Drawing.Color))
+                    else if (property.PropertyType == typeof(Models.Types.Color))
                     {
-                        settingItem = new ColorSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, (System.Drawing.Color)property.GetValue(SettingsModel));
+                        settingItem = new ColorSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, (Color)property.GetValue(SettingsModel))
+                        {
+                            ColorDialog = ColorPickerService
+                        };
 
                     }
                     else
@@ -139,11 +148,15 @@ namespace StartupWidget.ViewModels
                 if (property.GetCustomAttribute<Attributes.SettingElementIgnoreAttribute>() != null) continue;
                 foreach (var item in settingItems)
                 {
-                    if (item.Id ==  property.Name)
+                    if (item.Id == property.Name)
                     {
                         if (property.PropertyType == typeof(SerializableFont))
                         {
                             property.SetValue(SettingsModel, new SerializableFont(item.Value.ToString(), ((FontSettingItemViewModel)item).Size));
+                        }
+                        else if (property.PropertyType == typeof(Color))
+                        {
+                            property.SetValue(SettingsModel, new Color((Color)item.Value));
                         }
                         else
                         {

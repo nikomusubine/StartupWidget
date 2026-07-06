@@ -1,24 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using IWshRuntimeLibrary;
 using StartupWidget.Messages;
 using StartupWidget.Models.Types;
 using StartupWidget.Services;
 using StartupWidget.Services.Interfaces;
 using StartupWidget.ViewModels.Items;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
-using System.Windows;
-using System.Windows.Threading;
-using IWshRuntimeLibrary;
-using static System.Windows.Forms.Design.AxImporter;
 using Application = System.Windows.Application;
-using MessageBox = System.Windows.MessageBox;
 
 namespace StartupWidget.ViewModels
 {
@@ -26,6 +19,9 @@ namespace StartupWidget.ViewModels
     {
         private SettingsService SettingsService;
         private ProcessViewModel ProcessViewModel;
+        public required OpenFileDialogService FileDialogService;
+        public required OpenFolderDialogService FolderDialogService;
+        public required MessageBoxService MessageBoxService;
 
         private AddItemButtonViewModel _addButton;
         public AddItemButtonViewModel AddButton=> _addButton;
@@ -262,85 +258,81 @@ namespace StartupWidget.ViewModels
         }
 
         [RelayCommand]
-        private void BrowseExeFile()
+        private async Task BrowseExeFile()
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = LanguageService.GetString("Reusable/OpenFileDialogTitle");
-            dialog.FileName = FilePath;
-            dialog.Filter = LanguageService.GetString("EditWindow/Elements/FilePathDialogFilter")+"(*.exe)|*.exe";
-            dialog.RestoreDirectory = false;
+            
+            FileDialogService.Title = LanguageService.GetString("Reusable/OpenFileDialogTitle");
+            FileDialogService.FileName = FilePath;
+            FileDialogService.Filter = LanguageService.GetString("EditWindow/Elements/FilePathDialogFilter")+"(*.exe)|*.exe";
+            FileDialogService.RestoreDirectory = false;
 
-            if (dialog.ShowDialog() == DialogResult.OK)
+            bool? result = await FileDialogService.ShowDialogAsync();
+            if ((result != null) ? (bool)result : false)
             {
-                FilePath = dialog.FileName;
+                FilePath = FileDialogService.FileName;
             }
-            dialog.Dispose();
         }
         [RelayCommand]
-        private void BrowseWorkingDirectory()
+        private async Task BrowseWorkingDirectory()
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.FileName = dialog.Title = LanguageService.GetString("Reusable/OpenFolderDialogTitle");
-            ;
-            dialog.Filter = LanguageService.GetString("EditWindow/Elements/WorkingDirectoryDialogFilter") + "|.";
-            dialog.RestoreDirectory = true;
-            dialog.CheckFileExists = false;
-
-            if (dialog.ShowDialog() == DialogResult.OK)
+            FolderDialogService.InitialDirectory = WorkingDirectory;
+            FolderDialogService.Title = LanguageService.GetString("Reusable/OpenFolderDialogTitle");
+            
+            bool? result = await FolderDialogService.ShowDialogAsync();
+            if ((result != null) ? (bool)result : false)
             {
-                string? path = Path.GetDirectoryName(dialog.FileName);
-                if (path == null) FilePath = "";
+                string? path = FolderDialogService.FolderName;
+                if (path == null) WorkingDirectory = "";
                 else WorkingDirectory = path;
             }
-            dialog.Dispose();
         }
         [RelayCommand]
-        private void BrowseIconFile()
+        private async Task BrowseIconFile()
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = LanguageService.GetString("Reusable/OpenFileDialogTitle");
-            dialog.FileName = IconFilePath;
-            dialog.Filter = LanguageService.GetString("EditWindow/Elements/IconFilePathDialogFilter") + "(*.bmp; *.png; *.jpg; *.jpeg; *.gif; *.tif; *.tiff; *.ico; *.wdp; *.jxr)| " 
+            FileDialogService.Title = LanguageService.GetString("Reusable/OpenFileDialogTitle");
+            FileDialogService.FileName = IconFilePath;
+            FileDialogService.Filter = LanguageService.GetString("EditWindow/Elements/IconFilePathDialogFilter") + "(*.bmp; *.png; *.jpg; *.jpeg; *.gif; *.tif; *.tiff; *.ico; *.wdp; *.jxr)| " 
                                                       + "*.bmp;*.png;*.jpg;*.jpeg;*.gif;*.tif;*.tiff;*.ico;*.wdp;*.jxr";
-            dialog.RestoreDirectory = true;
-
-            if (dialog.ShowDialog() == DialogResult.OK)
+            FileDialogService.RestoreDirectory = true;
+            bool? result = await FileDialogService.ShowDialogAsync();
+            if ((result != null) ? (bool)result : false)
             {
-                IconFilePath = dialog.FileName;
+                IconFilePath = FileDialogService.FileName;
             }
-            dialog.Dispose();
         }
 
         [RelayCommand]
-        private void RemoveApp()
+        private async Task RemoveApp()
         {
             if (SelectedItem == null) return;
-            if (IsCurrentItemEmpty() || 
-                MessageBox.Show(
+
+
+            if (IsCurrentItemEmpty() ||
+                await MessageBoxService.Show(
                     LanguageService.GetString("EditWindow/MessageBox/ConfirmDelete", Name),
                     LanguageService.GetString("EditWindow/MessageBox/ConfirmDeleteCaption")
-                    , MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    , MessageBoxDialogButton.YesNo, MessageBoxDialogIcon.Question) == MessageBoxDialogResult.Yes)
             {
                 ProcessItemViewModel tmp = _selectedItem!;
-                _selectedItem= null;
+                _selectedItem = null;
                 ProcessItems.Remove(tmp);
                 OnPropertyChanged(string.Empty);
             }
         }
         [RelayCommand]
-        private void OKButton()
+        private async Task OKButton()
         {
-            if (!Apply()) { return; }
+            if (!await Apply()) { return; }
             CancelButton();
         }
-        private bool Apply()
+        private async Task<bool> Apply()
         {
             if (SelectedItem != null && !IsCurrentItemValid())
             {
-                MessageBox.Show(
+                await MessageBoxService.Show(
                     LanguageService.GetString("EditWindow/MessageBox/InvalidItem"),
                     LanguageService.GetString("EditWindow/MessageBox/InvalidItemCaption"),
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxDialogButton.OK, MessageBoxDialogIcon.Stop);
                 HasSelectTried = true;
                 OnPropertyChanged(string.Empty);
                 return false;
@@ -359,9 +351,9 @@ namespace StartupWidget.ViewModels
             return true;
         }
         [RelayCommand]
-        private void ApplyButton()
+        private async Task ApplyButton()
         {
-            Apply();
+            await Apply();
         }
         [RelayCommand]
         private void CancelButton()

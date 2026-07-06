@@ -46,14 +46,17 @@ namespace StartupWidget.Views
         private void _ReloadHotkey()
         {
             ShortcutKeys keys = ((WidgetWindowViewModel)DataContext).ShortcutKeys;
-
+            
             if (hotkeyRegisterService != null && !hotkeyRegisterService.disposed)
             {
                 hotkeyRegisterService.Dispose();
             }
             if (keys.Keys != Key.None && keys.Modifires != KeyModifiers.None)
             {
-
+                if (this.Handle == IntPtr.Zero)
+                {
+                    return;
+                }
                 hotkeyRegisterService = new HotkeyRegisterService(this.Handle,
                                                                     HotkeyID,
                                                                     keys.Modifires,

@@ -2,7 +2,6 @@
 using StartupWidget.Models.Types;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -14,7 +13,7 @@ namespace StartupWidget.Models.Settings
         {
             Transparency = 0.0f;
             BackgroundImageFilePath = "";
-            ForegroundColor = Color.Black;
+            BackgroundColor = Color.Black;
             BackgroundColor = Color.White;
             WindowSize = 300;
             IsMagnet = true;
@@ -34,11 +33,19 @@ namespace StartupWidget.Models.Settings
         {
             get
             {
-                return ColorTranslator.ToHtml(ForegroundColor);
+                return ForegroundColor.ToHtml();
             }
             set
             {
-                ForegroundColor = ColorTranslator.FromHtml(value);
+                Color color;
+                if (Color.TryFromHtml(value, out color))
+                {
+                    ForegroundColor = color;
+                }
+                else
+                {
+                    ForegroundColor = Color.Black;
+                }
             }
         }
 
@@ -49,11 +56,19 @@ namespace StartupWidget.Models.Settings
         {
             get
             {
-                return ColorTranslator.ToHtml(BackgroundColor);
+                return BackgroundColor.ToHtml();
             }
             set
             {
-                BackgroundColor = ColorTranslator.FromHtml(value);
+                Color color;
+                if (Color.TryFromHtml(value, out color))
+                {
+                    BackgroundColor = color;
+                }
+                else
+                {
+                    BackgroundColor = Color.White;
+                }
             }
         }
         [IntBounds(0, 10000)]
