@@ -66,7 +66,7 @@
         </Style>
     </Window.Resources>
     <Window.InputBindings>
-        <KeyBinding Gesture="Escape" Command="{Binding CancelButtonCommand}"/>
+        <KeyBinding Gesture="Escape" Command="{Binding EscapeKeyCommand}"/>
     </Window.InputBindings>
     <Grid>
         <Grid Margin="0,20,0,45" >
@@ -90,7 +90,7 @@
 
             <StackPanel Grid.Column="1" Margin="5,0"  Grid.IsSharedSizeScope="True" IsEnabled="{Binding IsSelected}">
                 <ContentControl  Style="{StaticResource ProcessOptionElement}" Tag="{loc:Lang EditWindow/Elements/Name}">
-                    <TextBox Text="{Binding Name}">
+                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}">
                         <TextBox.Style>
                             <Style TargetType="TextBox">
                                 <Setter Property="BorderBrush" Value="#FFABADB3"/>
@@ -125,7 +125,7 @@
                     </Grid>
                 </ContentControl>
                 <ContentControl Style="{StaticResource ProcessOptionElement}" Tag="{loc:Lang EditWindow/Elements/Arguments}">
-                    <TextBox Text="{Binding Arguments}"/>
+                    <TextBox Text="{Binding Arguments, UpdateSourceTrigger=PropertyChanged}"/>
                 </ContentControl>
                 <ContentControl Style="{StaticResource ProcessOptionElement}" Tag="{loc:Lang EditWindow/Elements/WorkingDirectory}">
                     <Grid>
@@ -148,7 +148,7 @@
                     </Grid>
                 </ContentControl>
                 <ContentControl Style="{StaticResource ProcessOptionElement}" Tag="{loc:Lang EditWindow/Elements/RunAsAdmin}">
-                    <CheckBox IsChecked="{Binding RunAsAdmin}" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding RunAsAdmin, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
                 </ContentControl>
                 <Button Content="{loc:Lang EditWindow/Elements/DeleteButton}" Command="{Binding RemoveAppCommand}"
                         Foreground="Red" HorizontalAlignment="Left" Padding="5,0" Margin="10,15,0,0"
