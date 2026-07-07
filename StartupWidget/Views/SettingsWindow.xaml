@@ -14,15 +14,18 @@
             BoolTemplate="{StaticResource BoolTemplate}"
             StringTemplate="{StaticResource StringTemplate}"
             IntTemplate="{StaticResource IntTemplate}"
-            FloatTemplate="{StaticResource FloatTemplate}"
+            DoubleTemplate="{StaticResource DoubleTemplate}"
             LimitedIntTemplate="{StaticResource LimitedIntTemplate}"
-            LimitedFloatTemplate="{StaticResource LimitedFloatTemplate}"
+            LimitedDoubleTemplate="{StaticResource LimitedDoubleTemplate}"
             OptionalStringTemplate="{StaticResource OptionalStringTemplate}"
             FontTemplate="{StaticResource FontTemplate}"
             FilePathTemplate="{StaticResource FilePathTemplate}"
             ColorTemplate="{StaticResource ColorTemplate}"
             ShortcutKeyTemplate="{StaticResource ShortcutKeyTemplate}"/>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding EscapeKeyCommand}"/>
+    </Window.InputBindings>
     <Grid>
         <TabControl Grid.Column="0" Margin="10,10,10,40">
             <TabItem Header="{loc:Lang SettingsWindow/GeneralSettings}">

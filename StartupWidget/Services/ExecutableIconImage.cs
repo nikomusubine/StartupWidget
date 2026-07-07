@@ -1,41 +1,28 @@
 ﻿using StartupWidget.Models.Types;
 using StartupWidget.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+using StartupWidget.Services.Win32Helpers;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Xaml;
 
 namespace StartupWidget.Services
 {
     public class ExecutableIconImage : IExecutableIconImage
     {
         #region Win32API
-        private const int MAX_PATH = 260;
-        private const uint SIID_SHIELD = 0x00000004D;
-        private const uint SHGSI_ICON = 0x000000100;
-        private const uint SHGSI_LARGEICON = 0x000000000;
-        private const uint SHGSI_SMALLICON = 0x000000001;
+        public const uint SIID_SHIELD = 0x00000004D;
+        public const uint SHGSI_ICON = 0x000000100;
+        public const uint SHGSI_LARGEICON = 0x000000000;
+        public const uint SHGSI_SMALLICON = 0x000000001;
+        public const uint SHGFI_SYSICONINDEX = 0x00004000;
+        public const uint SHGFI_USEFILEATTRIBUTES = 0x00000010;
+        public const int SHIL_EXTRALARGE = 0x2;
+        public const int SHIL_JUMBO = 0x4;
 
-        [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        private struct SHSTOCKICONINFO
-        {
-            public uint cbSize;
-            public IntPtr hIcon;
-            public int iSysIconIndex;
-            public int iIcon;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
-            public string szPath;
-        }
-
-        [DllImport("shell32.dll", SetLastError = false)]
-        private static extern int SHGetStockIconInfo(uint siid,
-            uint uFlags, ref SHSTOCKICONINFO sii);
-        [DllImport("gdi32.dll")]
-        public static extern bool DeleteObject(IntPtr hObject);
         /// <summary>
         /// UAC盾アイコンを取得する
         /// </summary>
@@ -43,7 +30,7 @@ namespace StartupWidget.Services
         /// 大きいいアイコン(32x32)を取得する時はfalse。</param>
         /// <returns>UAC盾アイコンのIconオブジェクト。
         /// Windows Vista未満のOSの時はnullを返す。</returns>
-        public static Icon? GetShieldIcon()
+        public static ImageSource? GetShieldIcon()
         {
             //Windows Vista以上か確認する
             if (Environment.OSVersion.Platform != PlatformID.Win32NT ||
@@ -55,7 +42,7 @@ namespace StartupWidget.Services
             SHSTOCKICONINFO sii = new SHSTOCKICONINFO();
             sii.cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO));
             //盾アイコンを取得する
-            int res = SHGetStockIconInfo(SIID_SHIELD,
+            int res = IconHelper.SHGetStockIconInfo(SIID_SHIELD,
                 SHGSI_ICON | (false ? SHGSI_SMALLICON : SHGSI_LARGEICON),
                 ref sii);
 
@@ -65,8 +52,79 @@ namespace StartupWidget.Services
                 Marshal.ThrowExceptionForHR(res);
             }
 
-            //Iconオブジェクトを作成する
-            return Icon.FromHandle(sii.hIcon);
+            //ImageSourceオブジェクトを作成する
+            try
+            {
+                BitmapSource source = Imaging.CreateBitmapSourceFromHIcon(sii.hIcon, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                source.Freeze();
+                return source;
+            }
+            finally
+            {
+
+            }
+        }
+
+        public static ImageSource? GetFileIcon(string filePath, bool isLarge = true)
+        {
+            SHFILEINFO shfi = new SHFILEINFO();
+            uint flags = SHGSI_ICON | (isLarge ? SHGSI_LARGEICON : SHGSI_SMALLICON);
+            IntPtr result = IconHelper.SHGetFileInfo(filePath, 0, ref shfi, (uint)Marshal.SizeOf(shfi), flags);
+            if (result == IntPtr.Zero || shfi.hIcon == IntPtr.Zero)
+            { return null; }
+
+            try
+            {
+                BitmapSource source = Imaging.CreateBitmapSourceFromHIcon(
+                    shfi.hIcon, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                source.Freeze();
+                return source;
+            }
+            finally
+            {
+                IconHelper.DestroyIcon(shfi.hIcon);
+            }
+        }
+
+        public static ImageSource? GetJumboIcon(string filePath)
+        {
+            SHFILEINFO shfi = new SHFILEINFO();
+            IntPtr getInfoResult = IconHelper.SHGetFileInfo(filePath, 0, ref shfi, (uint)Marshal.SizeOf(shfi), SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
+            int iconIndex = shfi.iIcon;
+
+            Guid iidImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
+            IntPtr pImageList;
+
+            int hResult = IconHelper.SHGetImageList(SHIL_JUMBO, ref iidImageList, out pImageList);
+
+            if (hResult == 0 && pImageList != IntPtr.Zero)
+            {
+                IImageList imageList = (IImageList)Marshal.GetObjectForIUnknown(pImageList);
+                Marshal.Release(pImageList);
+
+                IntPtr hIcon = IntPtr.Zero;
+                int getIconResult= imageList.GetIcon(iconIndex, 1, out hIcon);
+                System.Diagnostics.Debug.WriteLine($"GetIcon HRESULT: 0x{getIconResult:X}");
+
+                if (hIcon != IntPtr.Zero)
+                {
+                    try
+                    {
+                        BitmapSource bmpSource = Imaging.CreateBitmapSourceFromHIcon(
+                            hIcon,
+                            Int32Rect.Empty,
+                            BitmapSizeOptions.FromEmptyOptions());
+
+                        bmpSource.Freeze();
+                        return bmpSource;
+                    }
+                    finally
+                    {
+                        IconHelper.DestroyIcon(hIcon);
+                    }
+                }
+            }
+            return null;
         }
         #endregion
         public ExecutableIconImage()
@@ -74,27 +132,12 @@ namespace StartupWidget.Services
             Iconcache = new Dictionary<string, ImageSource>();
         }
         private Dictionary<string, ImageSource> Iconcache;
-        private ImageSource ConvertFromBitmap(Bitmap bitmap)
-        {
-            IntPtr hBitmap = bitmap.GetHbitmap();
-
-            try
-            {
-                return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty,
-                    System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-            }
-            finally
-            {
-                DeleteObject(hBitmap);
-            }
-        }
-
+        private ImageSource? ShieldIconCache;
         public ImageSource GetIconImage(ExecutableProcess process)
         {
             if (string.IsNullOrWhiteSpace(process.FilePath) || !File.Exists(process.FilePath))
             {
-                Bitmap bmp = new Bitmap(16, 16);
-                return ConvertFromBitmap(bmp);
+                return GetEmptyImageSource();
             }
 
             if (!string.IsNullOrEmpty(process.IconFilePath)) //カスタムアイコンの場合
@@ -112,39 +155,34 @@ namespace StartupWidget.Services
             //IconPath指定なし
             if (process.IconFilePath == "" || process.IconFilePath == null)
             {
-                Icon? ico = Icon.ExtractAssociatedIcon(process.FilePath);
-                if (ico == null)
-                {
-                    throw new FileNotFoundException(nameof(process.IconFilePath));
-                }
-
-                Bitmap bitmap = ico.ToBitmap();
-                if (process.RunasAdmin)
-                {
-                    //盾アイコン取得
-                    Icon? Shield = GetShieldIcon();
-                    if (Shield != null)
-                    {
-                        //合成
-                        Graphics graphics = Graphics.FromImage(bitmap);
-                        float Devision = 2;
-                        Image shield = new Bitmap(Shield.ToBitmap(), new System.Drawing.Size((int)(bitmap.Width / Devision), (int)(bitmap.Height / Devision)));
-                        graphics.DrawImage(shield, bitmap.Width - (bitmap.Width / Devision), bitmap.Height - (bitmap.Height / Devision), shield.Width, shield.Height);
-                        graphics.Dispose();
-                    }
-                }
-                ImageSource imageSource = ConvertFromBitmap(bitmap);
+                ImageSource imageSource = GetJumboIcon(process.FilePath)
+                    ?? GetEmptyImageSource();
                 Iconcache.Add(process.FilePath, imageSource);
                 return imageSource;
             }
             else //IconPath指定
             {
-                Bitmap bmp = (Bitmap)Bitmap.FromFile(process.IconFilePath);
-
-                ImageSource imageSource = ConvertFromBitmap(bmp);
-                Iconcache.Add(process.IconFilePath, imageSource);
-                return imageSource;
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+                image.UriSource = new Uri(process.IconFilePath);
+                image.EndInit();
+                image.Freeze();
+                return image;
             }
+        }
+
+        public ImageSource GetShieldIconImage()
+        {
+            if(ShieldIconCache == null)
+            {
+                ShieldIconCache = GetShieldIcon();
+            }
+            return ShieldIconCache?? GetEmptyImageSource();
+        }
+
+        private static ImageSource GetEmptyImageSource()
+        {
+            return new WriteableBitmap(1, 1, 1, 1, System.Windows.Media.PixelFormats.Bgra32, null);// 空のImageSourceを生成
         }
     }
 }

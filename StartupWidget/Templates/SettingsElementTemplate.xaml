@@ -14,7 +14,7 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="LabelWidth"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Margin="5,0" Text="{Binding Name}" />
+                        <TextBlock Grid.Column="0" Margin="5,0" Text="{Binding Name}" TextWrapping="Wrap" />
                         <ContentPresenter Grid.Column="1"/>
                     </Grid>
                 </ControlTemplate>
@@ -40,9 +40,9 @@
         </ContentControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="FloatTemplate">
+    <DataTemplate x:Key="DoubleTemplate">
         <ContentControl Style="{StaticResource SettingItemLayoutStyle}">
-            <k:FloatNumericBox Text="{Binding Value}"/>
+            <k:DoubleNumericBox Text="{Binding Value}"/>
         </ContentControl>
     </DataTemplate>
 
@@ -59,14 +59,14 @@
         </ContentControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="LimitedFloatTemplate">
+    <DataTemplate x:Key="LimitedDoubleTemplate">
         <ContentControl Style="{StaticResource SettingItemLayoutStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="80" />
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <k:FloatNumericBox Grid.Column="0" IsLimited="True" MaxValue="{Binding MaxValue}" MinValue="{Binding MinValue}" Text="{Binding SliderValue}"/>
+                <k:DoubleNumericBox Grid.Column="0" IsLimited="True" MaxValue="{Binding MaxValue}" MinValue="{Binding MinValue}" Text="{Binding SliderValue}"/>
                 <Slider Grid.Column="1" Margin="5,0" Minimum="{Binding SliderMinimum}" Maximum="{Binding SliderMaximum}" Value="{Binding SliderValue}"/>
             </Grid>
         </ContentControl>
@@ -86,7 +86,7 @@
                     <ColumnDefinition Width="80" />
                 </Grid.ColumnDefinitions>
                     <ComboBox Grid.Column="0" ItemsSource="{Binding FontFamilies}" SelectedItem="{Binding Value}" Width="150"/>
-                    <k:FloatNumericBox Grid.Column="1" IsLimited="True" MinValue="1" Text="{Binding Size}"/>
+                    <k:DoubleNumericBox Grid.Column="1" IsLimited="True" MinValue="1" Text="{Binding Size}"/>
             </Grid>
         </ContentControl>
     </DataTemplate>

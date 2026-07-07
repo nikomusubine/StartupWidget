@@ -6,18 +6,19 @@ using StartupWidget.Messages;
 using StartupWidget.Models.Types;
 using StartupWidget.Services;
 using StartupWidget.Services.Interfaces;
+using StartupWidget.ViewModels.Bases;
 using StartupWidget.ViewModels.Items;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using Application = System.Windows.Application;
 
 namespace StartupWidget.ViewModels
 {
-    public partial class EditWindowViewModel: ObservableObject, INotifyPropertyChanged
+    public partial class EditWindowViewModel: ProcessListViewWindowBase, INotifyPropertyChanged
     {
-        private SettingsService SettingsService;
         private ProcessViewModel ProcessViewModel;
         public required OpenFileDialogService FileDialogService;
         public required OpenFolderDialogService FolderDialogService;
@@ -70,6 +71,7 @@ namespace StartupWidget.ViewModels
                 else
                 {
                     _selectedItem = value;
+                    _hasSelectTried = false;
                 }
 
                 OnPropertyChanged(string.Empty);
@@ -101,42 +103,46 @@ namespace StartupWidget.ViewModels
         public string Name
         {
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.Name; } else { return ""; }            }
-            set { if(SelectedItem!=null) { SelectedItem.ExecutableProcess.Name = value; }  }
+            set { if(SelectedItem!=null) { SelectedItem.ExecutableProcess.Name = value; SettingChange(); }  }
         }
         public bool FilePathErrorVisible => _selectedItem != null && HasSelectTried && (string.IsNullOrEmpty(FilePath) || !System.IO.File.Exists(FilePath));
         public string FilePath
         {
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.FilePath; } else { return ""; } }
             set { if (SelectedItem != null) { SelectedItem.ExecutableProcess.FilePath = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(); SettingChange();
                 } }
         }
         public string Arguments
         {
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.Arguments; } else { return ""; } }
-            set { if (SelectedItem != null) { SelectedItem.ExecutableProcess.Arguments = value; } }
+            set { if (SelectedItem != null) { SelectedItem.ExecutableProcess.Arguments = value; SettingChange(); } }
         }
         public string WorkingDirectory
         {
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.WorkingDirectory; } else { return ""; } }
             set { if (SelectedItem != null) { SelectedItem.ExecutableProcess.WorkingDirectory = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(); SettingChange();
                 } }
         }
         public string IconFilePath
         {
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.IconFilePath; } else { return ""; } }
             set { if (SelectedItem != null) { SelectedItem.ExecutableProcess.IconFilePath = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(); SettingChange();
                 } }
         }
         public bool RunAsAdmin
         {
             get { if (SelectedItem != null) { return SelectedItem.ExecutableProcess.RunasAdmin; } else { return false; } }
-            set { if (SelectedItem != null) { SelectedItem.ExecutableProcess.RunasAdmin = value; } }
+            set { if (SelectedItem != null) { SelectedItem.ExecutableProcess.RunasAdmin = value; SettingChange(); } }
         }
         #endregion
-
+        bool _settingChanged = false;
+        void SettingChange()
+        {
+            _settingChanged = true;
+        }
 
         public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel) : this(settings, processViewModel, (ProcessItemViewModel?)null)
         {
@@ -149,22 +155,20 @@ namespace StartupWidget.ViewModels
         }
 
 #pragma warning disable CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。'required' 修飾子を追加するか、Null 許容として宣言することを検討してください。
-        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, ProcessItemViewModel? EditingItem)
+        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, ProcessItemViewModel? EditingItem) : base(settings)
 #pragma warning restore CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。'required' 修飾子を追加するか、Null 許容として宣言することを検討してください。
         {
-            SettingsService = settings;
             ProcessViewModel = processViewModel;
             _addButton = new AddItemButtonViewModel(LanguageService.GetString("EditWindow/AddButton"));
 
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { LoadSettings(); });
             LoadSettings();
             LoadItems(EditingItem);
-            SelectedItem = EditingItem;
             ProcessItems!.CollectionChanged += ProcessItems_CollectionChanged;
         }
 
         [ObservableProperty]
-        private float _fontSize;
+        private double _fontSize;
         [ObservableProperty]
         private System.Windows.Media.FontFamily _fontFamily;
 
@@ -346,6 +350,7 @@ namespace StartupWidget.ViewModels
                 tempItems.Add(tmp);
             }
 
+            _settingChanged = false;
             ProcessViewModel.ProcessItems = tempItems;
             ProcessViewModel.SaveApplications();
             return true;
@@ -359,6 +364,15 @@ namespace StartupWidget.ViewModels
         private void CancelButton()
         {
             WeakReferenceMessenger.Default.Send(new CloseSettingsWindow());
+        }
+
+        [RelayCommand]
+        private void EscapeKey()
+        {
+            if (!_settingChanged)
+            {
+                CancelButton();
+            }
         }
     }
 }

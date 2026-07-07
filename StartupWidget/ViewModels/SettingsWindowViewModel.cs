@@ -16,10 +16,9 @@ namespace StartupWidget.ViewModels
 {
     public partial class SettingsWindowViewModel : ObservableObject
     {
-        public SettingsWindowViewModel(SettingsService settings, LanguageService languageService,OpenFileDialogService fileDialog, ColorPickerDialogService colorPicker)
+        public SettingsWindowViewModel(SettingsService settings, OpenFileDialogService fileDialog, ColorPickerDialogService colorPicker)
         {
             SettingsService = settings;
-            LanguageService = languageService;
             GeneralSettingsDraft = SettingsService.GeneralSettings;
             MainWindowSettingsDraft = SettingsService.MainWindowSettings;
             WidgetSettingsDraft = SettingsService.WidgetSettings;
@@ -32,7 +31,6 @@ namespace StartupWidget.ViewModels
         private OpenFileDialogService FileDialogService;
         private ColorPickerDialogService ColorPickerService;
         private SettingsService SettingsService { get; set; }
-        private LanguageService LanguageService { get; set; }
 
         private GeneralSettings GeneralSettingsDraft;
         
@@ -45,7 +43,7 @@ namespace StartupWidget.ViewModels
         [ObservableProperty]
         private ObservableCollection<SettingItemViewModel> _widgetSettingsItems;
         [ObservableProperty]
-        private float _fontSize;
+        private double _fontSize;
         [ObservableProperty]
         private System.Windows.Media.FontFamily _fontFamily;
 
@@ -71,16 +69,16 @@ namespace StartupWidget.ViewModels
             {
                 if (property.GetCustomAttribute<Attributes.SettingElementIgnoreAttribute>() != null) continue;
 
-                var floatAttr = property.GetCustomAttribute(typeof(Attributes.FloatBoundsAttribute));
+                var doubleAttr = property.GetCustomAttribute(typeof(Attributes.DoubleBoundsAttribute));
                 var intAttr = property.GetCustomAttribute(typeof(Attributes.IntBoundsAttribute));
                 var strAttr = property.GetCustomAttribute(typeof(Attributes.StringOptionAttribute));
 
                 SettingItemViewModel settingItem;
-                if (floatAttr != null)
+                if (doubleAttr != null)
                 {
-                    List<float> l = new List<float>();
-                    l.Add(((Attributes.FloatBoundsAttribute)floatAttr).Min);
-                    l.Add(((Attributes.FloatBoundsAttribute)floatAttr).Max);
+                    List<double> l = new List<double>();
+                    l.Add(((Attributes.DoubleBoundsAttribute)doubleAttr).Min);
+                    l.Add(((Attributes.DoubleBoundsAttribute)doubleAttr).Max);
                     settingItem = new LimitedSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, property.GetValue(SettingsModel), l.Cast<object>().ToList());
                 }
                 else if (intAttr != null)
@@ -138,11 +136,6 @@ namespace StartupWidget.ViewModels
 
         private void _ApplyItems(ObservableCollection<SettingItemViewModel> settingItems, object SettingsModel)
         {
-            string LangPath = "SettingsWindow/";
-
-            if (SettingsModel.GetType() == typeof(GeneralSettings)) LangPath += "GeneralSettings/";
-            if (SettingsModel.GetType() == typeof(MainWindowSettings)) LangPath += "MainWindowSettings/";
-            if (SettingsModel.GetType() == typeof(WidgetSettings)) LangPath += "WidgetSettings/";
             foreach (var property in SettingsModel.GetType().GetProperties())
             {
                 if (property.GetCustomAttribute<Attributes.SettingElementIgnoreAttribute>() != null) continue;
@@ -168,6 +161,17 @@ namespace StartupWidget.ViewModels
             }
         }
 
+        private bool IsChanged()
+        {
+            bool changed = false;
+            changed = _generalSettingsItems.Any(x => x.isChanged);
+            if (changed) { return true; }
+            changed = _mainWindowSettingsItems.Any(x => x.isChanged);
+            if (changed) { return true; }
+            changed = _widgetSettingsItems.Any(x => x.isChanged);
+            return changed;
+        }
+
         [RelayCommand]
         private void OKSettings()
         {
@@ -188,6 +192,13 @@ namespace StartupWidget.ViewModels
         {
             WeakReferenceMessenger.Default.Send(new CloseSettingsWindow());
         }
-
+        [RelayCommand]
+        private void EscapeKey()
+        {
+            if (!IsChanged())
+            {
+                CancelSettings();
+            }
+        }
     }
 }

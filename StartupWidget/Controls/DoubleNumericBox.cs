@@ -10,13 +10,13 @@ using System.Windows.Media;
 
 namespace StartupWidget.Controls
 {    
-    public class FloatNumericBox: System.Windows.Controls.TextBox
+    public class DoubleNumericBox: System.Windows.Controls.TextBox
     {
-        private float Value
+        private double Value
         {
             get
             {
-                if (float.TryParse(Text, out float Value))
+                if (double.TryParse(Text, out double Value))
                 {
                     return Value;
                 }
@@ -28,15 +28,15 @@ namespace StartupWidget.Controls
             }
         }
 
-        public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(float), typeof(FloatNumericBox), new PropertyMetadata(float.MinValue));
-        public static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register("MaxValue", typeof(float), typeof(FloatNumericBox), new PropertyMetadata(float.MaxValue));
+        public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(double), typeof(DoubleNumericBox), new PropertyMetadata(double.MinValue));
+        public static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register("MaxValue", typeof(double), typeof(DoubleNumericBox), new PropertyMetadata(double.MaxValue));
 
         public bool IsLimited { get; set; } = false;
-        public float MaxValue { get=>(float)GetValue(MaxValueProperty);
+        public double MaxValue { get=>(double)GetValue(MaxValueProperty);
             set { SetValue(MaxValueProperty, value); } }
-        public float MinValue { get => (float)GetValue(MinValueProperty);
+        public double MinValue { get => (double)GetValue(MinValueProperty);
             set { SetValue(MinValueProperty, value); } }
-        public FloatNumericBox()
+        public DoubleNumericBox()
         {
             InputMethod.SetIsInputMethodEnabled(this, false);
             System.Windows.DataObject.AddPastingHandler(this, OnPaste);
@@ -77,7 +77,7 @@ namespace StartupWidget.Controls
 
             var afterText = GetAfterText(e.Text);
 
-            if (!IsFloat(afterText))
+            if (!IsDouble(afterText))
             {
                 e.Handled = true;
             }
@@ -89,7 +89,7 @@ namespace StartupWidget.Controls
             {
                 var text = (string)e.DataObject.GetData(typeof(string));
                 var afterText = GetAfterText(text);
-                if(!IsFloat(afterText))
+                if(!IsDouble(afterText))
                 {
                     e.CancelCommand();
                 }
@@ -113,7 +113,7 @@ namespace StartupWidget.Controls
             CheckOutofRange();
         }
 
-        private bool IsFloat(string text)
+        private bool IsDouble(string text)
         {
             if("-" == text)
             {
@@ -136,7 +136,7 @@ namespace StartupWidget.Controls
                 AfterPeriod = splited[1];
             }
 
-            if (float.TryParse(text, out float Value))
+            if (double.TryParse(text, out double Value))
             {
                 return string.Equals(text, Value.ToString()) || string.Equals(text, Value.ToString()+"."+AfterPeriod);
             }

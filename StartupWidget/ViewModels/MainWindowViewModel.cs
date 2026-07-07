@@ -5,6 +5,7 @@ using StartupWidget.Messages;
 using StartupWidget.Models.Settings;
 using StartupWidget.Services;
 using StartupWidget.Services.Interfaces;
+using StartupWidget.ViewModels.Bases;
 using StartupWidget.ViewModels.Items;
 using StartupWidget.Views;
 using System;
@@ -15,23 +16,20 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using Application = System.Windows.Application;
 using Color = System.Windows.Media.Color;
 
 namespace StartupWidget.ViewModels
 {
-    public partial class MainWindowViewModel : ObservableObject, INotifyPropertyChanged
+    public partial class MainWindowViewModel : ProcessListViewWindowBase, INotifyPropertyChanged
     {
-        public MainWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, LanguageService languageService)
+        public MainWindowViewModel(SettingsService settings, ProcessViewModel processViewModel) : base(settings)
         {
-            SettingsService = settings;
-            LanguageService = languageService;
             ProcessViewModel = processViewModel;
 
-            IntPtr hBitmap = ExecutableIconImage.GetShieldIcon().ToBitmap().GetHbitmap();
-            ShieldIcon = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty,
-                    System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+            ShieldIcon = ExecutableIconImage.GetShieldIcon();
 
             WeakReferenceMessenger.Default.Register<HideWidgetWindow>(this, (r, m) =>
             {
@@ -44,8 +42,6 @@ namespace StartupWidget.ViewModels
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { LoadSettings(); });
             LoadSettings();
         }
-        private LanguageService LanguageService;
-        public SettingsService SettingsService { get; set; }
         public ObservableCollection<ProcessItemViewModel> ProcessItems => ProcessViewModel.ProcessItems;
         [ObservableProperty]
         private partial ProcessViewModel ProcessViewModel { get; set; }
@@ -56,20 +52,20 @@ namespace StartupWidget.ViewModels
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(ValidBackgroundImagePath))]
-        private string _backgroundImagePath;
+        private string _backgroundImagePath = null!;
 
         public Uri? ValidBackgroundImagePath => string.IsNullOrWhiteSpace(BackgroundImagePath) ? null : new Uri(BackgroundImagePath);
 
         [ObservableProperty]
-        private SolidColorBrush _foregroundColor;
+        private SolidColorBrush _foregroundColor = null!;
 
         [ObservableProperty]
-        private SolidColorBrush _backgroundColor;
+        private SolidColorBrush _backgroundColor = null!;
         [ObservableProperty]
-        private float _fontSize;
+        private double _fontSize;
         [ObservableProperty]
-        private System.Windows.Media.FontFamily _fontFamily;
-        public ImageSource ShieldIcon { get; set; }
+        private System.Windows.Media.FontFamily _fontFamily = null!;
+        public ImageSource? ShieldIcon { get; set; }
         private void LoadSettings()
         {
             BackgroundImagePath = SettingsService.MainWindowSettings.BackgroundImageFilePath;
@@ -87,11 +83,11 @@ namespace StartupWidget.ViewModels
 
         private void _StartProcess(bool isAdmin)
         {
-            if (_selectedItem != null)
+            if (SelectedItem != null)
             {
                 try
                 {
-                    ProcessViewModel.StartProcess(_selectedItem.ExecutableProcess, isAdmin);
+                    ProcessViewModel.StartProcess(SelectedItem.ExecutableProcess, isAdmin);
                 }
                 catch (Win32Exception ex)
                 {
@@ -144,7 +140,7 @@ namespace StartupWidget.ViewModels
         [RelayCommand]
         private void OpenEditWindow()
         {
-            if (SelectedItem != null)  WeakReferenceMessenger.Default.Send(new OpenEditWindow(SelectedItem));
+            if (SelectedItem != null) WeakReferenceMessenger.Default.Send(new OpenEditWindow(SelectedItem));
             else WeakReferenceMessenger.Default.Send(new OpenEditWindow());
         }
 
@@ -162,7 +158,7 @@ namespace StartupWidget.ViewModels
         {
             WeakReferenceMessenger.Default.Send(new OpenSettingsWindow());
         }
-        
+
         [RelayCommand]
         private void QuitApp()
         {

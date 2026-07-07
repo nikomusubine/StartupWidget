@@ -5,12 +5,12 @@ using System.Text;
 namespace StartupWidget.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class FloatBoundsAttribute: Attribute
+    public class DoubleBoundsAttribute: Attribute
     {
-        public float Max { get; set; }
-        public float Min { get; set; }
+        public double Max { get; set; }
+        public double Min { get; set; }
 
-        public FloatBoundsAttribute(float min, float max)
+        public DoubleBoundsAttribute(double min, double max)
         {
             Min = min;
             Max = max;

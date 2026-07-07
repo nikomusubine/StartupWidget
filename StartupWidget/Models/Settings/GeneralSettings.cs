@@ -1,4 +1,5 @@
-﻿using StartupWidget.Models.Types;
+﻿using StartupWidget.Attributes;
+using StartupWidget.Models.Types;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,6 +20,9 @@ namespace StartupWidget.Models.Settings
 
         public string Language { get; set; }
 
+        [DoubleBounds(16,512)]
+        public double IconSize { get; set; } = 48;
         public bool IsStartup { get; set; }
+
     }
 }

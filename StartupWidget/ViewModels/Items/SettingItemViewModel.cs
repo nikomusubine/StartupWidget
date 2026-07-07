@@ -11,12 +11,24 @@ namespace StartupWidget.ViewModels.Items
         {
             Name = name;
             DataType = datatype;
-            Value = value;
+            _value = value;
             Id = id;
+            isChanged = false;
+            initialized = true;
         }
+        private bool initialized = false;
         public string Id { get; set; }
         public string Name { get; set; }
         public Type DataType { get; set; }
-        public virtual object Value { get; set; }
+        private object _value;
+        public virtual object Value { get { return _value; } set{
+                _value = value;
+                if (initialized)
+                {
+                    isChanged = true;
+                }
+            } }
+
+        public bool isChanged = false;
     }
 }

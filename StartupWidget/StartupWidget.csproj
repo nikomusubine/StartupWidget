@@ -10,12 +10,13 @@
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	  <PackageIcon>ICO_4Niko.ico</PackageIcon>
 	  <ApplicationIcon>Assets\ICO_4Niko.ico</ApplicationIcon>
+	  <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Languages\ja-JP.xml" />
-	  <Using Remove="System.Windows.Forms"/>
-	  <Using Remove="System.Drawing"/>
+	  <Using Remove="System.Windows.Forms" />
+	  <Using Remove="System.Drawing" />
   </ItemGroup>
 
   <ItemGroup>
