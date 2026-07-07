@@ -164,7 +164,6 @@ namespace StartupWidget.ViewModels
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { LoadSettings(); });
             LoadSettings();
             LoadItems(EditingItem);
-            SelectedItem = EditingItem;
             ProcessItems!.CollectionChanged += ProcessItems_CollectionChanged;
         }
 
