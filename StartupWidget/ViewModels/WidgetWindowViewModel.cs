@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using StartupWidget.Messages;
 using StartupWidget.Models.Types;
 using StartupWidget.Services;
+using StartupWidget.ViewModels.Bases;
 using StartupWidget.ViewModels.Items;
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,10 @@ using Color = System.Windows.Media.Color;
 
 namespace StartupWidget.ViewModels
 {
-    public partial class WidgetWindowViewModel : ObservableObject
+    public partial class WidgetWindowViewModel : ProcessListViewWindowBase
     {
-        public WidgetWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, LanguageService languageService)
+        public WidgetWindowViewModel(SettingsService settings, ProcessViewModel processViewModel):base(settings)
         {
-            SettingsService = settings;
-            LanguageService = languageService;
             ProcessViewModel = processViewModel;
 
             ShieldIcon = ExecutableIconImage.GetShieldIcon();
@@ -34,12 +33,10 @@ namespace StartupWidget.ViewModels
                 LoadSettings();
             });
         }
-        public ImageSource ShieldIcon { get; set; }
-        private LanguageService LanguageService { get; set; }
+        public ImageSource? ShieldIcon { get; set; }
         [ObservableProperty]
         private ProcessItemViewModel? _selectedItem;
         public ObservableCollection<ProcessItemViewModel> ProcessItems => ProcessViewModel.ProcessItems;
-        private SettingsService SettingsService { get; set; }
         private ProcessViewModel ProcessViewModel { get; set; }
 
         private bool _isFixed = false;
@@ -73,15 +70,15 @@ namespace StartupWidget.ViewModels
         }
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(ValidBackgroundImagePath))]
-        private string _backgroundImagePath;
+        private string _backgroundImagePath = null!;
 
         public Uri? ValidBackgroundImagePath => string.IsNullOrWhiteSpace(BackgroundImagePath) ? null : new Uri(BackgroundImagePath);
 
         [ObservableProperty]
-        private SolidColorBrush _foregroundColor;
+        private SolidColorBrush _foregroundColor = null!;
 
         [ObservableProperty]
-        private SolidColorBrush _backgroundColor;
+        private SolidColorBrush _backgroundColor = null!;
         [ObservableProperty]
         private double _fontSize;
         [ObservableProperty]
@@ -134,16 +131,17 @@ namespace StartupWidget.ViewModels
             IsFixed = SettingsService.WidgetSettings.IsFixed;
             IsMagnet = SettingsService.WidgetSettings.IsMagnet;
             MagnetThreshold = SettingsService.WidgetSettings.MagnetThreshold;
+            OnPropertyChanged(string.Empty);
         }
 
 
         private void _StartProcess(bool isAdmin)
         {
-            if (_selectedItem != null)
+            if (SelectedItem != null)
             {
                 try
                 {
-                    ProcessViewModel.StartProcess(_selectedItem.ExecutableProcess, isAdmin);
+                    ProcessViewModel.StartProcess(SelectedItem.ExecutableProcess, isAdmin);
                 }
                 catch (Win32Exception ex)
                 {

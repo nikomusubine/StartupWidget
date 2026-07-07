@@ -16,10 +16,9 @@ namespace StartupWidget.ViewModels
 {
     public partial class SettingsWindowViewModel : ObservableObject
     {
-        public SettingsWindowViewModel(SettingsService settings, LanguageService languageService,OpenFileDialogService fileDialog, ColorPickerDialogService colorPicker)
+        public SettingsWindowViewModel(SettingsService settings, OpenFileDialogService fileDialog, ColorPickerDialogService colorPicker)
         {
             SettingsService = settings;
-            LanguageService = languageService;
             GeneralSettingsDraft = SettingsService.GeneralSettings;
             MainWindowSettingsDraft = SettingsService.MainWindowSettings;
             WidgetSettingsDraft = SettingsService.WidgetSettings;
@@ -32,7 +31,6 @@ namespace StartupWidget.ViewModels
         private OpenFileDialogService FileDialogService;
         private ColorPickerDialogService ColorPickerService;
         private SettingsService SettingsService { get; set; }
-        private LanguageService LanguageService { get; set; }
 
         private GeneralSettings GeneralSettingsDraft;
         

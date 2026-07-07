@@ -25,7 +25,6 @@ namespace StartupWidget
 
         public WidgetWindow? WidgetWindow;
 public MainWindow AppMainWindow = null!;
-        public LanguageService? LanguageService;
         private SingleInstanceService? SingleInstanceService;
         public NamedPipeIPCServer? NamedPipeServer;
         public TaskTrayIconViewModel? TaskTrayViewModel;
@@ -53,7 +52,6 @@ public MainWindow AppMainWindow = null!;
             
             SettingsService = new SettingsService();
             SettingsService.LoadSettings();
-            LanguageService= new LanguageService();
             LanguageService.ChangeLanguage(SettingsService.GeneralSettings.Language);
             
             NamedPipeServer = new NamedPipeIPCServer();
@@ -61,9 +59,9 @@ public MainWindow AppMainWindow = null!;
             NamedPipeServer.StartListen();
 
             ProcessViewModel = new ProcessViewModel();
-            MainWindowViewModel = new MainWindowViewModel(SettingsService,ProcessViewModel,LanguageService);
+            MainWindowViewModel = new MainWindowViewModel(SettingsService,ProcessViewModel);
             
-            WidgetWindowViewModel = new WidgetWindowViewModel(SettingsService, ProcessViewModel,LanguageService);
+            WidgetWindowViewModel = new WidgetWindowViewModel(SettingsService, ProcessViewModel);
             TaskTrayViewModel = new TaskTrayIconViewModel(SettingsService);
 
             WidgetWindow = new WidgetWindow { DataContext=WidgetWindowViewModel };
@@ -169,7 +167,7 @@ public MainWindow AppMainWindow = null!;
             WeakReferenceMessenger.Default.Register<OpenSettingsWindow>(this, (r, m) =>
             {
                 settingsWindow = new SettingsWindow ();
-                settingsWindow.DataContext = new SettingsWindowViewModel(SettingsService, LanguageService,new OpenFileDialogService(settingsWindow),new ColorPickerDialogService(settingsWindow));
+                settingsWindow.DataContext = new SettingsWindowViewModel(SettingsService, new OpenFileDialogService(settingsWindow),new ColorPickerDialogService(settingsWindow));
                 settingsWindow.Owner = AppMainWindow;
                 settingsWindow.ShowDialog();
 

@@ -6,6 +6,7 @@ using StartupWidget.Messages;
 using StartupWidget.Models.Types;
 using StartupWidget.Services;
 using StartupWidget.Services.Interfaces;
+using StartupWidget.ViewModels.Bases;
 using StartupWidget.ViewModels.Items;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -16,9 +17,8 @@ using Application = System.Windows.Application;
 
 namespace StartupWidget.ViewModels
 {
-    public partial class EditWindowViewModel: ObservableObject, INotifyPropertyChanged
+    public partial class EditWindowViewModel: ProcessListViewWindowBase, INotifyPropertyChanged
     {
-        private SettingsService SettingsService;
         private ProcessViewModel ProcessViewModel;
         public required OpenFileDialogService FileDialogService;
         public required OpenFolderDialogService FolderDialogService;
@@ -155,10 +155,9 @@ namespace StartupWidget.ViewModels
         }
 
 #pragma warning disable CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。'required' 修飾子を追加するか、Null 許容として宣言することを検討してください。
-        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, ProcessItemViewModel? EditingItem)
+        public EditWindowViewModel(SettingsService settings, ProcessViewModel processViewModel, ProcessItemViewModel? EditingItem) : base(settings)
 #pragma warning restore CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。'required' 修飾子を追加するか、Null 許容として宣言することを検討してください。
         {
-            SettingsService = settings;
             ProcessViewModel = processViewModel;
             _addButton = new AddItemButtonViewModel(LanguageService.GetString("EditWindow/AddButton"));
 

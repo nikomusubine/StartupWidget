@@ -5,9 +5,11 @@
                     xmlns:dd="urn:gong-wpf-dragdrop">
 
     <DataTemplate x:Key="ProcessItemTemplateBase" DataType="{x:Type local:ProcessItemViewModel}">
-        <Grid Width="Auto" ToolTip="{Binding Name}">
+        <Grid Width="{Binding Path=DataContext.ProcessItemWidth, RelativeSource={RelativeSource AncestorType=Window}}"
+              Height="{Binding Path=DataContext.ProcessItemHeight, RelativeSource={RelativeSource AncestorType=Window}}"
+              ToolTip="{Binding Name}">
             <Grid.RowDefinitions>
-                <RowDefinition  Height="64" />
+                <RowDefinition  Height="{Binding Path=DataContext.IconSize, RelativeSource={RelativeSource AncestorType=Window}}"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -22,7 +24,8 @@
                 <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Stretch="Uniform" Source="{Binding IconImage}"/>
                 <Image Grid.Row="1" Grid.Column="1" Stretch="Uniform" Source="{Binding ShieldIcon,TargetNullValue={x:Null}}"/>
             </Grid>
-            <TextBlock Grid.Row="1"  Text="{Binding Name}" TextWrapping="Wrap" Margin="5,0" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Row="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" Margin="0,2,0,0" 
+                       TextAlignment="Center" MaxHeight="{Binding Path=DataContext.TextHeight,RelativeSource={RelativeSource AncestorType=Window}}"/>
         </Grid>
     </DataTemplate>
 
