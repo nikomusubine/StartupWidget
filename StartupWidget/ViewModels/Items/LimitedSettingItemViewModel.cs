@@ -19,8 +19,6 @@ namespace StartupWidget.ViewModels.Items
             {
                 if (DataType == typeof(int))
                     Value = (object)Convert.ToInt32(value);
-                else if (DataType == typeof(float))
-                    Value = Convert.ToSingle(value);
                 else
                     Value = value;
                 
@@ -40,11 +38,11 @@ namespace StartupWidget.ViewModels.Items
                     MaxValue = 1000;
                 }
             }
-            if(dataType == typeof(float))
+            if(dataType == typeof(double))
             {
-                MinValue = Limits is not null ? (float)Limits.ElementAtOrDefault(0) : float.MinValue;
-                MaxValue = Limits is not null ? (float)Limits.ElementAtOrDefault(1) : float.MaxValue;
-                if ((float)MaxValue == float.MaxValue)
+                MinValue = Limits is not null ? (double)Limits.ElementAtOrDefault(0) : double.MinValue;
+                MaxValue = Limits is not null ? (double)Limits.ElementAtOrDefault(1) : double.MaxValue;
+                if ((double)MaxValue == double.MaxValue)
                 {
                     MaxValue = 1000;
                 }

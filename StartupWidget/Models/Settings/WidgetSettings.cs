@@ -74,14 +74,14 @@ namespace StartupWidget.Models.Settings
         [IntBounds(0, 10000)]
         public int WindowSize { get; set; }
 
-        [FloatBounds(0.0f, 100f)]
-        public float Transparency { get; set; }
+        [DoubleBounds(0.0f, 100f)]
+        public double Transparency { get; set; }
         [XmlIgnore] public ShortcutKeys ShortcutKeys { get; set; }
 
         public bool IsFixed { get; set; }
         public bool IsMagnet { get; set; }
-        [FloatBounds(0.0f, 100f)]
-        public float MagnetThreshold { get; set; }
+        [DoubleBounds(0.0f, 100f)]
+        public double MagnetThreshold { get; set; }
 
 
         [SettingElementIgnore]

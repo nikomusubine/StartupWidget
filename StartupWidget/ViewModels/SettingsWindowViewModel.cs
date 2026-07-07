@@ -45,7 +45,7 @@ namespace StartupWidget.ViewModels
         [ObservableProperty]
         private ObservableCollection<SettingItemViewModel> _widgetSettingsItems;
         [ObservableProperty]
-        private float _fontSize;
+        private double _fontSize;
         [ObservableProperty]
         private System.Windows.Media.FontFamily _fontFamily;
 
@@ -71,16 +71,16 @@ namespace StartupWidget.ViewModels
             {
                 if (property.GetCustomAttribute<Attributes.SettingElementIgnoreAttribute>() != null) continue;
 
-                var floatAttr = property.GetCustomAttribute(typeof(Attributes.FloatBoundsAttribute));
+                var doubleAttr = property.GetCustomAttribute(typeof(Attributes.DoubleBoundsAttribute));
                 var intAttr = property.GetCustomAttribute(typeof(Attributes.IntBoundsAttribute));
                 var strAttr = property.GetCustomAttribute(typeof(Attributes.StringOptionAttribute));
 
                 SettingItemViewModel settingItem;
-                if (floatAttr != null)
+                if (doubleAttr != null)
                 {
-                    List<float> l = new List<float>();
-                    l.Add(((Attributes.FloatBoundsAttribute)floatAttr).Min);
-                    l.Add(((Attributes.FloatBoundsAttribute)floatAttr).Max);
+                    List<double> l = new List<double>();
+                    l.Add(((Attributes.DoubleBoundsAttribute)doubleAttr).Min);
+                    l.Add(((Attributes.DoubleBoundsAttribute)doubleAttr).Max);
                     settingItem = new LimitedSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, property.GetValue(SettingsModel), l.Cast<object>().ToList());
                 }
                 else if (intAttr != null)

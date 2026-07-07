@@ -6,14 +6,14 @@ namespace StartupWidget.Models.Types
 {
     public struct Position
     {
-        public float x { get; set; }
-        public float y { get; set; }
+        public double x { get; set; }
+        public double y { get; set; }
 
         public Position()
         {
             x = 0; y = 0;
         }
-        public Position(float x, float y)
+        public Position(double x, double y)
         {
             this.x = x; this.y = y;
         }

@@ -65,7 +65,7 @@ namespace StartupWidget.ViewModels
         [ObservableProperty]
         private SolidColorBrush _backgroundColor;
         [ObservableProperty]
-        private float _fontSize;
+        private double _fontSize;
         [ObservableProperty]
         private System.Windows.Media.FontFamily _fontFamily;
         public ImageSource ShieldIcon { get; set; }

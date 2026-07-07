@@ -6,7 +6,7 @@ namespace StartupWidget.Models.Types
     [Serializable]
     public class SerializableFont
     {
-        public SerializableFont(string name, float size)
+        public SerializableFont(string name, double size)
         {
             Name = name;
             Size = size;
@@ -15,9 +15,9 @@ namespace StartupWidget.Models.Types
         public SerializableFont()
         {
             Name = SystemFonts.MessageFontFamily.Source;
-            Size = (float)SystemFonts.MessageFontSize;
+            Size = (double)SystemFonts.MessageFontSize;
         }
         public string Name { get; set; }
-        public float Size { get; set; }
+        public double Size { get; set; }
     }
 }

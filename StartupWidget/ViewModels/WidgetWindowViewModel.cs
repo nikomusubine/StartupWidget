@@ -65,7 +65,7 @@ namespace StartupWidget.ViewModels
             }
         }
         [ObservableProperty]
-        private float _magnetThreshold = 12;
+        private double _magnetThreshold = 12;
 
         public ShortcutKeys ShortcutKeys
         {
@@ -83,15 +83,15 @@ namespace StartupWidget.ViewModels
         [ObservableProperty]
         private SolidColorBrush _backgroundColor;
         [ObservableProperty]
-        private float _fontSize;
+        private double _fontSize;
         [ObservableProperty]
-        private System.Windows.Media.FontFamily _fontFamily;
+        private System.Windows.Media.FontFamily _fontFamily = null!;
         [ObservableProperty]
-        private float _windowSize = 300;
+        private double _windowSize = 300;
         [ObservableProperty]
-        private float _opacity;
+        private double _opacity;
 
-        public float PositionX
+        public double PositionX
         {
             get => SettingsService.WidgetSettings.WidgetPosition.x;
             set
@@ -101,7 +101,7 @@ namespace StartupWidget.ViewModels
                 SettingsService.WidgetSettings.WidgetPosition = p;
             }
         }
-        public float PositionY
+        public double PositionY
         {
             get => SettingsService.WidgetSettings.WidgetPosition.y;
             set

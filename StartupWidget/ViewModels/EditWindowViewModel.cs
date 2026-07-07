@@ -170,7 +170,7 @@ namespace StartupWidget.ViewModels
         }
 
         [ObservableProperty]
-        private float _fontSize;
+        private double _fontSize;
         [ObservableProperty]
         private System.Windows.Media.FontFamily _fontFamily;
 
