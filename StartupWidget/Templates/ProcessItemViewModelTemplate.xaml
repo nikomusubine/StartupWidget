@@ -24,7 +24,7 @@
                 <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Stretch="Uniform" Source="{Binding IconImage}"/>
                 <Image Grid.Row="1" Grid.Column="1" Stretch="Uniform" Source="{Binding ShieldIcon,TargetNullValue={x:Null}}"/>
             </Grid>
-            <TextBlock Grid.Row="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" Margin="0,2,0,0" 
+            <TextBlock Grid.Row="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow" Margin="-3,2" 
                        TextAlignment="Center" MaxHeight="{Binding Path=DataContext.TextHeight,RelativeSource={RelativeSource AncestorType=Window}}"/>
         </Grid>
     </DataTemplate>

@@ -29,8 +29,8 @@ namespace StartupWidget.ViewModels.Bases
             get
             {
                 double type1,type2;
-                type1 = (generalSettings.Font.Size / 2) * 15;
-                type2 = generalSettings.IconSize * 1.7;
+                type1 = (generalSettings.Font.Size / 2) * 15.4;
+                type2 = generalSettings.IconSize * 1.8;
                 return Math.Max(type1, type2);
             }
         }
