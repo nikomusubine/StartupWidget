@@ -20,5 +20,7 @@ namespace StartupWidget.Models.Settings
         public string Language { get; set; }
 
         public bool IsStartup { get; set; }
+
+        public double IconSize { get; set; }
     }
 }
