@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xaml;
 
 namespace StartupWidget.Services
 {
@@ -17,6 +18,10 @@ namespace StartupWidget.Services
         public const uint SHGSI_ICON = 0x000000100;
         public const uint SHGSI_LARGEICON = 0x000000000;
         public const uint SHGSI_SMALLICON = 0x000000001;
+        public const uint SHGFI_SYSICONINDEX = 0x00004000;
+        public const uint SHGFI_USEFILEATTRIBUTES = 0x00000010;
+        public const int SHIL_EXTRALARGE = 0x2;
+        public const int SHIL_JUMBO = 0x4;
 
         /// <summary>
         /// UAC盾アイコンを取得する
@@ -80,6 +85,47 @@ namespace StartupWidget.Services
                 IconHelper.DestroyIcon(shfi.hIcon);
             }
         }
+
+        public static ImageSource? GetJumboIcon(string filePath)
+        {
+            SHFILEINFO shfi = new SHFILEINFO();
+            IntPtr getInfoResult = IconHelper.SHGetFileInfo(filePath, 0, ref shfi, (uint)Marshal.SizeOf(shfi), SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
+            int iconIndex = shfi.iIcon;
+
+            Guid iidImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
+            IntPtr pImageList;
+
+            int hResult = IconHelper.SHGetImageList(SHIL_JUMBO, ref iidImageList, out pImageList);
+
+            if (hResult == 0 && pImageList != IntPtr.Zero)
+            {
+                IImageList imageList = (IImageList)Marshal.GetObjectForIUnknown(pImageList);
+                Marshal.Release(pImageList);
+
+                IntPtr hIcon = IntPtr.Zero;
+                int getIconResult= imageList.GetIcon(iconIndex, 1, out hIcon);
+                System.Diagnostics.Debug.WriteLine($"GetIcon HRESULT: 0x{getIconResult:X}");
+
+                if (hIcon != IntPtr.Zero)
+                {
+                    try
+                    {
+                        BitmapSource bmpSource = Imaging.CreateBitmapSourceFromHIcon(
+                            hIcon,
+                            Int32Rect.Empty,
+                            BitmapSizeOptions.FromEmptyOptions());
+
+                        bmpSource.Freeze();
+                        return bmpSource;
+                    }
+                    finally
+                    {
+                        IconHelper.DestroyIcon(hIcon);
+                    }
+                }
+            }
+            return null;
+        }
         #endregion
         public ExecutableIconImage()
         {
@@ -109,7 +155,7 @@ namespace StartupWidget.Services
             //IconPath指定なし
             if (process.IconFilePath == "" || process.IconFilePath == null)
             {
-                ImageSource imageSource = GetFileIcon(process.FilePath)
+                ImageSource imageSource = GetJumboIcon(process.FilePath)
                     ?? GetEmptyImageSource();
                 Iconcache.Add(process.FilePath, imageSource);
                 return imageSource;
