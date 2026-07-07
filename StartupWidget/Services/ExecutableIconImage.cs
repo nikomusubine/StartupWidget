@@ -104,7 +104,6 @@ namespace StartupWidget.Services
 
                 IntPtr hIcon = IntPtr.Zero;
                 int getIconResult= imageList.GetIcon(iconIndex, 1, out hIcon);
-                System.Diagnostics.Debug.WriteLine($"GetIcon HRESULT: 0x{getIconResult:X}");
 
                 if (hIcon != IntPtr.Zero)
                 {
