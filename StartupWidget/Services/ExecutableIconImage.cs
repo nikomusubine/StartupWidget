@@ -105,6 +105,7 @@ namespace StartupWidget.Services
                 IntPtr hIcon = IntPtr.Zero;
                 int getIconResult= imageList.GetIcon(iconIndex, 1, out hIcon);
 
+
                 if (hIcon != IntPtr.Zero)
                 {
                     try
@@ -114,6 +115,10 @@ namespace StartupWidget.Services
                             Int32Rect.Empty,
                             BitmapSizeOptions.FromEmptyOptions());
 
+                        if (CheckTransparentSpace(bmpSource,64))
+                        {
+                            return GetFileIcon(filePath);
+                        }
                         bmpSource.Freeze();
                         return bmpSource;
                     }
@@ -125,6 +130,34 @@ namespace StartupWidget.Services
             }
             return null;
         }
+
+        private static bool CheckTransparentSpace(BitmapSource source, int offset)
+        {
+            int width = source.PixelWidth, height = source.PixelHeight;
+
+            if (width <= offset || height <= offset) return false;
+
+            int targetx = width - offset;
+            int targety = height - offset;
+
+            byte[] row = new byte[width * 4];
+            source.CopyPixels(new Int32Rect(0, targety, width, 1), row, width * 4, 0);
+
+            for (int i = 3; i < row.Length; i += 4)
+            {
+                if (row[i] > 0) return false;
+            }
+
+            byte[] column = new byte[height * 4];
+            source.CopyPixels(new Int32Rect(targetx, 0, 1, height), column, 4, 0);
+
+            for (int i = 3; i < row.Length; i += 4)
+            {
+                if (column[i] > 0) return false;
+            }
+            return true;
+        }
+
         #endregion
         public ExecutableIconImage()
         {
