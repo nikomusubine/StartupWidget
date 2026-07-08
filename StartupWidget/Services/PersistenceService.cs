@@ -38,7 +38,7 @@ namespace StartupWidget.Services.Types
 # if DEBUG
                 return;
 #else
-                throw new DirectoryNotFoundException("Valid parent directory was not found");
+                throw new DirectoryNotFoundException($"Valid parent directory was not found: {path}");
 #endif
             }
             if (!Directory.Exists(dirPath))
