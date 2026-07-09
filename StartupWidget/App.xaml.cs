@@ -1,12 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using StartupWidget.Messages;
 using StartupWidget.Services;
-using StartupWidget.Services.Interfaces;
 using StartupWidget.ViewModels;
-using StartupWidget.ViewModels.Items;
 using StartupWidget.Views;
-using System.Configuration;
-using System.Data;
+using System.IO;
 using System.Windows;
 
 namespace StartupWidget
@@ -24,10 +21,12 @@ namespace StartupWidget
         public ProcessViewModel? ProcessViewModel;
 
         public WidgetWindow? WidgetWindow;
-public MainWindow AppMainWindow = null!;
+        public MainWindow AppMainWindow = null!;
         private SingleInstanceService? SingleInstanceService;
         public NamedPipeIPCServer? NamedPipeServer;
         public TaskTrayIconViewModel? TaskTrayViewModel;
+        const string defaultFallbackLanguage = "ja-JP";
+
         protected override void OnStartup(StartupEventArgs e)
         {
             SingleInstanceService = new SingleInstanceService();
@@ -52,8 +51,15 @@ public MainWindow AppMainWindow = null!;
             
             SettingsService = new SettingsService();
             SettingsService.LoadSettings();
-            LanguageService.ChangeLanguage(SettingsService.GeneralSettings.Language);
-            
+            try
+            {
+                LanguageService.ChangeLanguage(SettingsService.GeneralSettings.Language);
+            }
+            catch (FileNotFoundException)
+            {
+                SettingsService.GeneralSettings.Language = defaultFallbackLanguage;
+                LanguageService.ChangeLanguage(SettingsService.GeneralSettings.Language);
+            }
             NamedPipeServer = new NamedPipeIPCServer();
             NamedPipeServer.OnMessageReceived += OnNamedPipeMessageReceived;
             NamedPipeServer.StartListen();
