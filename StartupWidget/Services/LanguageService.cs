@@ -17,7 +17,11 @@ namespace StartupWidget.Services
         {
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="langCode"></param>
+        /// <exception cref="FileNotFoundException"></exception>
         public static void ChangeLanguage(string langCode)
         {
             string xmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Languages", $"{langCode}.xml");
