@@ -30,6 +30,7 @@ namespace StartupWidget
         protected override void OnStartup(StartupEventArgs e)
         {
             SingleInstanceService = new SingleInstanceService();
+#if !DEBUG
             if (!SingleInstanceService.IsNewInstance)
             {
                 try
@@ -44,7 +45,7 @@ namespace StartupWidget
                 Current.Shutdown();
                 return;
             }
-
+#endif
 
             base.OnStartup(e);
             
@@ -71,6 +72,7 @@ namespace StartupWidget
             TaskTrayViewModel = new TaskTrayIconViewModel(SettingsService);
 
             WidgetWindow = new WidgetWindow { DataContext=WidgetWindowViewModel };
+            WidgetWindowViewModel.HWnd= new System.Windows.Interop.WindowInteropHelper(WidgetWindow).Handle;
 
             AppMainWindow = new MainWindow { DataContext = MainWindowViewModel };
 
