@@ -23,24 +23,6 @@
         <bh:WindowDragMoveBehaviour IsFixed="{Binding IsFixed}" IsMagnetEnabled="{Binding IsMagnet}" MagnetThreshold="{Binding MagnetThreshold}"/>
     </i:Interaction.Behaviors>
 
-    <Window.ContextMenu>
-        <ContextMenu>
-            <MenuItem Header="{loc:Lang Widget/RightClickMenu/Run}" Command="{Binding StartProcessCommand}"/>
-            <MenuItem Header="{loc:Lang Widget/RightClickMenu/RunAsAdmin}" Command="{Binding StartProcessAsAdminCommand}">
-                <MenuItem.Icon>
-                    <Image Source="{Binding ShieldIcon}" Width="16" Height="16"/>
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{loc:Lang Widget/RightClickMenu/Edit}" Command="{Binding OpenEditWindowCommand}"/>
-            <Separator/>
-            <MenuItem Header="{loc:Lang Widget/RightClickMenu/IsFixed}" IsCheckable="True" IsChecked="{Binding IsFixed, Mode=TwoWay}"/>
-            <MenuItem Header="{loc:Lang Widget/RightClickMenu/IsMagnet}" IsCheckable="True" IsChecked="{Binding IsMagnet, Mode=TwoWay}"/>
-            <Separator/>
-            <MenuItem Header="{loc:Lang Widget/RightClickMenu/ShowMainWindow}" Command="{Binding ShowMainWindowCommand}"/>
-            <MenuItem Header="{loc:Lang Widget/RightClickMenu/ShowSettings}" Command="{Binding ShowSettingsCommand}"/>
-        </ContextMenu>
-    </Window.ContextMenu>
-
     <Grid Background="{Binding BackgroundColor}" Height="{Binding WindowSize}" Width="{Binding WindowSize}">
         <ListView ItemsSource="{Binding ProcessItems}" Margin="0,0,0,0" Foreground="{Binding ForegroundColor}"
                   BorderThickness="0"
@@ -70,7 +52,15 @@
             <i:Interaction.Behaviors>
                 <bh:ListViewUnselectBehaviour/>
             </i:Interaction.Behaviors>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <EventSetter Event="PreviewMouseRightButtonUp" Handler="ListViewItem_PreviewMouseRightButtonUp" />
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
 
     </Grid>
+    <Window.InputBindings>
+        <MouseBinding MouseAction="RightClick" Command="{Binding RightClickCommand}"/>
+    </Window.InputBindings>
 </Window>

@@ -87,6 +87,7 @@ namespace StartupWidget.Views
         private void VisibleChangedHandler(object sender, DependencyPropertyChangedEventArgs e)
         {
             ReloadHotkey((bool)e.NewValue);
+            ((WidgetWindowViewModel)DataContext).HWnd = this.Handle;
         }
 
         private void LoadedHandler(object sender, RoutedEventArgs e)
@@ -105,6 +106,10 @@ namespace StartupWidget.Views
             {
                 this.WindowState = WindowState.Minimized;
             }
+        }
+        private void ListViewItem_PreviewMouseRightButtonUp(object sender, MouseEventArgs e)
+        {
+            ((WidgetWindowViewModel)DataContext).RightClickCommand.Execute(sender);
         }
     }
 }
