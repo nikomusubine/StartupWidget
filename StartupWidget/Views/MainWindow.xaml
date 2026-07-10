@@ -49,7 +49,7 @@
         </Menu>
 
         <ListView Margin="10,20,10,10" ItemsSource="{Binding ProcessItems}" SelectedItem="{Binding SelectedItem}" 
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Single"
                   bh:FileDropBehaviour.FileDropCommand="{Binding FileDropCommand}"                  >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
