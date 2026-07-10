@@ -7,7 +7,7 @@
     <DataTemplate x:Key="ProcessItemTemplateBase" DataType="{x:Type local:ProcessItemViewModel}">
         <Grid Width="{Binding Path=DataContext.ProcessItemWidth, RelativeSource={RelativeSource AncestorType=Window}}"
               Height="{Binding Path=DataContext.ProcessItemHeight, RelativeSource={RelativeSource AncestorType=Window}}"
-              ToolTip="{Binding Name}">
+              ToolTip="{Binding Name}" Margin="1">
             <Grid.RowDefinitions>
                 <RowDefinition  Height="{Binding Path=DataContext.IconSize, RelativeSource={RelativeSource AncestorType=Window}}"/>
                 <RowDefinition />
