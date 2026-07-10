@@ -1,6 +1,6 @@
 ﻿namespace StartupWidget.Models.Types
 {
-    public abstract class TaskTrayMenuItemBase
+    public abstract class ContextMenuItemBase
     {
 
     }

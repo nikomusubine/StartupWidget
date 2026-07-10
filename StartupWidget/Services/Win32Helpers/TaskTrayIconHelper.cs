@@ -1,10 +1,24 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace StartupWidget.Services.Win32Helpers
 {
     public static partial class TaskTrayIconHelper
     {
         #region Win32API構造体と定数
+        [InlineArray(128)]
+        public struct CharBuffer128
+        {
+            private char _element;
+
+            public static CharBuffer128 Build(string str)
+            {
+                CharBuffer128 buffer = new();
+                ReadOnlySpan<char> span = str;
+                span.CopyTo(buffer);
+                return buffer;
+            }
+        }
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public unsafe struct NOTIFYICONDATA
         {
@@ -14,23 +28,39 @@ namespace StartupWidget.Services.Win32Helpers
             public uint uFlags; //どのメンバが有効か？例: NIF_ICONを指定すればhIconを見てアイコンを設定、NIF_TIPを指定でszTipを見てTooltipを指定
             public uint uCallbackMessage; //通知メッセージのID
             public IntPtr hIcon; //アイコンのハンドル
-            
+
             public fixed char szTip[128]; //ツールチップのテキスト
             public uint dwState;
             public uint dwStateMask;
             public fixed char szInfo[256];
             public uint uTimeoutOrVersion;
-            
+
             public fixed char szInfoTitle[64];
             public uint dwInfoFlags;
         }
-        public const uint NIM_ADD =    0x00000000;
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public unsafe struct MENUITEMINFO
+        {
+            public uint cbSize;
+            public uint fMask;
+            public uint fType;
+            public uint fState;
+            public uint wID;
+            public IntPtr hSubMenu;
+            public IntPtr hbmpChecked;
+            public IntPtr hbmpUnchecked;
+            public IntPtr dwItemData;
+            public char* dwTypeData;
+            public uint cch;
+            public IntPtr hbmpItem;
+        }
+        public const uint NIM_ADD = 0x00000000;
         public const uint NIM_MODIFY = 0x00000001;
         public const uint NIM_DELETE = 0x00000002;
 
         public const uint NIF_MESSAGE = 0x00000001;
-        public const uint NIF_ICON =    0x00000002;
-        public const uint NIF_TIP =     0x00000004;
+        public const uint NIF_ICON = 0x00000002;
+        public const uint NIF_TIP = 0x00000004;
 
         public const uint WM_USER = 0x00000400;
 
@@ -39,6 +69,13 @@ namespace StartupWidget.Services.Win32Helpers
         public const uint MF_BYCOMMAND = 0x00000000;
         public const uint MF_CHECKED = 0x00000008;
         public const uint MF_UNCHECKED = 0x00000000;
+
+        public const uint MIIM_STRING = 0x00000040;
+        public const uint MIIM_ID = 0x00000002;
+        public const uint MIIM_BITMAP = 0x00000080;
+
+        public const uint TPM_NONOTIFY = 0x0080;
+        public const uint TPM_RETURNCMD = 0x0100;
         #endregion
 
         #region Win32API 関数
@@ -49,14 +86,14 @@ namespace StartupWidget.Services.Win32Helpers
         [LibraryImport("user32.dll")]
         private static partial IntPtr CreatePopupMenu();
 
-        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16,EntryPoint ="AppendMenuW")]
+        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16, EntryPoint = "AppendMenuW")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool AppendMenu(IntPtr hMenu, uint uFlags, uint uIDNewItem, string? lpNewItem);
 
-        [LibraryImport("user32.dll", EntryPoint = "InsertMenuItemW")]
+        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16, EntryPoint = "InsertMenuItemW", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool InsertMenuItem(IntPtr hMenu, uint Item,
-            [MarshalAs(UnmanagedType.Bool)] bool fByPosition, IntPtr lpmi);
+            [MarshalAs(UnmanagedType.Bool)] bool fByPosition, ref MENUITEMINFO lpmi);
 
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -70,13 +107,16 @@ namespace StartupWidget.Services.Win32Helpers
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool SetForegroundWindow(IntPtr hWnd);
 
-        [LibraryImport("user32.dll", EntryPoint = "TrackPopupMenuEx")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool TrackPopupMenu(IntPtr hmenu, uint uFlags, int x, int y, IntPtr hWnd, IntPtr lptpm);
+        [LibraryImport("user32.dll", EntryPoint = "TrackPopupMenuEx", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.I4)]
+        private static partial int TrackPopupMenu(IntPtr hmenu, uint uFlags, int x, int y, IntPtr hWnd, IntPtr lptpm);
 
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool GetCursorPos(out Point lpPoint);
+
+        [LibraryImport("user32.dll", SetLastError = true)]
+        private static partial int GetMenuItemCount(IntPtr hMenu);
 
         #endregion
         /// <summary>
@@ -119,7 +159,7 @@ namespace StartupWidget.Services.Win32Helpers
         /// <param name="windowHandle"></param>
         /// <param name="iconId"></param>
         /// <returns></returns>
-        public static bool TryRemoveIcon(IntPtr windowHandle,uint iconId)
+        public static bool TryRemoveIcon(IntPtr windowHandle, uint iconId)
         {
             var data = new NOTIFYICONDATA
             {
@@ -135,7 +175,7 @@ namespace StartupWidget.Services.Win32Helpers
         /// <returns></returns>
         public static IntPtr CreateMenu() => CreatePopupMenu();
 
-        public static bool AddMenuItem(IntPtr menuHandle,uint commandId,string label)
+        public static bool AddMenuItem(IntPtr menuHandle, uint commandId, string label)
         {
             return AppendMenu(menuHandle, MF_STRING, commandId, label);
         }
@@ -145,16 +185,44 @@ namespace StartupWidget.Services.Win32Helpers
             return AppendMenu(menuHandle, MF_SEPARATOR, 0, null);
         }
 
-        public static void ChangeMenuCheckState(IntPtr hmenu,uint menuid,bool Checked)
+        public static unsafe bool AddMenuItemImage(IntPtr menuHandle, uint commandId, string label, IntPtr hbitmap)
+        {
+            var mii = new MENUITEMINFO();
+            mii.cbSize = (uint)Marshal.SizeOf(typeof(MENUITEMINFO));
+            mii.fMask = MIIM_STRING | MIIM_ID | MIIM_BITMAP;
+            mii.fType = MF_STRING;
+            if (hbitmap == IntPtr.Zero)
+            {
+                return false;
+            }
+            mii.hbmpItem = hbitmap;
+            mii.wID = commandId;
+            mii.cch = (uint)label.Length;
+
+
+            fixed (char* plabel = label)
+            {
+                mii.dwTypeData = plabel;
+                return InsertMenuItem(menuHandle, commandId, false, ref mii);
+            }
+        }
+
+        public static void ChangeMenuCheckState(IntPtr hmenu, uint menuid, bool Checked)
         {
             uint uCheck = Checked ? MF_CHECKED : MF_UNCHECKED;
             CheckMenuItem(hmenu, menuid, uCheck);
         }
 
-        public static void ShowPopupMenu(IntPtr hWnd, IntPtr hmenu,int x,int y)
+        public static void ShowPopupMenu(IntPtr hWnd, IntPtr hmenu, int x, int y)
         {
             SetForegroundWindow(hWnd);
             TrackPopupMenu(hmenu, 0, x, y, hWnd, IntPtr.Zero);
+        }
+
+        public static int ShowPopupMenuWithIndex(IntPtr hWnd, IntPtr hmenu, int x, int y)
+        {
+            SetForegroundWindow(hWnd);
+            return TrackPopupMenu(hmenu, TPM_NONOTIFY | TPM_RETURNCMD, x, y, hWnd, IntPtr.Zero);
         }
 
         public static bool TryDestroyMenu(IntPtr menuHandle)

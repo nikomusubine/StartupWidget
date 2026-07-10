@@ -14,7 +14,7 @@ namespace StartupWidget.Services
         private delegate IntPtr WndProcDelegate(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam);
         private IntPtr hWnd;
         private IntPtr hMenu;
-        private List<TaskTrayItem> taskTrayItems;
+        private List<ContextMenuItem> taskTrayItems;
         private IntPtr hInstance;
         private WndProcDelegate wndProcDelegate;
         private IntPtr wndProcPtr
@@ -39,7 +39,7 @@ namespace StartupWidget.Services
 
         public TaskTrayService(int iconresourceid)
         {
-            taskTrayItems = new List<TaskTrayItem>();
+            taskTrayItems = new List<ContextMenuItem>();
             wndProcDelegate = new WndProcDelegate(WndProc);
             Module mod = Assembly.GetExecutingAssembly().GetModules()[0];
             hInstance = Marshal.GetHINSTANCE(mod);
@@ -122,7 +122,7 @@ namespace StartupWidget.Services
 
         private void CheckableItemValueChanged(object sender, EventArgs e)
         {
-            if (sender is TaskTrayCheckableItem checkable)
+            if (sender is ContextMenuCheckableItem checkable)
             {
                 int index = taskTrayItems.IndexOf(checkable);
                 TaskTrayIconHelper.ChangeMenuCheckState(hMenu, (uint)index, checkable.IsChecked);
@@ -130,19 +130,19 @@ namespace StartupWidget.Services
         }
 
 
-        public void AppendMenu(TaskTrayMenuItemBase trayItem)
+        public void AppendMenu(ContextMenuItemBase trayItem)
         {
-            if (trayItem is TaskTrayItem headerMenu)
+            if (trayItem is ContextMenuItem headerMenu)
             {
                 taskTrayItems.Add(headerMenu);
                 TaskTrayIconHelper.AddMenuItem(hMenu, (uint)taskTrayItems.Count - 1, headerMenu.Header);
             }
-            if (trayItem is TaskTrayCheckableItem checkable)
+            if (trayItem is ContextMenuCheckableItem checkable)
             {
                 checkable.CheckableValueChanged += CheckableItemValueChanged;
                 TaskTrayIconHelper.ChangeMenuCheckState(hMenu, (uint)taskTrayItems.Count - 1, checkable.IsChecked);
             }
-            if (trayItem is TaskTraySeparator separator)
+            if (trayItem is ContextMenuSeparator separator)
             {
                 TaskTrayIconHelper.AddMenuSeparator(hMenu);
             }

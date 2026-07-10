@@ -72,7 +72,6 @@ namespace StartupWidget
             TaskTrayViewModel = new TaskTrayIconViewModel(SettingsService);
 
             WidgetWindow = new WidgetWindow { DataContext=WidgetWindowViewModel };
-            WidgetWindowViewModel.HWnd= new System.Windows.Interop.WindowInteropHelper(WidgetWindow).Handle;
 
             AppMainWindow = new MainWindow { DataContext = MainWindowViewModel };
 
