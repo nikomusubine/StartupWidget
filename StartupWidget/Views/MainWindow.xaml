@@ -8,6 +8,7 @@
         xmlns:k="clr-namespace:StartupWidget.Controls"
         xmlns:loc="clr-namespace:StartupWidget.Views.Extensions"
         xmlns:bh="clr-namespace:StartupWidget.Behaviours"
+        xmlns:vmi="clr-namespace:StartupWidget.ViewModels.Items"
         mc:Ignorable="d"
         Title="{loc:Lang MainWindow}" Height="450" Width="800"
         Background="{Binding BackgroundColor}"
@@ -19,15 +20,10 @@
             <Setter Property="Foreground" Value="{Binding ForegroundColor}"/>
         </Style>
     </Window.Resources>
+
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/Run}" Command="{Binding StartProcessCommand}"/>
-            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/RunAsAdmin}" Command="{Binding StartProcessAsAdminCommand}">
-                <MenuItem.Icon>
-                    <Image Source="{Binding ShieldIcon}" Width="16" Height="16"/>
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/Edit}" Command="{Binding OpenEditWindowCommand}"/>
+            <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/EditItem}" Command="{Binding OpenEditWindowCommand}"/>
         </ContextMenu>
     </Window.ContextMenu>
 
@@ -50,12 +46,30 @@
 
         <ListView Margin="10,20,10,10" ItemsSource="{Binding ProcessItems}" SelectedItem="{Binding SelectedItem}" 
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Single"
-                  bh:FileDropBehaviour.FileDropCommand="{Binding FileDropCommand}"                  >
+                  bh:FileDropBehaviour.FileDropCommand="{Binding FileDropCommand}">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/Run}" Command="{Binding StartProcessCommand}"/>
+                                <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/RunAsAdmin}" Command="{Binding StartProcessAsAdminCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="{Binding ShieldIcon}" Width="16" Height="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{loc:Lang MainWindow/RightClickMenu/Edit}" Command="{Binding OpenEditWindowCommand}"/>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
 
             <ListView.Background>
                 <ImageBrush ImageSource="{Binding ValidBackgroundImagePath, TargetNullValue={x:Null}}" Stretch="UniformToFill"/>
