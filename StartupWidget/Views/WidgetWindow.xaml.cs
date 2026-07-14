@@ -33,6 +33,7 @@ namespace StartupWidget.Views
             this.IsVisibleChanged += VisibleChangedHandler;
             this.Loaded += LoadedHandler;
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { _ReloadHotkey(); });
+            WeakReferenceMessenger.Default.Register<MinimizeWidgetWindow>(this, (r, m) => { this.WindowState = WindowState.Minimized; });
         }
 
         private IntPtr Handle
@@ -87,6 +88,7 @@ namespace StartupWidget.Views
         private void VisibleChangedHandler(object sender, DependencyPropertyChangedEventArgs e)
         {
             ReloadHotkey((bool)e.NewValue);
+            ((WidgetWindowViewModel)DataContext).HWnd = this.Handle;
         }
 
         private void LoadedHandler(object sender, RoutedEventArgs e)
@@ -105,6 +107,10 @@ namespace StartupWidget.Views
             {
                 this.WindowState = WindowState.Minimized;
             }
+        }
+        private void ListViewItem_PreviewMouseRightButtonUp(object sender, MouseEventArgs e)
+        {
+            ((WidgetWindowViewModel)DataContext).RightClickCommand.Execute(sender);
         }
     }
 }

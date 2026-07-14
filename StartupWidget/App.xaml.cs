@@ -30,6 +30,7 @@ namespace StartupWidget
         protected override void OnStartup(StartupEventArgs e)
         {
             SingleInstanceService = new SingleInstanceService();
+#if !DEBUG
             if (!SingleInstanceService.IsNewInstance)
             {
                 try
@@ -44,7 +45,7 @@ namespace StartupWidget
                 Current.Shutdown();
                 return;
             }
-
+#endif
 
             base.OnStartup(e);
             

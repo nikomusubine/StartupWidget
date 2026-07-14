@@ -1,6 +1,6 @@
 ﻿namespace StartupWidget.Models.Types
 {
-    public class TaskTrayCheckableItem:TaskTrayItem
+    public class ContextMenuCheckableItem:ContextMenuItem
     {
         public event MenuClickEventHandler? CheckableValueChanged;
         private bool _isChecked;
@@ -20,11 +20,11 @@
             base.MenuClick();
         }
 
-        public TaskTrayCheckableItem(string header, bool ischecked) : this(header)
+        public ContextMenuCheckableItem(string header, bool ischecked) : this(header)
         {
             _isChecked = ischecked;
         }
-        public TaskTrayCheckableItem(string header):base(header)
+        public ContextMenuCheckableItem(string header):base(header)
         {
             _isChecked = false;
         }

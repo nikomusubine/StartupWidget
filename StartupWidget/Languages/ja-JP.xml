@@ -12,11 +12,8 @@
 			<Run Text="起動(_O)"/>
 			<RunAsAdmin Text="管理者として実行(_A)"/>
 			<Edit Text="編集(_E)"/>
+			<EditItem Text="アプリ項目を編集(_E)"/>
 		</RightClickMenu>
-		<FooterButtons>
-			<Start Text="起動(_S)"/>
-			<Edit Text="編集(_E)"/>
-		</FooterButtons>
 	</MainWindow>
 	<Widget>
 		<RightClickMenu>
@@ -27,6 +24,7 @@
 			<IsMagnet Text="ウィジェットを画面端に吸着(_G)"/>
 			<ShowMainWindow Text="メインウィンドウを表示(_M)"/>
 			<ShowSettings Text="設定(_S)"/>
+			<MinimizeWidget Text="ウィジェットを最小化(_I)"/>
 		</RightClickMenu>
 	</Widget>
 	<SettingsWindow Text="設定">

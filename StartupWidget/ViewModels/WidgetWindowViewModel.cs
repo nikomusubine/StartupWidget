@@ -24,7 +24,6 @@ namespace StartupWidget.ViewModels
         public WidgetWindowViewModel(SettingsService settings, ProcessViewModel processViewModel):base(settings)
         {
             ProcessViewModel = processViewModel;
-
             ShieldIcon = ExecutableIconImage.GetShieldIcon();
 
             LoadSettings();
@@ -33,6 +32,16 @@ namespace StartupWidget.ViewModels
                 LoadSettings();
             });
         }
+
+        public IntPtr HWnd
+        {
+            set
+            {
+                ContextMenu = new ContextMenuService(value);
+            }
+        }
+
+        public ContextMenuService ContextMenu = null!;
         public ImageSource? ShieldIcon { get; set; }
         [ObservableProperty]
         private ProcessItemViewModel? _selectedItem;
@@ -108,7 +117,7 @@ namespace StartupWidget.ViewModels
                 SettingsService.WidgetSettings.WidgetPosition = p;
             }
         }
-
+        private List<ContextMenuItemBase> ContextMenuBase = null!;
 
         private void LoadSettings()
         {
@@ -131,8 +140,10 @@ namespace StartupWidget.ViewModels
             IsFixed = SettingsService.WidgetSettings.IsFixed;
             IsMagnet = SettingsService.WidgetSettings.IsMagnet;
             MagnetThreshold = SettingsService.WidgetSettings.MagnetThreshold;
+            PrepareContextMenu();
             OnPropertyChanged(string.Empty);
         }
+
 
 
         private void _StartProcess(bool isAdmin)
@@ -194,13 +205,28 @@ namespace StartupWidget.ViewModels
         {
             WeakReferenceMessenger.Default.Send(new ShowMainWindow());
         }
-
+        private void CloseWidget()
+        {
+            WeakReferenceMessenger.Default.Send(new HideWidgetWindow());
+        }
 
         [RelayCommand]
         private void Closing(CancelEventArgs e)
         {
             e.Cancel = true;
             WeakReferenceMessenger.Default.Send(new Messages.HideWidgetWindow());
+        }
+        [RelayCommand]
+        private void RightClick()
+        {
+            if (SelectedItem == null)
+            {
+                ContextMenu.ShowContextMenu(ContextMenuBase.GetRange(4, ContextMenuBase.Count - 4));
+            }
+            else
+            {
+                ContextMenu.ShowContextMenu(ContextMenuBase);
+            }
         }
     }
 }

@@ -11,11 +11,11 @@ namespace StartupWidget.ViewModels
         private SettingsService SettingsService;
         private TaskTrayService TaskTrayService;
 
-        private TaskTrayItem ShowMainWindow;
-        private TaskTrayCheckableItem ShowWidget;
-        private TaskTrayItem OpenSettings;
-        private TaskTrayItem OpenEdit;
-        private TaskTrayItem Quit;
+        private ContextMenuItem ShowMainWindow;
+        private ContextMenuCheckableItem ShowWidget;
+        private ContextMenuItem OpenSettings;
+        private ContextMenuItem OpenEdit;
+        private ContextMenuItem Quit;
 
         private const string LangPathBase = "TaskTrayIcon/";
 
@@ -23,11 +23,11 @@ namespace StartupWidget.ViewModels
         {
             SettingsService = settingsService;
             TaskTrayService = new TaskTrayService(32512);
-            ShowMainWindow = new TaskTrayItem(LanguageService.GetString(LangPathBase+"ShowMainWindow").Replace('_','&'));
-            ShowWidget = new TaskTrayCheckableItem(LanguageService.GetString(LangPathBase + "ShowWidget").Replace('_', '&'));
-            OpenSettings = new TaskTrayItem(LanguageService.GetString(LangPathBase + "OpenSettings").Replace('_', '&'));
-            OpenEdit = new TaskTrayItem(LanguageService.GetString(LangPathBase + "OpenEdit").Replace('_', '&'));
-            Quit = new TaskTrayItem(LanguageService.GetString(LangPathBase + "Quit").Replace('_', '&'));
+            ShowMainWindow = new ContextMenuItem(LanguageService.GetString(LangPathBase+"ShowMainWindow").Replace('_','&'));
+            ShowWidget = new ContextMenuCheckableItem(LanguageService.GetString(LangPathBase + "ShowWidget").Replace('_', '&'));
+            OpenSettings = new ContextMenuItem(LanguageService.GetString(LangPathBase + "OpenSettings").Replace('_', '&'));
+            OpenEdit = new ContextMenuItem(LanguageService.GetString(LangPathBase + "OpenEdit").Replace('_', '&'));
+            Quit = new ContextMenuItem(LanguageService.GetString(LangPathBase + "Quit").Replace('_', '&'));
 
             InitializeMenu();
             InitializeMessenger();
@@ -44,10 +44,10 @@ namespace StartupWidget.ViewModels
 
             TaskTrayService.AppendMenu(ShowMainWindow);
             TaskTrayService.AppendMenu(ShowWidget);
-            TaskTrayService.AppendMenu(new TaskTraySeparator());
+            TaskTrayService.AppendMenu(new ContextMenuSeparator());
             TaskTrayService.AppendMenu(OpenSettings);
             TaskTrayService.AppendMenu(OpenEdit);
-            TaskTrayService.AppendMenu(new TaskTraySeparator());
+            TaskTrayService.AppendMenu(new ContextMenuSeparator());
             TaskTrayService.AppendMenu(Quit);
         }
         
@@ -69,7 +69,7 @@ namespace StartupWidget.ViewModels
         }
         private void ShowWidgetEventHandler(object sender, EventArgs e)
         {
-            if (sender is TaskTrayCheckableItem item)
+            if (sender is ContextMenuCheckableItem item)
             {
                 if (item.IsChecked)
                 {
