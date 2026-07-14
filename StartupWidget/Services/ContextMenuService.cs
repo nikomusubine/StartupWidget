@@ -76,11 +76,7 @@ namespace StartupWidget.Services
         {
             if (trayItem.Icon == null) { return IntPtr.Zero; }
             IntPtr hbitmap= HBitmapHelper.ConvertToHBitmap((BitmapSource)trayItem.Icon);
-            Debug.WriteLine($"ConvertToHBitmap: {Marshal.GetLastPInvokeError()}");
-
             ContextMenuHelper.AddMenuItemImage(hMenu, index, trayItem.Header, hbitmap);
-
-            Debug.WriteLine($"InsertMenuError: {Marshal.GetLastPInvokeError()}");
             return hbitmap;
         }
     }
