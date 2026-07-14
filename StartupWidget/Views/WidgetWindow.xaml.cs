@@ -33,6 +33,7 @@ namespace StartupWidget.Views
             this.IsVisibleChanged += VisibleChangedHandler;
             this.Loaded += LoadedHandler;
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { _ReloadHotkey(); });
+            WeakReferenceMessenger.Default.Register<MinimizeWidgetWindow>(this, (r, m) => { this.WindowState = WindowState.Minimized; });
         }
 
         private IntPtr Handle

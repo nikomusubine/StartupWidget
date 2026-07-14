@@ -1,4 +1,6 @@
-﻿using StartupWidget.Models.Types;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using StartupWidget.Messages;
+using StartupWidget.Models.Types;
 using StartupWidget.Services;
 using System;
 using System.Collections.Generic;
@@ -48,14 +50,14 @@ namespace StartupWidget.ViewModels
             ContextMenuBase.Add(ShowMainWindow);
 
             ContextMenuItem ShowSettings = new ContextMenuItem(LanguageService.GetString(LangRCMenuPath + "ShowSettings").Replace('_', '&'));
-            ShowSettings.MenuClicked += ContextMenuEdit;
+            ShowSettings.MenuClicked += ContextMenuShowSettings;
             ContextMenuBase.Add(ShowSettings);
 
             ContextMenuBase.Add(new ContextMenuSeparator());
 
-            ContextMenuItem CloseWidget = new ContextMenuItem(LanguageService.GetString(LangRCMenuPath + "CloseWidget").Replace('_', '&'));
-            CloseWidget.MenuClicked += ContextMenuCloseWidget;
-            ContextMenuBase.Add(CloseWidget);
+            ContextMenuItem MinimizeWidget = new ContextMenuItem(LanguageService.GetString(LangRCMenuPath + "MinimizeWidget").Replace('_', '&'));
+            MinimizeWidget.MenuClicked += ContextMenuMinimizeWidget;
+            ContextMenuBase.Add(MinimizeWidget);
         }
 
         private void ContextMenuRun(object sender, EventArgs e)
@@ -88,9 +90,9 @@ namespace StartupWidget.ViewModels
         {
             ShowSettings();
         }
-        private void ContextMenuCloseWidget(object sender, EventArgs e)
+        private void ContextMenuMinimizeWidget(object sender, EventArgs e)
         {
-            CloseWidget();
+            WeakReferenceMessenger.Default.Send(new MinimizeWidgetWindow());
         }
     }
 }

@@ -11,6 +11,7 @@ namespace StartupWidget.Messages
 
     public record HideWidgetWindow();
     public record ShowWidgetWindow();
+    public record MinimizeWidgetWindow();
 
 
     public record OpenAddWindow();
