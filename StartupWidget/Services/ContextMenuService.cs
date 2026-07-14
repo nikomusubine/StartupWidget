@@ -23,16 +23,16 @@ namespace StartupWidget.Services
         public void ShowContextMenu(ICollection<ContextMenuItemBase> MenuItems)
         {
             hbitmaps = new List<nint>();
-            hMenu = TaskTrayIconHelper.CreateMenu();
+            hMenu = ContextMenuHelper.CreateMenu();
             for (uint i = 0; i < MenuItems.Count; i++)
             {
                 AppendMenu(MenuItems.ElementAt((int)i), i+1);
             }
 
             Win32Helpers.Point cursorPos;
-            TaskTrayIconHelper.GetCursorPos(out cursorPos);
+            ContextMenuHelper.GetCursorPos(out cursorPos);
 
-            int result = TaskTrayIconHelper.ShowPopupMenuWithIndex(hWnd, hMenu, cursorPos.x, cursorPos.y);
+            int result = ContextMenuHelper.ShowPopupMenuWithIndex(hWnd, hMenu, cursorPos.x, cursorPos.y);
 
             result--;
             if(result >= 0)
@@ -40,7 +40,7 @@ namespace StartupWidget.Services
                 ((ContextMenuItem)MenuItems.ElementAt(result)).MenuClick();
             }
 
-            TaskTrayIconHelper.TryDestroyMenu(hMenu);
+            ContextMenuHelper.TryDestroyMenu(hMenu);
             hMenu = IntPtr.Zero;
             foreach (var i in hbitmaps) {
                 HBitmapHelper.DeleteObject(i);
@@ -55,20 +55,20 @@ namespace StartupWidget.Services
                 {
                     IntPtr hbitmap = HBitmapHelper.ConvertToHBitmap((BitmapSource)headerMenu.Icon);;
                     hbitmaps!.Add(hbitmap);
-                    TaskTrayIconHelper.AddMenuItemImage(hMenu, index, headerMenu.Header, hbitmap);
+                    ContextMenuHelper.AddMenuItemImage(hMenu, index, headerMenu.Header, hbitmap);
                 }
                 else
                 {
-                    TaskTrayIconHelper.AddMenuItem(hMenu, index, headerMenu.Header);
+                    ContextMenuHelper.AddMenuItem(hMenu, index, headerMenu.Header);
                 }
             }
             if (trayItem is ContextMenuCheckableItem checkable)
             {
-                TaskTrayIconHelper.ChangeMenuCheckState(hMenu, index, checkable.IsChecked);
+                ContextMenuHelper.ChangeMenuCheckState(hMenu, index, checkable.IsChecked);
             }
             if (trayItem is ContextMenuSeparator separator)
             {
-                TaskTrayIconHelper.AddMenuSeparator(hMenu);
+                ContextMenuHelper.AddMenuSeparator(hMenu);
             }
         }
 
@@ -78,7 +78,7 @@ namespace StartupWidget.Services
             IntPtr hbitmap= HBitmapHelper.ConvertToHBitmap((BitmapSource)trayItem.Icon);
             Debug.WriteLine($"ConvertToHBitmap: {Marshal.GetLastPInvokeError()}");
 
-            TaskTrayIconHelper.AddMenuItemImage(hMenu, index, trayItem.Header, hbitmap);
+            ContextMenuHelper.AddMenuItemImage(hMenu, index, trayItem.Header, hbitmap);
 
             Debug.WriteLine($"InsertMenuError: {Marshal.GetLastPInvokeError()}");
             return hbitmap;

@@ -49,7 +49,7 @@ namespace StartupWidget.Services
 
             InitializeMessageWindow();
             InitializeTaskTrayIcon();
-            hMenu = TaskTrayIconHelper.CreateMenu();
+            hMenu = ContextMenuHelper.CreateMenu();
         }
 
         private void InitializeMessageWindow()
@@ -104,9 +104,9 @@ namespace StartupWidget.Services
                     if (mouseMessage == WM_RBUTTONUP)
                     {
                         Win32Helpers.Point cursorPos;
-                        TaskTrayIconHelper.GetCursorPos(out cursorPos);
+                        ContextMenuHelper.GetCursorPos(out cursorPos);
 
-                        TaskTrayIconHelper.ShowPopupMenu(hwnd, hMenu, cursorPos.x, cursorPos.y);
+                        ContextMenuHelper.ShowPopupMenu(hwnd, hMenu, cursorPos.x, cursorPos.y);
                     }
                     return IntPtr.Zero;
                 }
@@ -125,7 +125,7 @@ namespace StartupWidget.Services
             if (sender is ContextMenuCheckableItem checkable)
             {
                 int index = taskTrayItems.IndexOf(checkable);
-                TaskTrayIconHelper.ChangeMenuCheckState(hMenu, (uint)index, checkable.IsChecked);
+                ContextMenuHelper.ChangeMenuCheckState(hMenu, (uint)index, checkable.IsChecked);
             }
         }
 
@@ -135,16 +135,16 @@ namespace StartupWidget.Services
             if (trayItem is ContextMenuItem headerMenu)
             {
                 taskTrayItems.Add(headerMenu);
-                TaskTrayIconHelper.AddMenuItem(hMenu, (uint)taskTrayItems.Count - 1, headerMenu.Header);
+                ContextMenuHelper.AddMenuItem(hMenu, (uint)taskTrayItems.Count - 1, headerMenu.Header);
             }
             if (trayItem is ContextMenuCheckableItem checkable)
             {
                 checkable.CheckableValueChanged += CheckableItemValueChanged;
-                TaskTrayIconHelper.ChangeMenuCheckState(hMenu, (uint)taskTrayItems.Count - 1, checkable.IsChecked);
+                ContextMenuHelper.ChangeMenuCheckState(hMenu, (uint)taskTrayItems.Count - 1, checkable.IsChecked);
             }
             if (trayItem is ContextMenuSeparator separator)
             {
-                TaskTrayIconHelper.AddMenuSeparator(hMenu);
+                ContextMenuHelper.AddMenuSeparator(hMenu);
             }
         }
 
@@ -155,7 +155,7 @@ namespace StartupWidget.Services
 
             if (hMenu != IntPtr.Zero)
             {
-                TaskTrayIconHelper.TryDestroyMenu(hMenu);
+                ContextMenuHelper.TryDestroyMenu(hMenu);
                 hMenu = IntPtr.Zero;
             }
 
