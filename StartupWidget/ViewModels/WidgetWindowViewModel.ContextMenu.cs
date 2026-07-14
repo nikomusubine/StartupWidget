@@ -46,7 +46,7 @@ namespace StartupWidget.ViewModels
             ContextMenuBase.Add(new ContextMenuSeparator());
 
             ContextMenuItem ShowMainWindow = new ContextMenuItem(LanguageService.GetString(LangRCMenuPath + "ShowMainWindow").Replace('_', '&'));
-            ShowMainWindow.MenuClicked += ContextMenuRunAsAdmin;
+            ShowMainWindow.MenuClicked += ContextMenuShowMainWindow;
             ContextMenuBase.Add(ShowMainWindow);
 
             ContextMenuItem ShowSettings = new ContextMenuItem(LanguageService.GetString(LangRCMenuPath + "ShowSettings").Replace('_', '&'));
