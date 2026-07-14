@@ -42,11 +42,27 @@ namespace StartupWidget.ViewModels
         }
         public void StartProcess(ExecutableProcess process)
         {
-            executableProcessService.ProcessStart(process);
+            this.StartProcess(process, false);
         }
         public void StartProcess(ExecutableProcess process, bool RunAsAdmin)
         {
-            executableProcessService.ProcessStart(process,RunAsAdmin);
+            try
+            {
+                executableProcessService.ProcessStart(process, RunAsAdmin);
+            }
+            catch (Win32Exception exc)
+            {
+                if (exc.NativeErrorCode == 740)
+                {
+                    process.RunasAdmin = true;
+                    StartProcess(process, true);
+                    __ReflectProcessItems();
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
         private ExecutableIconImage getIconImage;
         public ExecutableIconImage GetIconImage { get => getIconImage; }
