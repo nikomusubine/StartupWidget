@@ -32,6 +32,7 @@ namespace StartupWidget.Views
             InitializeComponent();
             this.IsVisibleChanged += VisibleChangedHandler;
             this.Loaded += LoadedHandler;
+            this.PreviewKeyDown += OnPreviewKeyDownHandler;
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { _ReloadHotkey(); });
             WeakReferenceMessenger.Default.Register<MinimizeWidgetWindow>(this, (r, m) => { this.WindowState = WindowState.Minimized; });
         }
@@ -111,6 +112,13 @@ namespace StartupWidget.Views
         private void ListViewItem_PreviewMouseRightButtonUp(object sender, MouseEventArgs e)
         {
             ((WidgetWindowViewModel)DataContext).RightClickCommand.Execute(sender);
+        }
+        private void OnPreviewKeyDownHandler(object? sender,KeyEventArgs e)
+        {
+            if (e.Key == Key.Tab)
+            {
+                e.Handled = true;
+            }
         }
     }
 }
