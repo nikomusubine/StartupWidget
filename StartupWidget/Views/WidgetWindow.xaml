@@ -23,6 +23,10 @@
         <bh:WindowDragMoveBehaviour IsFixed="{Binding IsFixed}" IsMagnetEnabled="{Binding IsMagnet}" MagnetThreshold="{Binding MagnetThreshold}"/>
     </i:Interaction.Behaviors>
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
     <Grid Background="{Binding BackgroundColor}" Height="{Binding WindowSize}" Width="{Binding WindowSize}">
         <ListView ItemsSource="{Binding ProcessItems}" Margin="0,0,0,0" Foreground="{Binding ForegroundColor}"
                   BorderThickness="0"
@@ -58,7 +62,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-
+        <TextBlock Text="{loc:Lang Widget/AddAppSuggest}" Visibility="{Binding IsAppEmpty, Converter={StaticResource BoolToVis}}" Foreground="{Binding ForegroundColor}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
     </Grid>
     <Window.InputBindings>
         <MouseBinding MouseAction="RightClick" Command="{Binding RightClickCommand}"/>

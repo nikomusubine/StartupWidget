@@ -16,6 +16,7 @@
 		</RightClickMenu>
 	</MainWindow>
 	<Widget>
+		<AddAppSuggest Text="アプリを追加しましょう！ドラッグ&amp;ドロップで追加できます"/>
 		<RightClickMenu>
 			<Run Text="起動(_O)"/>
 			<RunAsAdmin Text="管理者として実行(_A)"/>
