@@ -99,6 +99,7 @@
 		<OpenFileDialogTitle Text="ファイルを選択"/>
 		<OpenFolderDialogTitle Text="フォルダを選択"/>
 		<ErrorMessageBoxTitle Text="エラー"/>
+		<AddAppSuggest Text="アプリを追加しましょう！ドラッグ&amp;ドロップで追加できます"/>
 	</Reusable>
 	<Exception>
 		<Color>

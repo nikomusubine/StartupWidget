@@ -11,6 +11,7 @@ using StartupWidget.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
@@ -40,6 +41,7 @@ namespace StartupWidget.ViewModels
                 IsWidgetShow = true;
             });
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { LoadSettings(); });
+            ProcessItems.CollectionChanged += IsAppEmptyChanged;
             LoadSettings();
         }
         public ObservableCollection<ProcessItemViewModel> ProcessItems => ProcessViewModel.ProcessItems;
@@ -66,6 +68,12 @@ namespace StartupWidget.ViewModels
         [ObservableProperty]
         private System.Windows.Media.FontFamily _fontFamily = null!;
         public ImageSource? ShieldIcon { get; set; }
+        [ObservableProperty]
+        private bool _isAppEmpty = true;
+        private void IsAppEmptyChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            IsAppEmpty = ProcessItems.Count == 0;
+        }
         private void LoadSettings()
         {
             BackgroundImagePath = SettingsService.MainWindowSettings.BackgroundImageFilePath;

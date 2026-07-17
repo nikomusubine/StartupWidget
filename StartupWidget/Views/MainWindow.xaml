@@ -19,6 +19,7 @@
         <Style TargetType="ListView">
             <Setter Property="Foreground" Value="{Binding ForegroundColor}"/>
         </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
 
     <Window.ContextMenu>
@@ -88,6 +89,7 @@
                 <bh:ListViewUnselectBehaviour/>
             </i:Interaction.Behaviors>
         </ListView>
+        <TextBlock Text="{loc:Lang Reusable/AddAppSuggest}" Visibility="{Binding IsAppEmpty, Converter={StaticResource BoolToVis}}" Foreground="{Binding ForegroundColor}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
 
     </Grid>
 </Window>

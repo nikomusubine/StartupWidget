@@ -9,6 +9,7 @@ using StartupWidget.ViewModels.Items;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Text;
 using System.Windows;
@@ -31,6 +32,7 @@ namespace StartupWidget.ViewModels
             {
                 LoadSettings();
             });
+            ProcessItems.CollectionChanged+=IsAppEmptyChanged;
         }
 
         public IntPtr HWnd
@@ -96,6 +98,12 @@ namespace StartupWidget.ViewModels
         private double _windowSize = 300;
         [ObservableProperty]
         private double _opacity;
+        [ObservableProperty]
+        private bool _isAppEmpty = true;
+        private void IsAppEmptyChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            IsAppEmpty = ProcessItems.Count == 0;
+        }
 
         public double PositionX
         {

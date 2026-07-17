@@ -256,7 +256,7 @@ namespace StartupWidget.ViewModels
                     _isAdjusting = true;
                     ProcessItems.Move(addButtonIndex, lastIndex);
                     _isAdjusting = false;
-                    OnPropertyChanged(String.Empty);
+                    OnPropertyChanged(string.Empty);
                 }
             });
         }
