@@ -42,6 +42,7 @@ namespace StartupWidget.ViewModels
             });
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { LoadSettings(); });
             ProcessItems.CollectionChanged += IsAppEmptyChanged;
+            IsAppEmpty = ProcessItems.Count == 0;
             LoadSettings();
         }
         public ObservableCollection<ProcessItemViewModel> ProcessItems => ProcessViewModel.ProcessItems;
@@ -69,7 +70,7 @@ namespace StartupWidget.ViewModels
         private System.Windows.Media.FontFamily _fontFamily = null!;
         public ImageSource? ShieldIcon { get; set; }
         [ObservableProperty]
-        private bool _isAppEmpty = true;
+        private bool _isAppEmpty;
         private void IsAppEmptyChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             IsAppEmpty = ProcessItems.Count == 0;

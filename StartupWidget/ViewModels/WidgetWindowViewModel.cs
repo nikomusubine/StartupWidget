@@ -32,6 +32,7 @@ namespace StartupWidget.ViewModels
             {
                 LoadSettings();
             });
+            IsAppEmpty = ProcessItems.Count == 0;
             ProcessItems.CollectionChanged+=IsAppEmptyChanged;
         }
 
@@ -99,7 +100,7 @@ namespace StartupWidget.ViewModels
         [ObservableProperty]
         private double _opacity;
         [ObservableProperty]
-        private bool _isAppEmpty = true;
+        private bool _isAppEmpty;
         private void IsAppEmptyChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             IsAppEmpty = ProcessItems.Count == 0;
