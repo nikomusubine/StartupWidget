@@ -99,7 +99,7 @@ namespace StartupWidget.ViewModels
         [ObservableProperty]
         private double _opacity;
         [ObservableProperty]
-        private bool _isAppEmpty;
+        private bool _isAppEmpty = true;
         private void IsAppEmptyChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             IsAppEmpty = ProcessItems.Count == 0;

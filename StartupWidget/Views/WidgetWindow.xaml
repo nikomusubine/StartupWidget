@@ -62,7 +62,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <TextBlock Text="{loc:Lang Widget/AddAppSuggest}" Visibility="{Binding IsAppEmpty, Converter={StaticResource BoolToVis}}" Foreground="{Binding ForegroundColor}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+        <TextBlock Text="{loc:Lang Reusable/AddAppSuggest}" Visibility="{Binding IsAppEmpty, Converter={StaticResource BoolToVis}}" Foreground="{Binding ForegroundColor}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
     </Grid>
     <Window.InputBindings>
         <MouseBinding MouseAction="RightClick" Command="{Binding RightClickCommand}"/>
