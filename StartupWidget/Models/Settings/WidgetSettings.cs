@@ -13,9 +13,9 @@ namespace StartupWidget.Models.Settings
         {
             Transparency = 0.0f;
             BackgroundImageFilePath = "";
-            BackgroundColor = Color.Black;
+            ForegroundColor = Color.Black;
             BackgroundColor = Color.White;
-            WindowSize = 300;
+            WindowSize = 316;
             IsMagnet = true;
             IsFixed = false;
             MagnetThreshold = 12;
