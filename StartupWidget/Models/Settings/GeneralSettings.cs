@@ -17,7 +17,7 @@ namespace StartupWidget.Models.Settings
         }
 
         public SerializableFont Font { get; set; }
-
+        [LanguageElement]
         public string Language { get; set; }
 
         [DoubleBounds(16,512)]

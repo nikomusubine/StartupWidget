@@ -72,6 +72,7 @@ namespace StartupWidget.ViewModels
                 var doubleAttr = property.GetCustomAttribute(typeof(Attributes.DoubleBoundsAttribute));
                 var intAttr = property.GetCustomAttribute(typeof(Attributes.IntBoundsAttribute));
                 var strAttr = property.GetCustomAttribute(typeof(Attributes.StringOptionAttribute));
+                var langAttr = property.GetCustomAttribute(typeof(Attributes.LanguageElementAttribute));
 
                 SettingItemViewModel settingItem;
                 if (doubleAttr != null)
@@ -102,6 +103,9 @@ namespace StartupWidget.ViewModels
                     {
                         settingItem = new LimitedSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, property.GetValue(SettingsModel), ((Attributes.StringOptionAttribute)strAttr).Options.Cast<object>());
                     }
+                }else if (langAttr != null)
+                {
+                    settingItem = new LimitedSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, LanguageService.GetNativeName( (string)property.GetValue(SettingsModel)), LanguageService.GetAvailableLanguages());
                 }
                 else
                 {
@@ -153,7 +157,14 @@ namespace StartupWidget.ViewModels
                         }
                         else
                         {
-                            property.SetValue(SettingsModel, item.Value);
+                            if (property.GetCustomAttribute<Attributes.LanguageElementAttribute>() != null)
+                            {
+                                property.SetValue(SettingsModel, LanguageService.GetCultureName((string)item.Value));
+                            }
+                            else
+                            {
+                                property.SetValue(SettingsModel, item.Value);
+                            }
                         }
                         break;
                     }
