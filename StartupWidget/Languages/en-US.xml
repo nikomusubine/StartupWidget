@@ -2,112 +2,112 @@
 <Language>
 	<MainWindow Text="StartupWidget">
 		<MainMenu>
-			<Options Text="Option(_F)">
-				<ShowWidget Text="Show _Widget"/>
-				<Settings Text="_Settings"/>
-				<Quit Text="_Quit"/>
+			<Options Text="Options(_O)">
+				<ShowWidget Text="Show Widget(_W)"/>
+				<Settings Text="Settings(_S)"/>
+				<Quit Text="Quit(_Q)"/>
 			</Options>
 		</MainMenu>
 		<RightClickMenu>
-			<Run Text="_Open"/>
-			<RunAsAdmin Text="Open as _Admin"/>
-			<Edit Text="_Edit"/>
-			<EditItem Text="_Edit Items"/>
+			<Run Text="Run(_R)"/>
+			<RunAsAdmin Text="Run as administrator(_A)"/>
+			<Edit Text="Edit(_E)"/>
+			<EditItem Text="Edit app item(_E)"/>
 		</RightClickMenu>
 	</MainWindow>
 	<Widget>
 		<RightClickMenu>
-			<Run Text="起動(_O)"/>
-			<RunAsAdmin Text="管理者として実行(_A)"/>
-			<Edit Text="編集(_E)"/>
-			<IsFixed Text="ウィジェットを固定(_F)"/>
-			<IsMagnet Text="ウィジェットを画面端に吸着(_G)"/>
-			<ShowMainWindow Text="メインウィンドウを表示(_M)"/>
-			<ShowSettings Text="設定(_S)"/>
-			<MinimizeWidget Text="ウィジェットを最小化(_I)"/>
+			<Run Text="Run(_R)"/>
+			<RunAsAdmin Text="Run as administrator(_A)"/>
+			<Edit Text="Edit(_E)"/>
+			<IsFixed Text="Pin widget(_P)"/>
+			<IsMagnet Text="Snap to screen edges(_G)"/>
+			<ShowMainWindow Text="Show main window(_M)"/>
+			<ShowSettings Text="Settings(_S)"/>
+			<MinimizeWidget Text="Minimize widget(_I)"/>
 		</RightClickMenu>
 	</Widget>
-	<SettingsWindow Text="設定">
-		<GeneralSettings Text="全般設定">
-			<Font Text="フォント"/>
-			<Language Text="言語"/>
-			<IconSize Text="アイコンの大きさ"/>
-			<IsStartup Text="ログイン時に起動する"/>
+	<SettingsWindow Text="Settings">
+		<GeneralSettings Text="General Settings">
+			<Font Text="Font"/>
+			<Language Text="Language"/>
+			<IconSize Text="Icon size"/>
+			<IsStartup Text="Start at login"/>
 		</GeneralSettings>
-		<MainWindowSettings Text="メインウィンドウ設定">
-			<BackgroundImageFilePath Text="背景画像のパス"/>
-			<BackgroundImageFileOption Text="画像ファイル"/>
-			<ForegroundColor Text="文字色"/>
-			<BackgroundColor Text="背景色"/>
+		<MainWindowSettings Text="Main Window Settings">
+			<BackgroundImageFilePath Text="Background image path"/>
+			<BackgroundImageFileOption Text="Image file"/>
+			<ForegroundColor Text="Text color"/>
+			<BackgroundColor Text="Background color"/>
 		</MainWindowSettings>
-		<WidgetSettings Text="ウィジェット設定">
-			<BackgroundImageFilePath Text="背景画像のパス"/>
-			<BackgroundImageFileOption Text="画像ファイル"/>
-			<ForegroundColor Text="文字色"/>
-			<BackgroundColor Text="背景色"/>
-			<WindowSize Text="ウィンドウサイズ"/>
-			<Transparency Text="透明度(%)"/>
-			<IsFixed Text="ウィジェットを固定"/>
-			<IsMagnet Text ="ウィジェットを画面端に吸着"/>
-			<MagnetThreshold Text="吸着の強さ"/>
-			<ShortcutKeys Text="ショートカットキー"/>
-			<ShortcutKeysInputRequest Text="キーを入力..."/>
+		<WidgetSettings Text="Widget Settings">
+			<BackgroundImageFilePath Text="Background image path"/>
+			<BackgroundImageFileOption Text="Image file"/>
+			<ForegroundColor Text="Text color"/>
+			<BackgroundColor Text="Background color"/>
+			<WindowSize Text="Window size"/>
+			<Transparency Text="Transparency (%)"/>
+			<IsFixed Text="Pin widget"/>
+			<IsMagnet Text="Snap to screen edges"/>
+			<MagnetThreshold Text="Magnet threshold"/>
+			<ShortcutKeys Text="Shortcut keys"/>
+			<ShortcutKeysInputRequest Text="Press keys..."/>
 		</WidgetSettings>
 		<FooterButtons>
 			<OK Text="OK(_O)"/>
-			<Apply Text="適用(_A)"/>
-			<Cancel Text="キャンセル(_C)"/>
+			<Apply Text="Apply(_A)"/>
+			<Cancel Text="Cancel(_C)"/>
 		</FooterButtons>
 		<MessageBox>
-			<FailedStartUp Text="スタートアップへの登録に失敗しました。"/>
+			<FailedStartUp Text="Failed to register startup."/>
 		</MessageBox>
 	</SettingsWindow>
-	<EditWindow Text="アプリの編集">
-		<AddButton Text="新規追加"/>
+	<EditWindow Text="Edit Application">
+		<AddButton Text="Add New"/>
 		<Elements>
-			<Name Text="名前"/>
-			<FilePath Text="実行ファイルパス"/>
-			<FilePathDialogFilter Text="実行ファイル"/>
-			<Arguments Text="コマンドライン引数"/>
-			<WorkingDirectory Text="作業ディレクトリ"/>
-			<WorkingDirectoryDialogFilter Text="フォルダ"/>
-			<IconFilePath Text="カスタムアイコンのパス"/>
-			<IconFilePathDialogFilter Text="画像ファイル"/>
-			<RunAsAdmin Text="常に管理者として実行"/>
-			<DeleteButton Text="このアプリを削除"/>
+			<Name Text="Name"/>
+			<FilePath Text="Executable path"/>
+			<FilePathDialogFilter Text="Executable files"/>
+			<Arguments Text="Command-line arguments"/>
+			<WorkingDirectory Text="Working directory"/>
+			<WorkingDirectoryDialogFilter Text="Folders"/>
+			<IconFilePath Text="Custom icon path"/>
+			<IconFilePathDialogFilter Text="Image files"/>
+			<RunAsAdmin Text="Always run as administrator"/>
+			<DeleteButton Text="Delete this app"/>
 		</Elements>
 		<MessageBox>
-			<ConfirmDelete Text="本当に {0} を削除しますか？"/>
-			<ConfirmDeleteCaption Text="確認"/>
-			<InvalidItem Text="正しく項目を入力してください。名前が空、またはパスが無効です。"/>
-			<InvalidItemCaption Text="無効な項目"/>
+			<ConfirmDelete Text="Are you sure you want to delete {0}?"/>
+			<ConfirmDeleteCaption Text="Confirm"/>
+			<InvalidItem Text="Please enter a valid item. Name is empty or path is invalid."/>
+			<InvalidItemCaption Text="Invalid item"/>
 		</MessageBox>
 		<FooterButtons>
 			<OK Text="OK(_O)"/>
-			<Apply Text="適用(_A)"/>
-			<Cancel Text="キャンセル(_C)"/>
+			<Apply Text="Apply(_A)"/>
+			<Cancel Text="Cancel(_C)"/>
 		</FooterButtons>
 	</EditWindow>
 	<TaskTrayIcon>
-		<ShowMainWindow Text="メインウィンドウを表示(_M)"/>
-		<ShowWidget Text="ウィジェットを表示(_W)"/>
-		<OpenSettings Text="設定を開く(_S)"/>
-		<OpenEdit Text="アプリを編集(_E)"/>
-		<Quit Text="終了(_Q)"/>
+		<ShowMainWindow Text="Show main window(_M)"/>
+		<ShowWidget Text="Show widget(_W)"/>
+		<OpenSettings Text="Open settings(_S)"/>
+		<OpenEdit Text="Edit apps(_E)"/>
+		<Quit Text="Quit(_Q)"/>
 	</TaskTrayIcon>
 	<Reusable>
-		<OpenFileDialogTitle Text="ファイルを選択"/>
-		<OpenFolderDialogTitle Text="フォルダを選択"/>
-		<ErrorMessageBoxTitle Text="エラー"/>
-		<AddAppSuggest Text="アプリを追加しましょう！ドラッグ&amp;ドロップで追加できます"/>
+		<OpenFileDialogTitle Text="Select a file"/>
+		<OpenFolderDialogTitle Text="Select a folder"/>
+		<ErrorMessageBoxTitle Text="Error"/>
+		<AddAppSuggest Text="Add an app! Drag&amp;drop to add."/>
 	</Reusable>
 	<Exception>
 		<Color>
 			<FromHtml>
-				<EmptyText Text="カラーコードを入力してください。"/>
-				<NoSharp Text="カラーコードは'#'から開始する必要があります。"/>
-				<InvalidText Text="無効なカラーコードです。"/>
+				<EmptyText Text="Please enter a color code."/>
+				<NoSharp Text="Color code must start with '#'."/>
+				<InvalidText Text="Invalid color code."/>
 			</FromHtml>
 		</Color>
 	</Exception>
-</Language> 
+</Language>
