@@ -74,9 +74,9 @@ Grid.IsSharedSizeScope="True" HorizontalContentAlignment="Stretch">
                 <ColumnDefinition Width="Auto" SharedSizeGroup="ButtonWidth"/>
                 <ColumnDefinition Width="Auto" SharedSizeGroup="ButtonWidth"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Margin="5,0" Padding="5,0" Content="OK(_O)" Command="{Binding OKSettingsCommand}" />
-            <Button Grid.Column="1" Margin="5,0" Padding="5,0" Content="適用(_A)" Command="{Binding ApplySettingsCommand}" />
-            <Button Grid.Column="2" Margin="5,0" Padding="5,0" Content="キャンセル(_C)" Command="{Binding CancelSettingsCommand}" />
+            <Button Grid.Column="0" Margin="5,0" Padding="5,0" Content="{loc:Lang SettingsWindow/FooterButtons/OK}" Command="{Binding OKSettingsCommand}" />
+            <Button Grid.Column="1" Margin="5,0" Padding="5,0" Content="{loc:Lang SettingsWindow/FooterButtons/Apply}" Command="{Binding ApplySettingsCommand}" />
+            <Button Grid.Column="2" Margin="5,0" Padding="5,0" Content="{loc:Lang SettingsWindow/FooterButtons/Cancel}" Command="{Binding CancelSettingsCommand}" />
         </Grid>
     </Grid>
 </Window>
