@@ -2,22 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using StartupWidget.Messages;
-using StartupWidget.Models.Settings;
 using StartupWidget.Services;
-using StartupWidget.Services.Interfaces;
 using StartupWidget.ViewModels.Bases;
 using StartupWidget.ViewModels.Items;
-using StartupWidget.Views;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
-using System.Text;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using Application = System.Windows.Application;
 using Color = System.Windows.Media.Color;
@@ -88,6 +78,7 @@ namespace StartupWidget.ViewModels
                                                                  SettingsService.MainWindowSettings.BackgroundColor.B));
             FontSize = SettingsService.GeneralSettings.Font.Size;
             FontFamily = new System.Windows.Media.FontFamily(SettingsService.GeneralSettings.Font.Name);
+            OnPropertyChanged(string.Empty);
         }
 
         private void _StartProcess(bool isAdmin)
