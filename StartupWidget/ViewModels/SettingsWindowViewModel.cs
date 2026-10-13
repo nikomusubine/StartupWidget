@@ -25,6 +25,10 @@ namespace StartupWidget.ViewModels
             FileDialogService = fileDialog;
             ColorPickerService = colorPicker;
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { LoadSettings(); });
+
+            _generalSettingsItems = new ObservableCollection<SettingItemViewModel>();
+            _mainWindowSettingsItems = new ObservableCollection<SettingItemViewModel>();
+            _widgetSettingsItems = new ObservableCollection<SettingItemViewModel>();
             LoadSettings();
             LoadItems();
         }
@@ -57,7 +61,6 @@ namespace StartupWidget.ViewModels
 
         private void LoadItems(ref ObservableCollection<SettingItemViewModel> settingItems, object SettingsModel)
         {
-            settingItems = new ObservableCollection<SettingItemViewModel>();
             string LangPath = "SettingsWindow/";
 
             if (SettingsModel.GetType() == typeof(GeneralSettings)) LangPath += "GeneralSettings/";
@@ -72,6 +75,7 @@ namespace StartupWidget.ViewModels
                 var doubleAttr = property.GetCustomAttribute(typeof(Attributes.DoubleBoundsAttribute));
                 var intAttr = property.GetCustomAttribute(typeof(Attributes.IntBoundsAttribute));
                 var strAttr = property.GetCustomAttribute(typeof(Attributes.StringOptionAttribute));
+                var langAttr = property.GetCustomAttribute(typeof(Attributes.LanguageElementAttribute));
 
                 SettingItemViewModel settingItem;
                 if (doubleAttr != null)
@@ -102,6 +106,9 @@ namespace StartupWidget.ViewModels
                     {
                         settingItem = new LimitedSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, property.GetValue(SettingsModel), ((Attributes.StringOptionAttribute)strAttr).Options.Cast<object>());
                     }
+                }else if (langAttr != null)
+                {
+                    settingItem = new LimitedSettingItemViewModel(property.Name, LanguageService.GetString(LangPath + property.Name), property.PropertyType, LanguageService.GetNativeName( (string)property.GetValue(SettingsModel)), LanguageService.GetAvailableLanguages());
                 }
                 else
                 {
@@ -153,7 +160,14 @@ namespace StartupWidget.ViewModels
                         }
                         else
                         {
-                            property.SetValue(SettingsModel, item.Value);
+                            if (property.GetCustomAttribute<Attributes.LanguageElementAttribute>() != null)
+                            {
+                                property.SetValue(SettingsModel, LanguageService.GetCultureName((string)item.Value));
+                            }
+                            else
+                            {
+                                property.SetValue(SettingsModel, item.Value);
+                            }
                         }
                         break;
                     }
@@ -186,6 +200,11 @@ namespace StartupWidget.ViewModels
             _ApplyItems(_widgetSettingsItems, WidgetSettingsDraft);
             WeakReferenceMessenger.Default.Send(new ApplySettings());
             SettingsService.UpdateSettings(GeneralSettingsDraft, MainWindowSettingsDraft, WidgetSettingsDraft);
+            _generalSettingsItems.Clear();
+            _mainWindowSettingsItems.Clear();
+            _widgetSettingsItems.Clear();
+            LoadSettings();
+            LoadItems();
         }
         [RelayCommand]
         private void CancelSettings()

@@ -186,6 +186,11 @@ namespace StartupWidget
                         LanguageService.GetString("Reusable/ErrorMessageBoxTitle"), MessageBoxDialogButton.OK, MessageBoxDialogIcon.Stop);
                 }
             });
+
+            WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) =>
+            {
+                LanguageService.ChangeLanguage(SettingsService.GeneralSettings.Language);
+            });
         }
     }
 
