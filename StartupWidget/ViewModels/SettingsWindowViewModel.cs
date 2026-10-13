@@ -25,6 +25,10 @@ namespace StartupWidget.ViewModels
             FileDialogService = fileDialog;
             ColorPickerService = colorPicker;
             WeakReferenceMessenger.Default.Register<ApplySettings>(this, (r, m) => { LoadSettings(); });
+
+            _generalSettingsItems = new ObservableCollection<SettingItemViewModel>();
+            _mainWindowSettingsItems = new ObservableCollection<SettingItemViewModel>();
+            _widgetSettingsItems = new ObservableCollection<SettingItemViewModel>();
             LoadSettings();
             LoadItems();
         }
@@ -57,7 +61,6 @@ namespace StartupWidget.ViewModels
 
         private void LoadItems(ref ObservableCollection<SettingItemViewModel> settingItems, object SettingsModel)
         {
-            settingItems = new ObservableCollection<SettingItemViewModel>();
             string LangPath = "SettingsWindow/";
 
             if (SettingsModel.GetType() == typeof(GeneralSettings)) LangPath += "GeneralSettings/";
@@ -197,6 +200,11 @@ namespace StartupWidget.ViewModels
             _ApplyItems(_widgetSettingsItems, WidgetSettingsDraft);
             WeakReferenceMessenger.Default.Send(new ApplySettings());
             SettingsService.UpdateSettings(GeneralSettingsDraft, MainWindowSettingsDraft, WidgetSettingsDraft);
+            _generalSettingsItems.Clear();
+            _mainWindowSettingsItems.Clear();
+            _widgetSettingsItems.Clear();
+            LoadSettings();
+            LoadItems();
         }
         [RelayCommand]
         private void CancelSettings()
