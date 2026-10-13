@@ -71,14 +71,37 @@ namespace StartupWidget.Services
 
                 try
                 {
-                    CultureInfo culture = CultureInfo.GetCultureInfo(langCode);
-                    list.Add(culture.NativeName);
+                    list.Add(GetNativeName(langCode));
                 }catch (CultureNotFoundException)
                 {
                     //不適切なファイル名は無視
                 }
             }
             return list;
+        }
+        /// <summary>
+        /// 不適切なCultureNameはCultureNotFoundException
+        /// </summary>
+        /// <param name="cultureName"></param>
+        /// <returns></returns>
+        public static string GetNativeName(string cultureName)
+        {
+            CultureInfo culture = CultureInfo.GetCultureInfo(cultureName);
+            return culture.NativeName;
+        }
+
+        public static string GetCultureName(string nativeName)
+        {
+            CultureInfo? culture = CultureInfo.GetCultures(CultureTypes.AllCultures).FirstOrDefault(c => string.Equals(c.NativeName, nativeName, StringComparison.OrdinalIgnoreCase));
+
+            if (culture != null)
+            {
+                return culture.Name;
+            }
+            else
+            {
+                throw new CultureNotFoundException($"Native Name {nativeName} was not found");
+            }
         }
     }
 }
