@@ -11,12 +11,15 @@ namespace StartupWidget.Services
     public class ExecutableProcessService
     {
         private static string ApplicationSavePath = Constants.SettingsLocation + "Applications.xml";
+        private static string JsonApplicationSavePath = Constants.SettingsLocation + "Applications.json";
         public ExecutableProcessService()
         {
             ExecutableProcesses = new List<ExecutableProcess>();
+            jsonPersistentService = new JsonPersistentService<List<ExecutableProcess>>(JsonApplicationSavePath);
             persistenceService = new PersistenceService(typeof(List<ExecutableProcess>), ApplicationSavePath);
         }
         private PersistenceService persistenceService;
+        private JsonPersistentService<List<ExecutableProcess>> jsonPersistentService;
         public List<ExecutableProcess> ExecutableProcesses { get; set; }
 
         #region プロセス追加
@@ -58,19 +61,29 @@ namespace StartupWidget.Services
         #region ファイルIO
         public void LoadApplications()
         {
-            if (File.Exists(ApplicationSavePath))
+            if (File.Exists(JsonApplicationSavePath))
             {
-                List<ExecutableProcess>? Executables = (List<ExecutableProcess>?)persistenceService.Load();
+                List<ExecutableProcess>? Executables = jsonPersistentService.Load();
                 if(Executables != null)
                 {
                     ExecutableProcesses = Executables;
                 }
             }
+            else if (File.Exists(ApplicationSavePath))
+            {
+                List<ExecutableProcess>? Executables = (List<ExecutableProcess>?)persistenceService.Load();
+                if(Executables != null)
+                {
+                    ExecutableProcesses = Executables;
+                    SaveApplications();
+                    File.Delete(ApplicationSavePath);
+                }
+            }
         }
         public void SaveApplications()
         {
-            persistenceService.CreateDirectryOfPath();
-            persistenceService.Save(ExecutableProcesses);
+            jsonPersistentService.CreateDirectryOfPath();
+            jsonPersistentService.Save(ExecutableProcesses);
         }
         #endregion
     }
