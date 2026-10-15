@@ -2,6 +2,7 @@
 using StartupWidget.Models.Types;
 using StartupWidget.Services.Types;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -11,13 +12,17 @@ namespace StartupWidget.Services
     public class SettingsService
     {
         private static string SettingsSavePath = Constants.SettingsLocation + "Settings.xml";
+        private static string JsonSettingsSavePath = Constants.SettingsLocation + "Settings.json";
         public SettingsService()
         {
             GeneralSettings = new GeneralSettings();
             MainWindowSettings = new MainWindowSettings();
             WidgetSettings = new WidgetSettings();
             persistenceService = new PersistenceService(typeof(SettingsService), SettingsSavePath);
+            jsonPersistenceService = new JsonPersistentService<SettingsService>(JsonSettingsSavePath);
         }
+
+        private JsonPersistentService<SettingsService> jsonPersistenceService;
         private PersistenceService persistenceService;
         public GeneralSettings GeneralSettings { get; set; }
         public MainWindowSettings MainWindowSettings { get; set; }
@@ -33,12 +38,22 @@ namespace StartupWidget.Services
         }
         public void SaveSettings()
         {
-            persistenceService.CreateDirectryOfPath();
-            persistenceService.Save(this);
+            jsonPersistenceService.CreateDirectryOfPath();
+            jsonPersistenceService.Save(this);
         }
         public void LoadSettings()
         {
-            if (File.Exists(SettingsSavePath))
+            if (File.Exists(JsonSettingsSavePath))
+            {
+                SettingsService? settings = jsonPersistenceService.Load();
+                if (settings != null)
+                {
+                    GeneralSettings = settings.GeneralSettings;
+                    MainWindowSettings = settings.MainWindowSettings;
+                    WidgetSettings = settings.WidgetSettings;
+                }
+            }
+            else if (File.Exists(SettingsSavePath))
             {
                 SettingsService? settings = (SettingsService?)persistenceService.Load();
                 if (settings != null)
@@ -46,6 +61,8 @@ namespace StartupWidget.Services
                     GeneralSettings = settings.GeneralSettings;
                     MainWindowSettings = settings.MainWindowSettings;
                     WidgetSettings = settings.WidgetSettings;
+                    SaveSettings();
+                    File.Delete(SettingsSavePath);
                 }
             }
         }
