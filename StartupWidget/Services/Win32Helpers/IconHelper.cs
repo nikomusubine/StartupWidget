@@ -45,8 +45,8 @@ namespace StartupWidget.Services.Win32Helpers
         public int crEffect;
     }
     [GeneratedComInterface()]
-    [GuidAttribute("46EB5926-582E-4017-9FDF-E8998DAA0950")]
-    [InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("46EB5926-582E-4017-9FDF-E8998DAA0950")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public partial interface IImageList
     {
         [PreserveSig]
