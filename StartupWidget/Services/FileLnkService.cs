@@ -1,14 +1,10 @@
 ﻿using StartupWidget.Services.Win32Helpers;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks.Dataflow;
 
 namespace StartupWidget.Services
 {
-    public class FileLnkService: IDisposable
+    public class FileLnkService
     {
         ShellLinkHelper.IShellLinkW shellLink;
         ShellLinkHelper.IPersistFile persistFile;
@@ -39,40 +35,40 @@ namespace StartupWidget.Services
             }
             else
             {
-                throw new COMException("IShellLinkからIPersistFileインターフェースの取得に失敗",unchecked((int)0x80004002));
+                throw new COMException("IShellLinkからIPersistFileインターフェースの取得に失敗しました。",unchecked((int)0x80004002));
             }
         }
-
-        public void Dispose() // 本当に必要？
+        
+        public unsafe string GetPath()
         {
-            if(persistFile is IDisposable dp)
-            {
-                dp.Dispose();
-            }
-            if(shellLink is IDisposable ds)
-            {
-                ds.Dispose();
-            }
+            char* pBuffer = stackalloc char[ShellLinkHelper.MAX_PATH];
+
+            ShellLinkHelper.WIN32_FIND_DATAW fndData = default;
+            shellLink.GetPath(pBuffer, ShellLinkHelper.MAX_PATH, out fndData, ShellLinkHelper.SLGP_FLAGS.SLGP_RAWPATH);
+            return new string(pBuffer);
         }
 
-        public static string ResolveShortcut(string filename)
+        public unsafe string GetWorkingDirectory()
         {
-            ShellLink link = new ShellLink();
-
-            Span<char> fname = new Span<char>(filename.ToArray());
-            unsafe
-            {
-                fixed (char* fnameptr = fname)
-                {
-                    ((IPersistFile)link).Load(fnameptr, STGM_READ);
-                    // TODO: if I can get hold of the hwnd call resolve first. This handles moved and renamed files.  
-                    // ((IShellLinkW)link).Resolve(hwnd, 0) 
-                    fixed char* pszFile = new char[256];
-                    WIN32_FIND_DATAW data = new WIN32_FIND_DATAW();
-                    ((IShellLinkW)link).GetPath(pszFile, 2556, out data, 0);
-                    return sb.ToString();
-                }
-            }
+            char* pBuffer = stackalloc char[ShellLinkHelper.MAX_PATH];
+            shellLink.GetWorkingDirectory(pBuffer, ShellLinkHelper.MAX_PATH);
+            return new string(pBuffer);
         }
+
+        public unsafe string GetArguments()
+        {
+            char* pBuffer = stackalloc char[ShellLinkHelper.MAX_PATH];
+            shellLink.GetArguments(pBuffer, ShellLinkHelper.MAX_PATH);
+            return new string(pBuffer);
+        }
+
+        public unsafe string GetIconLocation()
+        {
+            char* pBuffer = stackalloc char[ShellLinkHelper.MAX_PATH];
+            int piIcon;
+            shellLink.GetIconLocation(pBuffer, ShellLinkHelper.MAX_PATH, out piIcon);
+            return new string(pBuffer);
+        }
+
     }
 }
