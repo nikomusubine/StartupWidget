@@ -2,6 +2,7 @@
 using StartupWidget.Services.Types;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -55,7 +56,21 @@ namespace StartupWidget.Services
                 process.StartInfo.UseShellExecute = true;
                 process.StartInfo.Verb = "RunAs";
             }
-            return process.Start();
+            try
+            {
+                return process.Start();
+            }catch(Win32Exception exc)
+            {
+                if (exc.NativeErrorCode == 0x0000010b)
+                {
+                    process.StartInfo.WorkingDirectory = string.Empty;
+                    return process.Start();
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
         #endregion
         #region ファイルIO

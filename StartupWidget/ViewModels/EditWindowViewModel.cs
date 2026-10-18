@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using IWshRuntimeLibrary;
 using StartupWidget.Messages;
 using StartupWidget.Models.Types;
 using StartupWidget.Services;
@@ -11,7 +10,6 @@ using StartupWidget.ViewModels.Items;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using Application = System.Windows.Application;
 
@@ -182,12 +180,11 @@ namespace StartupWidget.ViewModels
                     prcs = new ExecutableProcess(name, path);
                     return new ProcessItemViewModel(prcs, executableIconImage);
                 case ".lnk":
-                    WshShell wshShell = new WshShell();
-                    IWshShortcut shortcut = wshShell.CreateShortcut(path);
-                    path = shortcut.TargetPath;
-                    string args = shortcut.Arguments;
-                    string workingdir = shortcut.WorkingDirectory;
-                    string iconpath = System.IO.File.Exists(shortcut.IconLocation) ? shortcut.IconLocation : string.Empty;
+                    FileLnkService fLnk = new FileLnkService(path);
+                    path = fLnk.GetPath();
+                    string args = fLnk.GetArguments();
+                    string workingdir = fLnk.GetWorkingDirectory();
+                    string iconpath = System.IO.File.Exists(fLnk.GetIconLocation()) ? fLnk.GetIconLocation() : string.Empty;
                     prcs = new ExecutableProcess(name, path, args, workingdir, iconpath, false);
                     return new ProcessItemViewModel(prcs, executableIconImage);
                 default:

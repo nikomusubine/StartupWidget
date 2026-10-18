@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace StartupWidget.Services.Win32Helpers
 {
@@ -43,10 +44,10 @@ namespace StartupWidget.Services.Win32Helpers
         public int Frame;
         public int crEffect;
     }
-    [ComImportAttribute()]
-    [GuidAttribute("46EB5926-582E-4017-9FDF-E8998DAA0950")]
-    [InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IImageList
+    [GeneratedComInterface()]
+    [Guid("46EB5926-582E-4017-9FDF-E8998DAA0950")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public partial interface IImageList
     {
         [PreserveSig]
         int Add(IntPtr hbmImage, IntPtr hbmMask, ref int pi);
@@ -89,9 +90,6 @@ namespace StartupWidget.Services.Win32Helpers
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool DestroyIcon(IntPtr hIcon);
-
-
-
 
         [LibraryImport("user32.dll", EntryPoint = "LoadImageW", StringMarshalling = StringMarshalling.Utf16)]
         public static partial IntPtr LoadImage(

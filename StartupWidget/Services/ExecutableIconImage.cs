@@ -194,12 +194,21 @@ namespace StartupWidget.Services
             }
             else //IconPath指定
             {
-                BitmapImage image = new BitmapImage();
-                image.BeginInit();
-                image.UriSource = new Uri(process.IconFilePath);
-                image.EndInit();
-                image.Freeze();
-                return image;
+                if (string.Equals(Path.GetExtension(process.IconFilePath),".exe",StringComparison.OrdinalIgnoreCase))
+                {
+                    ImageSource imageSource = GetJumboIcon(process.IconFilePath)??GetEmptyImageSource();
+                    Iconcache.Add(process.IconFilePath, imageSource);
+                    return imageSource;
+                }
+                else
+                {
+                    BitmapImage image = new BitmapImage();
+                    image.BeginInit();
+                    image.UriSource = new Uri(process.IconFilePath);
+                    image.EndInit();
+                    image.Freeze();
+                    return image;
+                }
             }
         }
 
