@@ -1,28 +1,48 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace StartupWidget.WinUI.Views
 {
     public partial class MainWindow: Window
     {
-        private int _clickCount = 0;
         public MainWindow()
         {
+#if DEBUG
+            StartupWidget.WinUI.DevService.HotReloadHelper.OnHotReload += BuildUI;
+#endif
+
             InitializeUI();
+            WidgetWindow widget = new WidgetWindow();
+            widget.Activate();
+
+            SettingsWindow settings = new();
+            settings.Activate();
         }
 
         private void InitializeUI()
         {
-            this.Title = "StartupWidget - C# UI";
-            this.ExtendsContentIntoTitleBar = true;
-            this.SetTitleBar(CreateMenu());
+            this.Title = "StartupWidget";
+            BuildUI();
+        }
+
+        private void BuildUI()
+        {
             // 1. ルートとなるレイアウトパネルの作成
+            FrameworkElement menu = CreateMenu();
+            Grid.SetRow(menu, 0);
+            FrameworkElement body = CreateBody();
+            Grid.SetRow(body, 1);
+
             var rootGrid = new Grid
             {
                 Padding = new Thickness(20),
@@ -39,16 +59,15 @@ namespace StartupWidget.WinUI.Views
                 },
                 Children =
                 {
-                    //CreateMenu(),
-                    //CreateBody()
+                    menu,
+                    body,
                 }
             };
-
             this.Content = rootGrid;
-            
+
         }
 
-        private UIElement CreateMenu()
+        private FrameworkElement CreateMenu()
         {
             MenuBar menubar = new MenuBar();
 
@@ -68,7 +87,7 @@ namespace StartupWidget.WinUI.Views
             return menubar;
         }
 
-        private UIElement CreateBody()
+        private FrameworkElement CreateBody()
         {
             return new ListView()
             {
@@ -79,6 +98,6 @@ namespace StartupWidget.WinUI.Views
                 }
             };
         }
-   
+
     }
 }
