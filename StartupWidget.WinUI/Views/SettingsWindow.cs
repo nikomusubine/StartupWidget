@@ -94,10 +94,6 @@ namespace StartupWidget.WinUI.Views
 
         private FrameworkElement CreateFooter()
         {
-            ColumnDefinition columnDefinition = new ColumnDefinition
-            {
-                Width = GridLength.Auto,
-            };
 
             Button OKButton = new Button
             {

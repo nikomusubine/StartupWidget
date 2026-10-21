@@ -25,8 +25,11 @@ namespace StartupWidget.WinUI.Views
             WidgetWindow widget = new WidgetWindow();
             widget.Activate();
 
-            SettingsWindow settings = new();
-            settings.Activate();
+            //SettingsWindow settings = new();
+            //settings.Activate();
+
+            EditWindow edit = new();
+            edit.Activate();
         }
 
         private void InitializeUI()
