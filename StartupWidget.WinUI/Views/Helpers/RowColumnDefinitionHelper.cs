@@ -19,6 +19,11 @@ namespace StartupWidget.WinUI.Views.Helpers
             };
             return rowDefinition;
         }
+
+        public static ColumnDefinition ColumnDefinitionStar()
+        {
+            return ColumnDefinitionStar(1);
+        }
         public static ColumnDefinition ColumnDefinitionStar(double ratio)
         {
 
