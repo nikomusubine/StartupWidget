@@ -58,7 +58,9 @@ namespace StartupWidget.WinUI.Views.TemplateBuilders
         private void CreatePanel()
         {
             LabelBlock = new TextBlock();
+            LabelBlock.Margin = new Thickness(5, 0, 5, 0);
             ValueControl = new ContentControl();
+            ValueControl.HorizontalContentAlignment = HorizontalAlignment.Stretch;
 
             Rootgrid = new Grid
             {
@@ -84,5 +86,9 @@ namespace StartupWidget.WinUI.Views.TemplateBuilders
             this.Content = Rootgrid;
         }
 
+        public void JoinSharedSizeGroup(SharedSizeGroup group)
+        {
+            group.Register(LabelBlock);
+        }
     }
 }

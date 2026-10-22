@@ -14,6 +14,7 @@ namespace StartupWidget.WinUI.Views.TemplateBuilders
         public ProcessItemPropertyPanel()
         {
             CreatePanel();
+            this.Loaded += CalculateSizeOnLoad;
         }
 
         public FrameworkElement Content
@@ -23,6 +24,7 @@ namespace StartupWidget.WinUI.Views.TemplateBuilders
                 return Root;
             }
         }
+        private SharedSizeGroup sharedSizeGroup = null!;
 
         private StackPanel Root=null!;
         private OptionElement NameControl = null!;
@@ -39,25 +41,38 @@ namespace StartupWidget.WinUI.Views.TemplateBuilders
         private CheckBox RunAsAdminBox = null!;
         private Button RemoveAppButton = null!;
 
-
+        private void CalculateSizeOnLoad(object sender, RoutedEventArgs e)
+        {
+            sharedSizeGroup.Calculate();
+        }
         private void CreatePanel()
         {
             CreatePanelContent();
 
             Margin = new Thickness(5, 0, 5, 0);
-            this.HorizontalAlignment = HorizontalAlignment.Stretch;            
+            this.HorizontalAlignment = HorizontalAlignment.Stretch;
+            sharedSizeGroup = new SharedSizeGroup(SizeType.Width);
             Children.Add(NameControl);
+            NameControl.JoinSharedSizeGroup(sharedSizeGroup);
             Children.Add(ProcessPathControl);
+            ProcessPathControl.JoinSharedSizeGroup(sharedSizeGroup);
             Children.Add(ArgumentControl);
+            ArgumentControl.JoinSharedSizeGroup(sharedSizeGroup);
             Children.Add(WorkingDirectoryControl);
+            WorkingDirectoryControl.JoinSharedSizeGroup(sharedSizeGroup);
             Children.Add(IconPathControl);
+            IconPathControl.JoinSharedSizeGroup(sharedSizeGroup);
             Children.Add(RunAsAdminControl);
+            RunAsAdminControl.JoinSharedSizeGroup(sharedSizeGroup);
             Children.Add(RemoveAppButton);
         }
 
         private void CreatePanelContent()
         {
-            NameBox = new TextBox();
+            NameBox = new TextBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
             NameControl = new OptionElement
             {
                 Label="Name",
@@ -65,7 +80,7 @@ namespace StartupWidget.WinUI.Views.TemplateBuilders
                 ValueContent=NameBox,                
                 HorizontalAlignment=HorizontalAlignment.Stretch,
             };
-
+            
             ProcessPathBox = new FilePathTextBox();
             ProcessPathControl = new OptionElement
             {
