@@ -18,6 +18,11 @@ namespace StartupWidget.WinUI.Views.Helpers
             _sizeType = sizeType;
         }
 
+        public void Register(FrameworkElement Content)
+        {
+            elements.Add(Content);
+        }
+
         public void Calculate()
         {
             SetMinSize();
