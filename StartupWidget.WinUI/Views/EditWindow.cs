@@ -37,18 +37,15 @@ namespace StartupWidget.WinUI.Views
             Grid.SetRow(body, 0);
 
             FooterThreeButtons footer = new FooterThreeButtons();
-
-            Grid.SetRow(footer.Content, 1);
+            Grid.SetRow(footer, 1);
 
             var rootGrid = new Grid
             {
                 Padding = new Thickness(0),
                 Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent),
                 RowDefinitions = {
+                    RowColumnDefinitionHelper.RowDefinitionStar(),
                     new RowDefinition
-                    {
-                        Height = GridLength.Auto
-                    },new RowDefinition
                     {
                         Height = GridLength.Auto
                     }
@@ -56,7 +53,7 @@ namespace StartupWidget.WinUI.Views
                 Children =
                 {
                     body,
-                    footer.Content,
+                    footer,
                 }
             };
             this.Content = rootGrid;
