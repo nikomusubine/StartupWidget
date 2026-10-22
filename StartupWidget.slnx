@@ -1,3 +1,7 @@
 <Solution>
+  <Project Path="StartupWidget.WinUI/StartupWidget.WinUI.csproj" Id="5c88caa0-02a4-4908-8ca9-1614e121f245">
+    <Platform Project="x64" />
+    <Deploy />
+  </Project>
   <Project Path="StartupWidget/StartupWidget.csproj" />
 </Solution>
