@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-
+using StartupWidget.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -15,6 +15,7 @@ namespace StartupWidget.WinUI.Views
 {
     public partial class MainWindow: Window
     {
+        public MainWindowViewModel? DataContext = null;
         public MainWindow()
         {
 #if DEBUG

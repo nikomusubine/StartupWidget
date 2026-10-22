@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using StartupWidget.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace StartupWidget.WinUI.Views
 {
     public class WidgetWindow: Window
     {
+        public WidgetWindowViewModel DataContext = null!;
         public WidgetWindow()
         {
 #if DEBUG

@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using StartupWidget.ViewModels;
 using StartupWidget.WinUI.Views.Helpers;
 using StartupWidget.WinUI.Views.TemplateBuilders;
 using System;
@@ -13,6 +14,7 @@ namespace StartupWidget.WinUI.Views
 {
     public class EditWindow : Window
     {
+        public EditWindowViewModel DataContext = null!;
         public EditWindow()
         {
 #if DEBUG

@@ -8,9 +8,6 @@ using StartupWidget.ViewModels.Items;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Windows.Media;
-using Application = System.Windows.Application;
-using Color = System.Windows.Media.Color;
 
 namespace StartupWidget.ViewModels
 {
