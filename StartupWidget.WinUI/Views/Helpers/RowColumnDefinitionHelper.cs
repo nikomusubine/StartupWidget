@@ -10,6 +10,10 @@ namespace StartupWidget.WinUI.Views.Helpers
 {
     public static class RowColumnDefinitionHelper
     {
+        public static RowDefinition RowDefinitionStar()
+        {
+            return RowDefinitionStar(1);
+        }
         public static RowDefinition RowDefinitionStar(double ratio)
         {
 
