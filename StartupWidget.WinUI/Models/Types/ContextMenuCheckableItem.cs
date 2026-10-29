@@ -1,4 +1,6 @@
-﻿namespace StartupWidget.Models.Types
+﻿using System;
+
+namespace StartupWidget.Models.Types
 {
     public class ContextMenuCheckableItem:ContextMenuItem
     {
@@ -11,7 +13,7 @@
             {
                 if (_isChecked == value) return;
                 _isChecked = value;
-                CheckableValueChanged?.Invoke(this, EventArgs.Empty);
+                CheckableValueChanged?.Invoke(this,EventArgs.Empty);
             }
         }
         public override void MenuClick()

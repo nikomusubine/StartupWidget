@@ -1,9 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Media;
-
-namespace StartupWidget.Models.Types
+﻿namespace StartupWidget.Models.Types
 {
-    [Serializable]
+    //[Serializable]
     public class SerializableFont
     {
         public SerializableFont(string name, double size)

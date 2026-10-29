@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using Microsoft.UI.Xaml.Media;
+using System;
 
 namespace StartupWidget.Models.Types
 {
