@@ -2,6 +2,10 @@
 using StartupWidget.Services.Interfaces;
 using System.Windows;
 
+/*
+  No Compilation
+ */
+
 namespace StartupWidget.Services
 {
     public class OpenFileDialogService : IDialogService

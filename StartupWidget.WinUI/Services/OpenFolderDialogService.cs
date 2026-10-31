@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 
+/*
+  No Compilation
+ */
+
 namespace StartupWidget.Services
 {
     public class OpenFolderDialogService : IDialogService

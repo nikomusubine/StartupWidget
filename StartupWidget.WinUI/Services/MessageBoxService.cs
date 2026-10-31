@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 
+/*
+  No Compilation
+ContentDialogを使用する。DialogIconは不要になる
+ */
+
 namespace StartupWidget.Services
 {
     public class MessageBoxService

@@ -4,6 +4,10 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 
+/*
+  No Compilation
+ */
+
 namespace StartupWidget.Behaviours
 {
     public class WindowDragMoveBehaviour: Behavior<Window>

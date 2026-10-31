@@ -8,6 +8,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
+/*
+  No Compilation
+ */
+
 namespace StartupWidget.Behaviours
 {
     public class ShortcutKeySetBehaviour: Behavior<System.Windows.Controls.TextBox>

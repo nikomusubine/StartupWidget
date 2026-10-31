@@ -2,6 +2,10 @@ using Microsoft.UI.Xaml.Media;
 using System;
 using System.Runtime.InteropServices;
 
+/*
+  No Compilation
+ */
+
 namespace StartupWidget.Behaviours.Win32Helpers
 {
     public partial class WindowMove : IDisposable

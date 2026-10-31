@@ -16,6 +16,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Behaviours\ShortcutKeySetBehaviour.cs" />
+    <Compile Remove="Behaviours\Win32Helpers\WindowMove.cs" />
+    <Compile Remove="Behaviours\WindowDragMoveBehaviour.cs" />
+    <Compile Remove="Services\MessageBoxService.cs" />
+    <Compile Remove="Services\OpenFileDialogService.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Views\MainPage.xaml" />
     <None Remove="Views\Pages\EditPage.xaml" />
     <None Remove="Views\Pages\SettingsPage.xaml" />
@@ -42,6 +49,13 @@
   -->
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Behaviours\ShortcutKeySetBehaviour.cs" />
+    <None Include="Behaviours\Win32Helpers\WindowMove.cs" />
+    <None Include="Behaviours\WindowDragMoveBehaviour.cs" />
+    <None Include="Services\MessageBoxService.cs" />
+    <None Include="Services\OpenFileDialogService.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
