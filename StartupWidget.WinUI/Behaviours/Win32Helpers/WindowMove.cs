@@ -1,7 +1,6 @@
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Runtime.InteropServices;
-using System.Windows.Interop;
-using System.Windows.Media;
 
 namespace StartupWidget.Behaviours.Win32Helpers
 {
