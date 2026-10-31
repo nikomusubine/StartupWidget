@@ -2,7 +2,7 @@
 
 namespace StartupWidget.Models.Types
 {
-    [Serializable]
+    //[Serializable]
     public class ExecutableProcess
     {
         public ExecutableProcess(string name, string path)
