@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
+using Windows.System;
 
 namespace StartupWidget.Models.Types
 {
@@ -10,9 +11,9 @@ namespace StartupWidget.Models.Types
         public ShortcutKeys()
         {
             Modifires = KeyModifiers.None;
-            Keys = System.Windows.Input.Key.None;
+            Keys = VirtualKey.None;
         }
-        public ShortcutKeys(KeyModifiers modifires, System.Windows.Input.Key key)
+        public ShortcutKeys(KeyModifiers modifires, VirtualKey key)
         {
             Modifires = modifires;
             Keys = key;
@@ -25,7 +26,7 @@ namespace StartupWidget.Models.Types
 
 
         public KeyModifiers Modifires;
-        public System.Windows.Input.Key Keys;
+        public VirtualKey Keys;
         public new string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -33,7 +34,7 @@ namespace StartupWidget.Models.Types
             {
                 sb.Append(string.Format("{0},", Modifires.ToString()));
             }
-            if (Keys != Key.None)
+            if (Keys != VirtualKey.None)
             {
                 sb.Append(string.Format("{0}", Keys.ToString()));
             }
@@ -44,7 +45,7 @@ namespace StartupWidget.Models.Types
         {
             value = value.Trim();
             value = value.Replace(" ", "");
-            ShortcutKeys sckeys = new ShortcutKeys(KeyModifiers.None, System.Windows.Input.Key.None);
+            ShortcutKeys sckeys = new ShortcutKeys(KeyModifiers.None, VirtualKey.None);
             foreach(var i in value.Split(','))
             {
                 switch (i)
@@ -57,8 +58,11 @@ namespace StartupWidget.Models.Types
                         sckeys.Modifires |= KeyModifiers.Shift; break;
                     case nameof(KeyModifiers.Win):
                         sckeys.Modifires |= KeyModifiers.Win; break;
-                    default: 
-                        Key.TryParse(i.ToUpper(), out sckeys.Keys);
+                    default:
+                        if (!VirtualKey.TryParse(i.ToUpper(), out sckeys.Keys))
+                        {
+                            sckeys.Keys = VirtualKey.None;
+                        }
                         break;
                 }
             }
