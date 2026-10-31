@@ -12,5 +12,7 @@ namespace StartupWidget
         public static string SettingsLocation = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData,Environment.SpecialFolderOption.Create) + "\\Nikochan\\StartupWidget\\";
 #endif
         public const string AppName = "nikomusubine.startupwidget";
+
+        public const nuint AppUniqueNumber = 0x2503;
     }
 }
