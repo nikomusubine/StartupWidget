@@ -1,13 +1,8 @@
 ﻿using StartupWidget.Models.Types;
+using StartupWidget.WinUI.Services;
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
-using System.Text;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Interop;
+using Windows.System;
 
 
 namespace StartupWidget.Services
@@ -64,40 +59,40 @@ namespace StartupWidget.Services
         /// with modifiers.
         /// </param>
         /// <param name="key">The pressed key.</param>
-        public static KeyModifiers GetModifiers(Key keydata, out Key key)
+        public static KeyModifiers GetModifiers(VirtualKey keydata, out VirtualKey key)
         {
             key = keydata;
             KeyModifiers modifers = KeyModifiers.None;
 
             // Check whether the keydata contains the CTRL modifier key.
             // The value of Keys.Control is 131072.
-            if ((keydata & System.Windows.Input.Key.LeftCtrl) == Key.LeftCtrl)
+            if ((keydata & VirtualKey.LeftControl) == VirtualKey.LeftControl)
             {
                 modifers |= KeyModifiers.Control;
 
-                key = keydata ^ Key.LeftCtrl;
+                key = keydata ^ VirtualKey.Control;
             }
 
             // Check whether the keydata contains the SHIFT modifier key.
             // The value of Keys.Control is 65536.
-            if ((keydata & Key.LeftShift) == Key.LeftShift)
+            if ((keydata & VirtualKey.LeftShift) == VirtualKey.LeftShift)
             {
                 modifers |= KeyModifiers.Shift;
-                key = key ^ Key.LeftShift;
+                key = key ^ VirtualKey.LeftShift;
             }
 
             // Check whether the keydata contains the ALT modifier key.
             // The value of Keys.Control is 262144.
-            if ((keydata & Key.LeftAlt) == Key.LeftAlt)
+            if ((keydata & VirtualKey.LeftMenu) == VirtualKey.LeftMenu)
             {
                 modifers |= KeyModifiers.Alt;
-                key = key ^ Key.LeftAlt;
+                key = key ^ VirtualKey.LeftMenu;
             }
 
             // Check whether a key other than SHIFT, CTRL or ALT (Menu) is pressed.
-            if (key == Key.LeftShift || key == Key.LeftCtrl || key == Key.LeftAlt)
+            if (key == VirtualKey.LeftShift || key == VirtualKey.LeftControl || key == VirtualKey.LeftMenu)
             {
-                key = Key.None;
+                key = VirtualKey.None;
             }
 
             return modifers;
@@ -130,16 +125,18 @@ namespace StartupWidget.Services
 
         public KeyModifiers Modifiers { get; private set; }
 
-        public Key Key { get; private set; }
+        public VirtualKey Key { get; private set; }
 
         /// <summary>
         /// Raise an event when the hotkey is pressed.
         /// </summary>
         public event EventHandler? HotKeyPressed;
 
-        public HotkeyRegisterService(IntPtr handle, int id, KeyModifiers modifiers, Key key)
+        private WndProcMessageService WndProcMessageService;
+
+        public HotkeyRegisterService(IntPtr handle , int id, KeyModifiers modifiers, VirtualKey key, WndProcMessageService MsgService)
         {
-            if (key == System.Windows.Input.Key.None || modifiers == KeyModifiers.None)
+            if (key == VirtualKey.None || modifiers == KeyModifiers.None)
             {
                 throw new ArgumentException("The key or modifiers could not be None.");
             }
@@ -148,17 +145,13 @@ namespace StartupWidget.Services
             this.ID = id;
             this.Modifiers = modifiers;
             this.Key = key;
-
+            WndProcMessageService = MsgService;
             RegisterHotKey();
 
             // Adds a message filter to monitor Windows messages as they are routed to
             // their destinations.
             //Application.AddMessageFilter(this);
-            HwndSource? source = HwndSource.FromHwnd(handle);
-            if (source != null)
-            {
-                source.AddHook(new HwndSourceHook(WndProc));
-            }
+            MsgService.OnWindowEvent += WndProcEventHandler;
         }
 
 
@@ -167,7 +160,7 @@ namespace StartupWidget.Services
         /// </summary>
         private void RegisterHotKey()
         {
-            bool isKeyRegisterd = RegisterHotKey(Handle, ID, Modifiers, KeyInterop.VirtualKeyFromKey(Key));
+            bool isKeyRegisterd = RegisterHotKey(Handle, ID, Modifiers, (int)Key);
 
             // If the operation failed, try to unregister the hotkey if the thread
             // has registered it before.
@@ -177,7 +170,7 @@ namespace StartupWidget.Services
                 UnregisterHotKey(IntPtr.Zero, ID);
 
                 // Try to register the hotkey again.
-                isKeyRegisterd = RegisterHotKey(Handle, ID, Modifiers, KeyInterop.VirtualKeyFromKey(Key));
+                isKeyRegisterd = RegisterHotKey(Handle, ID, Modifiers, (int)Key);
 
                 // If the operation still failed, it means that the hotkey was already
                 // used in another thread or process.
@@ -186,6 +179,13 @@ namespace StartupWidget.Services
                     throw new ApplicationException("The hotkey is in use");
                 }
             }
+        }
+
+        private void WndProcEventHandler(object? sender ,WndProcEventArgs e)
+        {
+            bool handled = e.Handled;
+            e.Result = WndProc(e.HWnd, e.Msg, e.WParam, e.LParam, ref handled);
+            e.Handled = handled;
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -227,6 +227,7 @@ namespace StartupWidget.Services
                 //Application.RemoveMessageFilter(this);
 
                 UnregisterHotKey(Handle, ID);
+                WndProcMessageService.OnWindowEvent -= WndProcEventHandler;
             }
 
             disposed = true;
