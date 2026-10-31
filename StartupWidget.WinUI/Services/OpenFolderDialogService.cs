@@ -1,9 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.UI.Xaml;
 using StartupWidget.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+using System.Threading.Tasks;
 
 /*
   No Compilation
