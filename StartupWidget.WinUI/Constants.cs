@@ -1,6 +1,10 @@
-﻿using System;
+﻿global using unsafe LPCWSTR = char*;
+global using unsafe LPWSTR = char*;
+
+using System;
 using System.Collections.Generic;
 using System.Text;
+
 
 namespace StartupWidget
 {
