@@ -9,12 +9,12 @@ namespace StartupWidget.WinUI.Services.Win32Helpers
 {
     public static unsafe class COMMemHelper
     {
-        public static void FreeCoTaskStr(LPWSTRPtr ppsz)
+        public static void FreeCoTaskStr(ref LPWSTR ppsz)
         {
-            if(ppsz!=null && *ppsz != null)
+            if (ppsz != null)
             {
-                Marshal.FreeCoTaskMem((IntPtr)(*ppsz));
-                *ppsz = null;
+                Marshal.FreeCoTaskMem((IntPtr)(ppsz));
+                ppsz = null;
             }
         }
         public static void FreeCoTaskMem(ref IntPtr ptr)

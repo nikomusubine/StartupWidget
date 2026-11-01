@@ -1,6 +1,7 @@
 ﻿using StartupWidget.Models.Types;
 using StartupWidget.Services.Interfaces;
 using StartupWidget.Services.Win32Helpers;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
