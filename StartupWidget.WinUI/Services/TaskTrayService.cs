@@ -2,6 +2,8 @@
 using StartupWidget.Messages;
 using StartupWidget.Models.Types;
 using StartupWidget.Services.Win32Helpers;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
