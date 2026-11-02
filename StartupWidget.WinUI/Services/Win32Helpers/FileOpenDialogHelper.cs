@@ -20,10 +20,12 @@ namespace StartupWidget.WinUI.Services.Win32Helpers
         static readonly Guid IID_IFileOpenDialog = new Guid("d57c7288-d4ad-4768-be02-9d969532d960");
         static readonly Guid IID_IShellItem = new("4382693f-9286-47a2-af76-080c191b93a2");
         IFileOpenDialog FileOpenDialog;
-        public FileOpenDialogHelper()
+        private IntPtr parent;
+        public FileOpenDialogHelper(IntPtr owner)
         {
             CoCreateInstance(CLSID_FileOpenDialog, IntPtr.Zero, CLSCTX.CLSCTX_INPROC_SERVER, IID_IFileOpenDialog, out FileOpenDialog);
             FileOpenDialog.SetOptions(fos);
+            parent = owner;                        
         }
         private unsafe string GetDisplayNameFromShellItem(IShellItem ppsi)
         {
@@ -42,7 +44,7 @@ namespace StartupWidget.WinUI.Services.Win32Helpers
         }
 
         public bool IsDialogShown = false;
-        public bool ShowDialog(IntPtr parent)
+        public bool ShowDialog()
         {
             if (IsDialogShown)
             {

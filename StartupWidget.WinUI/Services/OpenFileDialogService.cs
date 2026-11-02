@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using Microsoft.Windows.Storage.Pickers;
 using StartupWidget.Services.Interfaces;
+using StartupWidget.WinUI.Services.Win32Helpers;
 using System.Threading.Tasks;
 using System.Windows;
 using WinRT.Interop;
@@ -24,36 +25,31 @@ namespace StartupWidget.Services
         public bool CheckPathExists = true;
         public Window OwnerWindow { get; set; }
 
-        private FileOpenPicker? picker;
+        public FileOpenDialogHelper? fileOpenDialog;
 
         public OpenFileDialogService(Window ownerWindow)
         {
             OwnerWindow = ownerWindow;
-            InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(ownerWindow));
         }
 
         public Task<bool?> ShowDialogAsync()
         {
-            picker = new FileOpenPicker(OwnerWindow.AppWindow.Id)
+            fileOpenDialog = new FileOpenDialogHelper(WindowNative.GetWindowHandle(OwnerWindow))
             {
                 Title = Title,
-                SuggestedStartFolder = InitialDirectory,
-                FileTypeFilter = Filter,
-                FileName = FileName,
-                FilterIndex = FilterIndex,
-                RestoreDirectory = RestoreDirectory,
-                CheckFileExists = CheckFileExists,
-                CheckPathExists = CheckPathExists
+                Directory = InitialDirectory,
+                FileType = Filter,
+                //FileName = FileName,
+                FileTypeIndex = (uint)FilterIndex,
+                //RestoreDirectory = RestoreDirectory,
+                AllowMultiSelect = false,
+                FileMustExist = CheckFileExists,
+                PathMustExist = CheckPathExists
             };
             //IFileDialogをPInvokeしよう
 
-
-
-
-
-
-bool? result = picker.ShowDialog(OwnerWindow);
-            FileName = picker.FileName;
+            bool? result = fileOpenDialog.ShowDialog();
+            FileName = fileOpenDialog.Result;
             return Task.FromResult<bool?>(result);
         }
 
