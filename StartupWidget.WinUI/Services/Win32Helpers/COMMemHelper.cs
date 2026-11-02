@@ -9,7 +9,7 @@ namespace StartupWidget.WinUI.Services.Win32Helpers
 {
     public static unsafe class COMMemHelper
     {
-        public static void FreeCoTaskStr(ref LPWSTR ppsz)
+        public static void CoTaskStrFree(ref LPWSTR ppsz)
         {
             if (ppsz != null)
             {
@@ -17,7 +17,7 @@ namespace StartupWidget.WinUI.Services.Win32Helpers
                 ppsz = null;
             }
         }
-        public static void FreeCoTaskMem(ref IntPtr ptr)
+        public static void CoTaskMemFree(ref IntPtr ptr)
         {
             if (ptr != IntPtr.Zero)
             {

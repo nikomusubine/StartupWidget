@@ -7,7 +7,10 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices.Bluetooth.Advertisement;
 using static StartupWidget.Services.Win32Helpers.ShellLinkHelper;
+using StartupWidget.Services.Win32Helpers;
+using System.IO;
 
 namespace StartupWidget.WinUI.Services.Win32Helpers
 {
@@ -20,17 +23,96 @@ namespace StartupWidget.WinUI.Services.Win32Helpers
         public FileOpenDialogHelper()
         {
             CoCreateInstance(CLSID_FileOpenDialog, IntPtr.Zero, CLSCTX.CLSCTX_INPROC_SERVER, IID_IFileOpenDialog, out FileOpenDialog);
+            FileOpenDialog.SetOptions(fos);
         }
-
-        public void ShowDialog(IntPtr parent)
+        private unsafe string GetDisplayNameFromShellItem(IShellItem ppsi)
         {
-            FileOpenDialog.Show(parent);
+            if (ppsi == null)
+            {
+                return string.Empty;
+            }
+            int hr = ppsi.GetDisplayName(0, out LPWSTR displayName);
+            if (hr != 0)
+            {
+                return string.Empty;
+            }
+            string result = new string(displayName);
+            COMMemHelper.CoTaskStrFree(ref displayName);
+            return result;
         }
 
-        public string FIleType
+        public bool IsDialogShown = false;
+        public bool ShowDialog(IntPtr parent)
+        {
+            if (IsDialogShown)
+            {
+                throw new InvalidOperationException("ShowDialogは二度以上呼び出せません。");
+            }
+            FileOpenDialog.SetOptions(fos);
+            int hr = FileOpenDialog.Show(parent);
+            IsDialogShown = true;
+            if (hr == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public string Title
         {
             set
             {
+                unsafe
+                {
+                    fixed(LPCWSTR str = value)
+                    {
+                        FileOpenDialog.SetTitle(str);
+                    }
+                }
+            }
+        }
+
+        public string Directory
+        {
+            get
+            {
+                unsafe
+                {
+                    IShellItem shellItem;
+                    FileOpenDialog.GetFolder(out shellItem);
+                    return GetDisplayNameFromShellItem(shellItem);
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && System.IO.Directory.Exists(value))
+                {
+                    int hr = SHCreateItemFromParsingName(value, IntPtr.Zero, IID_IShellItem, out IShellItem folderItem);
+                    if (hr == 0 && folderItem != null)
+                    {
+                        FileOpenDialog.SetFolder(folderItem);
+                    }
+                }
+                else
+                {
+                    throw new DirectoryNotFoundException("入力されたフォルダは存在しません。");
+                }
+            }
+        }
+
+        public bool IsFileTypePuted = false;
+        public string FileType
+        {
+            set
+            {
+                if (IsFileTypePuted)
+                {
+                    throw new InvalidOperationException("FileTypeは設定済みです。");
+                }
+
                 string[] typearray = value.Split('|');
                 if (typearray.Length % 2 != 0)
                 {
@@ -63,6 +145,7 @@ namespace StartupWidget.WinUI.Services.Win32Helpers
                     fixed (COMDLG_FILTERSPEC* rgFilterSpec=FilterSpecs)
                     {
                         FileOpenDialog.SetFileTypes((uint)(typearray.Length / 2), rgFilterSpec);
+                        IsFileTypePuted = true;
                     }
                 }
             }
@@ -83,6 +166,149 @@ namespace StartupWidget.WinUI.Services.Win32Helpers
             }
         }
 
+        private FOS fos = 
+            FOS.FOS_FORCEFILESYSTEM|
+            FOS.FOS_FILEMUSTEXIST|
+            FOS.FOS_PATHMUSTEXIST|
+            FOS.FOS_NOCHANGEDIR;
+        private void ChangeFlag(FOS targetFlag, bool value)
+        {
+            if (value)
+            {
+                fos |= targetFlag;
+            }
+            else
+            {
+                fos &= ~(targetFlag);
+            }
+        }
+        private bool GetFlag(FOS targetFlag)
+        {
+            return (fos & targetFlag) != 0 ? true : false;
+        }
+
+        public bool PickFolders
+        {
+            get
+            {
+                return GetFlag(FOS.FOS_PICKFOLDERS);
+            }
+            set
+            {
+                ChangeFlag(FOS.FOS_PICKFOLDERS, value);
+            }
+        }
+        /// <summary>
+        /// システムに物理的に存在する項目の選択を強制する。
+        /// trueで有効、falseで無効。デフォルトはtrue
+        /// </summary>
+        public bool ForceFileSystem
+        {
+            get
+            {
+                return GetFlag(FOS.FOS_FORCEFILESYSTEM);
+            }
+            set
+            {
+                ChangeFlag(FOS.FOS_FORCEFILESYSTEM, value);
+            }
+        }
+
+        public bool AllowMultiSelect
+        {
+            get
+            {
+                return GetFlag(FOS.FOS_ALLOWMULTISELECT);
+            }
+            set
+            {
+                ChangeFlag(FOS.FOS_ALLOWMULTISELECT, value);
+            }
+        }
+
+        public bool FileMustExist
+        {
+            get
+            {
+                return GetFlag(FOS.FOS_FILEMUSTEXIST);
+            }
+            set
+            {
+                ChangeFlag(FOS.FOS_FILEMUSTEXIST, value);
+            }
+        }
+
+        public bool PathMustExist
+        {
+            get
+            {
+                return GetFlag(FOS.FOS_PATHMUSTEXIST);
+            }
+            set
+            {
+                ChangeFlag(FOS.FOS_PATHMUSTEXIST, value);
+            }
+        }
+
+        /// <summary>
+        /// 指定された拡張子に一致するファイルのみを表示選択できるようにする。
+        /// </summary>
+        public bool StrictFileTypes
+        {
+            get
+            {
+                return GetFlag(FOS.FOS_STRICTFILETYPES);
+            }
+            set
+            {
+                ChangeFlag(FOS.FOS_STRICTFILETYPES, value);
+            }
+        }
+
+        public bool NoChangeDir
+        {
+            get
+            {
+                return GetFlag(FOS.FOS_NOCHANGEDIR);
+            }
+            set
+            {
+                ChangeFlag(FOS.FOS_NOCHANGEDIR, value);
+            }
+        }
+
+
+
+        public string Result
+        {
+            get
+            {
+                unsafe
+                {
+                    FileOpenDialog.GetResult(out IShellItem ppsi);
+                    return GetDisplayNameFromShellItem(ppsi);
+                }
+            }
+        }
+
+        public string[] Results
+        {
+            get
+            {
+                unsafe
+                {
+                    FileOpenDialog.GetResults(out IShellItemArray ppenum);
+                    ppenum.GetCount(out uint count);
+                    string[] result = new string[count];
+                    for(uint i = 0; i < count; i++)
+                    {
+                        ppenum.GetItemAt(i, out IShellItem ppsi);
+                        result[i] = GetDisplayNameFromShellItem(ppsi);
+                    }
+                    return result;
+                }
+            }
+        }
 
 
         [LibraryImport("ole32.dll")]
